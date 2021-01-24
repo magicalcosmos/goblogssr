@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="keywords" content="{{ .Keywords }}">
+		<meta name="description" content="{{ .Description }}">
+		<meta property="og:image" content="{{ .OgImage }}">
+		<title>{{ .Title }}</title>
+		{{ .Css }}
+	</head>
+	<body>
+		{{ .Html }}
+		<script>
+			{{ .UrlEnv }}
+			window.__INITIAL_STATE__ = {{ .State }}
+		</script>
+		<script type="text/javascript" src="/static/g/client.js?1592191759"></script>
+	</body>
+</html>
