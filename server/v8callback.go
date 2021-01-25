@@ -24,22 +24,22 @@ import (
 	v8 "github.com/magicalcosmos/goblogssr/v8"
 )
 
-func v8SendCallback(mtype int, msg string, reqId int64) {
-	switch mtype {
+func v8SendCallback(mimeType int, msg string, reqID int64) {
+	switch mimeType {
 	case v8.MSGTYPE_SET_URL:
 		setTemplateEnv(msg)
 	default:
-		req := ThisServer.RequstMgr.GetRequest(reqId)
+		req := ThisServer.RequestMgr.GetRequest(reqID)
 		if req != nil {
-			switch mtype {
+			switch mimeType {
 			case v8.MSGTYPE_SSR_HTML_OK:
 				req.bOK = true
 				fallthrough
 			case v8.MSGTYPE_SSR_HTML_FAIL:
-				req.result.Html = msg
+				req.result.HTML = msg
 				req.wg.Done()
 			case v8.MSGTYPE_SSR_CSS:
-				req.result.Css = msg
+				req.result.CSS = msg
 			case v8.MSGTYPE_SSR_META:
 				var meta map[string]string
 				err := json.Unmarshal([]byte(msg), &meta)
@@ -54,33 +54,33 @@ func v8SendCallback(mtype int, msg string, reqId int64) {
 }
 
 func setTemplateEnv(msg string) {
-	if len(ThisServer.TemplateUrlEnv) == 0 {
+	if len(ThisServer.TemplateURLEnv) == 0 {
 		var dat map[string]string
 		err := json.Unmarshal([]byte(msg), &dat)
-		var baseUrl string
-		var apiUrl string
+		var baseURL string
+		var apiURL string
 		if err == nil {
 			if v, ok := dat["base"]; ok {
-				baseUrl = v
+				baseURL = v
 			}
 			if v, ok := dat["api"]; ok {
-				apiUrl = v
+				apiURL = v
 			}
 		}
-		if baseUrl != "" && apiUrl != "" {
-			if ThisServer.IsApiDelegate {
-				u, err := url.Parse(apiUrl)
+		if baseURL != "" && apiURL != "" {
+			if ThisServer.IsAPIDelegate {
+				u, err := url.Parse(apiURL)
 				if err != nil {
 					tlog.Error(err)
 					return
 				}
 				u.Host = u.Hostname() + ":" + strconv.FormatInt(int64(ThisServer.HostPort), 10)
-				apiUrl = u.String()
+				apiURL = u.String()
 			}
 
-			ThisServer.TemplateUrlEnv = fmt.Sprintf(`window.APP_ENV="%s";
+			ThisServer.TemplateURLEnv = fmt.Sprintf(`window.APP_ENV="%s";
 			window.BASE_URL="%s";
-			window.API_BASE_URL="%s";`, ThisServer.Env, baseUrl, apiUrl)
+			window.API_BASE_URL="%s";`, ThisServer.Env, baseURL, apiURL)
 		}
 	}
 }

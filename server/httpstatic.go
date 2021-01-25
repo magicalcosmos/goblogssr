@@ -24,8 +24,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// DebugTransport debug transport
 type DebugTransport struct{}
 
+// RoundTrip round trip
 func (DebugTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	b, err := httputil.DumpRequestOut(r, false)
 	if err != nil {
@@ -35,17 +37,18 @@ func (DebugTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	return http.DefaultTransport.RoundTrip(r)
 }
 
+// GetStaticAndProxyHandler get status and proxy
 func GetStaticAndProxyHandler(urlPrefix, rootPath string) gin.HandlerFunc {
 	fileServer := http.FileServer(gin.Dir(rootPath, false))
 	fileServer = http.StripPrefix(urlPrefix, fileServer)
 
 	var proxyServer *httputil.ReverseProxy
-	if ThisServer.IsApiDelegate {
-		apiurl := ThisServer.V8Mgr.GetInternelApiUrl()
-		if apiurl != "" {
-			proxyUrl, _ := url.Parse(apiurl)
-			proxyServer = httputil.NewSingleHostReverseProxy(proxyUrl)
-			targetHost := proxyUrl.Host
+	if ThisServer.IsAPIDelegate {
+		apiURL := ThisServer.V8Mgr.GetInternelApiUrl()
+		if apiURL != "" {
+			proxyURL, _ := url.Parse(apiURL)
+			proxyServer = httputil.NewSingleHostReverseProxy(proxyURL)
+			targetHost := proxyURL.Host
 			originD := proxyServer.Director
 			proxyServer.Director = func(r *http.Request) {
 				originD(r)          // call default director

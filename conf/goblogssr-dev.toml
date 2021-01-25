@@ -1,4 +1,4 @@
-host = "0.0.0.0:9090"
+host = "0.0.0.0:8080"
 env = "dev"
 v8_maxcount = 5
 v8_lifetime = 0
@@ -9,7 +9,7 @@ internal_api_host = "api.ipapi.com"
 internal_api_ip = "api.ipapi.com"
 internal_api_port = 80
 template_name = "ssr.dev.html"
-client_cookie = "gossr_id"
+client_cookie = "goblogssr_id"
 redirect_onerror = ""
 ssr_ctx = ["User-Agent","X-Forwarded-For"]
 template_vars = [{key = "State", type = "js"},

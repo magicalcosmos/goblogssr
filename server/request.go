@@ -29,6 +29,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// HandleSsrRequest handle ssr request
 func HandleSsrRequest(c *gin.Context) {
 	reqURL := c.Request.URL
 	url := reqURL.Path
@@ -39,19 +40,19 @@ func HandleSsrRequest(c *gin.Context) {
 
 	cookie := c.GetHeader("Cookie")
 	if ThisServer.ClientCookie != "" {
-		var clientId string
+		var clientID string
 		cookieName := ThisServer.ClientCookie
 		cookieVal, err := c.Request.Cookie(cookieName)
 		if err == nil && len(cookieVal.Value) > 0 {
-			clientId = cookieVal.Value
+			clientID = cookieVal.Value
 		} else {
-			clientId = generateUUID() + strconv.FormatInt(int64(rand.Int31n(10)), 10)
-			c.SetCookie(cookieName, clientId, 24*3600*365*10,
+			clientID = generateUUID() + strconv.FormatInt(int64(rand.Int31n(10)), 10)
+			c.SetCookie(cookieName, clientID, 24*3600*365*10,
 				"/", util.GetDomainFromHost(c.Request.Host), false, false)
 			if len(cookie) > 0 {
-				cookie = cookieName + "=" + clientId + "; " + cookie
+				cookie = cookieName + "=" + clientID + "; " + cookie
 			} else {
-				cookie = cookieName + "=" + clientId
+				cookie = cookieName + "=" + clientID
 			}
 		}
 	}
@@ -73,15 +74,15 @@ func HandleSsrRequest(c *gin.Context) {
 		return
 	}
 
-	outputHtml(c, result)
+	outputHTML(c, result)
 }
 
-func outputHtml(c *gin.Context, result SsrResult) {
+func outputHTML(c *gin.Context, result SsrResult) {
 	templName := ThisServer.SsrTemplate
 	templObj := gin.H{
-		"Html":   template.HTML(result.Html),
-		"Css":    template.HTML(result.Css),
-		"UrlEnv": template.JS(ThisServer.TemplateUrlEnv),
+		"Html":   template.HTML(result.HTML),
+		"Css":    template.HTML(result.CSS),
+		"UrlEnv": template.JS(ThisServer.TemplateURLEnv),
 	}
 	for k, v := range result.Meta {
 		if v != "" {
@@ -100,18 +101,18 @@ func outputHtml(c *gin.Context, result SsrResult) {
 }
 
 func generateSsrResult(url string, ssrCtx map[string]string) (SsrResult, bool) {
-	req := ThisServer.RequstMgr.NewRequest()
+	req := ThisServer.RequestMgr.NewRequest()
 
-	headerJson, _ := json.Marshal(ssrCtx)
+	headerJSON, _ := json.Marshal(ssrCtx)
 	var jsCode strings.Builder
-	jsCode.Grow(renderJsLength + len(headerJson) + len(url) + 30)
+	jsCode.Grow(renderJsLength + len(headerJSON) + len(url) + 30)
 	jsCode.WriteString(renderJsPart1)
 	jsCode.WriteString(`{v8reqId:`)
-	jsCode.WriteString(strconv.FormatInt(req.reqId, 10))
+	jsCode.WriteString(strconv.FormatInt(req.reqID, 10))
 	jsCode.WriteString(`,url:"`)
 	jsCode.WriteString(url)
 	jsCode.WriteString(`",ssrCtx:`)
-	jsCode.Write(headerJson)
+	jsCode.Write(headerJSON)
 	jsCode.WriteString(`}`)
 	jsCode.WriteString(renderJsPart2)
 
@@ -122,9 +123,9 @@ func generateSsrResult(url string, ssrCtx map[string]string) (SsrResult, bool) {
 	if err == nil {
 		req.wg.Wait()
 	} else {
-		req.result.Html = err.Error()
+		req.result.HTML = err.Error()
 	}
-	ThisServer.RequstMgr.DestroyRequest(req.reqId)
+	ThisServer.RequestMgr.DestroyRequest(req.reqID)
 
 	return req.result, req.bOK
 }

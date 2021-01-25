@@ -22,12 +22,13 @@ import (
 
 	"github.com/magicalcosmos/goblogssr/common/tlog"
 	"github.com/magicalcosmos/goblogssr/common/util"
+	"github.com/magicalcosmos/goblogssr/conf"
 	logic "github.com/magicalcosmos/goblogssr/server"
 )
 
 func main() {
-	var c logic.Config
-	if !util.ParseConfig("./conf/gossr-dev.toml", &c) {
+	var c conf.Config
+	if !util.ParseConfig("./conf/goblogssr-dev.toml", &c) {
 		return
 	}
 	tlog.Init(c.Log)

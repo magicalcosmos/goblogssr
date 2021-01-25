@@ -18,55 +18,62 @@ import (
 	"sync"
 )
 
+// SsrResult ssr result
 type SsrResult struct {
-	Html string            `json:"html"`
-	Css  string            `json:"css"`
+	HTML string            `json:"html"`
+	CSS  string            `json:"css"`
 	Meta map[string]string `json:"meta"`
 }
 
+// Request request
 type Request struct {
 	wg     sync.WaitGroup
-	reqId  int64
+	reqID  int64
 	result SsrResult
 	bOK    bool
 }
 
+// RequestMgr request manager
 type RequestMgr struct {
 	mutex    sync.Mutex
 	requests map[int64]*Request
-	maxId    int64
+	maxID    int64
 }
 
+// NewRequestMgr new request manager
 func NewRequestMgr() *RequestMgr {
 	return &RequestMgr{requests: make(map[int64]*Request)}
 }
 
-func (this *RequestMgr) NewRequest() *Request {
+// NewRequest new request
+func (that *RequestMgr) NewRequest() *Request {
 	req := &Request{}
 	req.wg.Add(1)
 
-	this.mutex.Lock()
-	this.maxId++
-	req.reqId = this.maxId
-	this.requests[req.reqId] = req
-	this.mutex.Unlock()
+	that.mutex.Lock()
+	that.maxID++
+	req.reqID = that.maxID
+	that.requests[req.reqID] = req
+	that.mutex.Unlock()
 	return req
 }
 
-func (this *RequestMgr) DestroyRequest(reqId int64) {
-	this.mutex.Lock()
-	if _, ok := this.requests[reqId]; ok {
-		delete(this.requests, reqId)
+// DestroyRequest destroy request
+func (that *RequestMgr) DestroyRequest(reqID int64) {
+	that.mutex.Lock()
+	if _, ok := that.requests[reqID]; ok {
+		delete(that.requests, reqID)
 	}
-	this.mutex.Unlock()
+	that.mutex.Unlock()
 }
 
-func (this *RequestMgr) GetRequest(reqId int64) *Request {
+// GetRequest get request
+func (that *RequestMgr) GetRequest(reqID int64) *Request {
 	var req *Request
-	this.mutex.Lock()
-	if v, ok := this.requests[reqId]; ok {
+	that.mutex.Lock()
+	if v, ok := that.requests[reqID]; ok {
 		req = v
 	}
-	this.mutex.Unlock()
+	that.mutex.Unlock()
 	return req
 }

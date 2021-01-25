@@ -23,9 +23,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/magicalcosmos/goblogssr/common/conf"
 	"github.com/magicalcosmos/goblogssr/common/tlog"
 	"github.com/magicalcosmos/goblogssr/common/util"
+	"github.com/magicalcosmos/goblogssr/conf"
 	v8 "github.com/magicalcosmos/goblogssr/v8"
 
 	"github.com/facebookgo/grace/gracehttp"
@@ -74,8 +74,8 @@ func NewServer(c *conf.Config) error {
 	tmp := strings.Index(c.Host, ":")
 	hostPort := int(util.StringToInt64(c.Host[tmp+1:], 0))
 
-	if c.InternalApiPort == 0 {
-		c.InternalApiPort = 80
+	if c.InternalAPIPort == 0 {
+		c.InternalAPIPort = 80
 	}
 
 	ThisServer = &Server{
@@ -108,7 +108,7 @@ func getHTTPHandler(c *conf.Config) http.Handler {
 	e := gin.New()
 
 	localStaticPath := ThisServer.ClientPath + DIST_DIR_WWW
-	e.Use(GetStaticAndProxyHandler(c.StaticUrlPath, localStaticPath))
+	e.Use(GetStaticAndProxyHandler(c.StaticURLPath, localStaticPath))
 	e.StaticFile("/favicon.ico", localStaticPath+"/favicon.ico")
 	e.LoadHTMLGlob(c.ClientPath + DIST_DIR_SERVER + "/template/*")
 
