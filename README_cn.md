@@ -36,7 +36,7 @@ goblogssr 是一个用于Web开发的服务器端渲染框架(SSR)，使用 gola
    - 运行`make clean`，清空编译的文件
 3. js工程的打包
    1. 预先安装node环境
-   2. `cd jsproj`
+   2. `cd client`
    3. `npm install` 安装项目的依赖包
    4. `npm run build-dev`打包开发环境的包，或者`npm run build-prod`打包正式环境的包
    5. `npm run watch` 打包开发环境的包，并监控文件的变化，增量更新包内容，也就是可以热更新。
@@ -56,7 +56,7 @@ goblogssr 是一个用于Web开发的服务器端渲染框架(SSR)，使用 gola
    - internal_api_host：转发请求的host
    - internal_api_ip：ssr的后端ajax请求，会强制改成该ip，这样会提高后端ajax请求的性能。此时，如果配置了internal_api_host，请求的Header头的Host会设置成该值。
    - internal_api_port：上述配置的api请求服务器的port
-   - template_name：输出html页面的模版，模版目录是 jsproj/server_dist/template
+   - template_name：输出html页面的模版，模版目录是 client/server_dist/template
    - client_cookie：如果不为空，goblogssr服务器会生成一个以它命名的生命期很长的cookie，可以做为客户端的标识id
    - redirect_onerror：如果不为空，生成页面的js脚本如果发生错误，则请求返回302 页面跳转的响应
    - ssr_ctx：ssr框架会根据配置的header，获取请求对应的header值，并传到js脚本里，脚本里可以通过context.ssrCtx访问对应的header值。并且，后端ajax请求，也会自动带上这些header值。缺省会包含Cookie这个header
