@@ -17,9 +17,9 @@ package server
 import (
 	"errors"
 	"fmt"
-	"github.com/lizc2003/gossr/common/tlog"
-	"github.com/lizc2003/gossr/common/util"
-	v8 "github.com/lizc2003/gossr/v8"
+	"github.com/magicalcosmos/goblogssr/common/tlog"
+	"github.com/magicalcosmos/goblogssr/common/util"
+	v8 "github.com/magicalcosmos/goblogssr/v8"
 	"net/http"
 	"os"
 	"path/filepath"

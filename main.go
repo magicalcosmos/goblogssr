@@ -16,12 +16,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/lizc2003/gossr/common/tlog"
-	"github.com/lizc2003/gossr/common/util"
-	logic "github.com/lizc2003/gossr/server"
 	"math/rand"
 	"runtime"
 	"time"
+
+	"github.com/magicalcosmos/goblogssr/common/tlog"
+	"github.com/magicalcosmos/goblogssr/common/util"
+	logic "github.com/magicalcosmos/goblogssr/server"
 )
 
 func main() {

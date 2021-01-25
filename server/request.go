@@ -16,8 +16,8 @@ package server
 
 import (
 	"encoding/json"
-	"github.com/lizc2003/gossr/common/tlog"
-	"github.com/lizc2003/gossr/common/util"
+	"github.com/magicalcosmos/goblogssr/common/tlog"
+	"github.com/magicalcosmos/goblogssr/common/util"
 	uuid "github.com/satori/go.uuid"
 	"html/template"
 	"math/rand"

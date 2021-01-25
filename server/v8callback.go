@@ -17,8 +17,8 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/lizc2003/gossr/common/tlog"
-	v8 "github.com/lizc2003/gossr/v8"
+	"github.com/magicalcosmos/goblogssr/common/tlog"
+	v8 "github.com/magicalcosmos/goblogssr/v8"
 	"net/url"
 	"strconv"
 )

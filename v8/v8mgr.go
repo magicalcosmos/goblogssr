@@ -16,10 +16,11 @@ package v8
 
 import (
 	"fmt"
-	"github.com/lizc2003/gossr/common/tlog"
-	"github.com/lizc2003/gossr/v8worker"
 	"sync/atomic"
 	"time"
+
+	"github.com/magicalcosmos/goblogssr/common/tlog"
+	"github.com/magicalcosmos/goblogssr/v8worker"
 )
 
 const (
@@ -75,19 +76,21 @@ func NewV8Mgr(c *V8MgrConfig) (*V8Mgr, error) {
 	return TheV8Mgr, nil
 }
 
-func (this *V8Mgr) Execute(name string, code string) error {
-	w := this.acquireWorker()
+// Execute executes
+func (that *V8Mgr) Execute(name string, code string) error {
+	w := that.acquireWorker()
 	err := w.Execute(name, code)
 	if err != nil {
 		tlog.Error(err)
 	}
-	this.releaseWorker(w)
+	that.releaseWorker(w)
 	return err
 }
 
-func (this *V8Mgr) GetInternelApiUrl() string {
-	if this.httpMgr.internalApiHost != "" {
-		return fmt.Sprintf("http://%s:%d", this.httpMgr.internalApiHost, this.httpMgr.internalApiPort)
+// GetInternelApiUrl get internel API url
+func (that *V8Mgr) GetInternelApiUrl() string {
+	if that.httpMgr.internalApiHost != "" {
+		return fmt.Sprintf("http://%s:%d", that.httpMgr.internalApiHost, that.httpMgr.internalApiPort)
 	}
 	return ""
 }

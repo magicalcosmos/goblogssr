@@ -1,4 +1,4 @@
-module github.com/lizc2003/gossr
+module github.com/magicalcosmos/goblogssr
 
 go 1.13
 

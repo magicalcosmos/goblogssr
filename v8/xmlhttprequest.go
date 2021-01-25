@@ -17,8 +17,8 @@ package v8
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/lizc2003/gossr/common/tlog"
-	"github.com/lizc2003/gossr/v8worker"
+	"github.com/magicalcosmos/goblogssr/common/tlog"
+	"github.com/magicalcosmos/goblogssr/v8worker"
 	"io/ioutil"
 	"net"
 	"net/http"
