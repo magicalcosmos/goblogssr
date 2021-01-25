@@ -1,11 +1,11 @@
-// Copyright 2020-present, lizc2003@gmail.com
-//
+// Copyright 2021 brodyliao@gmail.com
+
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+
 //     http://www.apache.org/licenses/LICENSE-2.0
-//
+
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,8 +50,10 @@ type V8Mgr struct {
 	currentWorkerCount int32
 }
 
+// TheV8Mgr the v8 manager
 var TheV8Mgr *V8Mgr
 
+// NewV8Mgr new v8 manager
 func NewV8Mgr(c *V8MgrConfig) (*V8Mgr, error) {
 	initV8Module(c.JsPaths)
 	initV8NewJs()
@@ -95,24 +97,24 @@ func (that *V8Mgr) GetInternelApiUrl() string {
 	return ""
 }
 
-func (this *V8Mgr) acquireWorker() *v8worker.Worker {
+func (that *V8Mgr) acquireWorker() *v8worker.Worker {
 	var busyWorkers []*v8worker.Worker
 	for {
 		var ret *v8worker.Worker
 		bEmpty := false
 		select {
-		case worker := <-this.workers:
+		case worker := <-that.workers:
 			if worker.Acquire() {
 				ret = worker
 			} else {
 				busyWorkers = append(busyWorkers, worker)
 			}
 		default:
-			if this.currentWorkerCount < this.maxWorkerCount {
-				worker, err := newV8Worker(this.env)
+			if that.currentWorkerCount < that.maxWorkerCount {
+				worker, err := newV8Worker(that.env)
 				if err == nil {
-					atomic.AddInt32(&this.currentWorkerCount, 1)
-					worker.SetExpireTime(time.Now().Unix() + this.workerLifeTime)
+					atomic.AddInt32(&that.currentWorkerCount, 1)
+					worker.SetExpireTime(time.Now().Unix() + that.workerLifeTime)
 					worker.Acquire()
 					ret = worker
 				} else {
@@ -125,13 +127,13 @@ func (this *V8Mgr) acquireWorker() *v8worker.Worker {
 
 		if ret != nil {
 			for _, w := range busyWorkers {
-				this.workers <- w
+				that.workers <- w
 			}
 			return ret
 		} else if bEmpty {
 			if len(busyWorkers) > 0 {
 				for _, w := range busyWorkers {
-					this.workers <- w
+					that.workers <- w
 				}
 				busyWorkers = busyWorkers[:0]
 			}
@@ -140,19 +142,19 @@ func (this *V8Mgr) acquireWorker() *v8worker.Worker {
 	}
 }
 
-func (this *V8Mgr) releaseWorker(worker *v8worker.Worker) {
+func (that *V8Mgr) releaseWorker(worker *v8worker.Worker) {
 	if worker != nil {
 		worker.Release()
 
 		if time.Now().Unix() >= worker.GetExpireTime() {
-			atomic.AddInt32(&this.currentWorkerCount, -1)
+			atomic.AddInt32(&that.currentWorkerCount, -1)
 
 			go func(w *v8worker.Worker) {
 				time.Sleep(DELETE_DALAY_TIME)
 				w.Dispose()
 			}(worker)
 		} else {
-			this.workers <- worker
+			that.workers <- worker
 		}
 	}
 }

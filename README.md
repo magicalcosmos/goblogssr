@@ -1,4 +1,4 @@
-# gossr
+# goblogssr
 
 [README](README.md) | [中文文档](README_cn.md)
 
@@ -38,7 +38,7 @@ gossr is a server-side rendering framework (SSR) for web development, implemente
    - Run `make clean` to clean the project
 3. Packaging of js project
    1. Install node environment in advance
-   2. `cd jsproj`
+   2. `cd client`
    3. `npm install` installs the dependent packages of the project
    4. `npm run build-dev` package for development environment, or `npm run build-prod` package for production environment
    5. `npm run watch` package for development environment, and monitors the changes of the file, and incrementally updates the package content, that is, it can be hot updated.
@@ -58,7 +58,7 @@ gossr is a server-side rendering framework (SSR) for web development, implemente
    - internal_api_host: the server that delegated the request
    - internal_api_ip: ssr backend ajax request will be forced to change to this ip, which will improve the performance of backend ajax request. At this time, if internal_api_host is configured, the Host of the request header will be set to this value.
    - internal_api_port: the API server's port
-   - template_name: template for outputting html pages, the template directory is jsproj/server_dist/template
+   - template_name: template for outputting html pages, the template directory is client/server_dist/template
    - client_cookie: if it is not empty, the gossr server will generate a cookie with a long lifetime, which can be used as the client's identification id
    - redirect_onerror: If it is not empty, if an error occurs in the js script that generates the page, the request returns a 302 page response
    - ssr_ctx: The ssr framework will obtain the header value corresponding to the request according to the configured header, and pass it to the js script. The script can access the corresponding header value through context.ssrCtx. And, the backend ajax request will automatically bring these header values. Cookie header will be included by default

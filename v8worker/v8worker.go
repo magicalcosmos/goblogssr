@@ -1,11 +1,11 @@
-// Copyright 2020-present, lizc2003@gmail.com
-//
+// Copyright 2021 brodyliao@gmail.com
+
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+
 //     http://www.apache.org/licenses/LICENSE-2.0
-//
+
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,7 +41,10 @@ var workerTableLock sync.Mutex
 var workerTable = make(map[int]*Worker)
 var workerTableMaxIndex int = 0
 
+// SendCallback send callback
 type SendCallback func(worker *Worker, msgType int, msg string, userdata int64)
+
+// RequestCallback request callback
 type RequestCallback func(worker *Worker, msgType int, msg string) string
 
 type msgData struct {
@@ -49,6 +52,7 @@ type msgData struct {
 	msg   string
 }
 
+// Worker worker
 type Worker struct {
 	cWorker    *C.V8Worker
 	tableIndex int
@@ -82,10 +86,12 @@ func workerTableLookup(index int) *Worker {
 	return w
 }
 
+// Version version
 func Version() string {
 	return C.GoString(C.v8_version())
 }
 
+// New new
 func New(sendCb SendCallback, requestCb RequestCallback) *Worker {
 	workerTableLock.Lock()
 	workerTableMaxIndex++
@@ -112,6 +118,7 @@ func New(sendCb SendCallback, requestCb RequestCallback) *Worker {
 	return w
 }
 
+// Dispose dispose
 func (w *Worker) Dispose() {
 	if w.disposed {
 		return
@@ -125,6 +132,7 @@ func (w *Worker) Dispose() {
 	C.v8_worker_dispose(w.cWorker)
 }
 
+// Execute execute
 func (w *Worker) Execute(scriptName string, code string) error {
 	scriptName_s := C.CString(scriptName)
 	code_s := C.CString(code)
@@ -139,6 +147,7 @@ func (w *Worker) Execute(scriptName string, code string) error {
 	return nil
 }
 
+// Send send
 func (w *Worker) Send(mtype int, msg string) error {
 	msg_p := C.CString(msg)
 	r := C.v8_send(w.cWorker, C.int(mtype), msg_p)
@@ -151,6 +160,7 @@ func (w *Worker) Send(mtype int, msg string) error {
 	return nil
 }
 
+// SafeSend save send
 func (w *Worker) SafeSend(mtype int, msg string) error {
 	var err error
 	w.mutex.Lock()
@@ -163,6 +173,7 @@ func (w *Worker) SafeSend(mtype int, msg string) error {
 	return err
 }
 
+// Acquire acquire
 func (w *Worker) Acquire() bool {
 	bOK := false
 	if w.mutex.TryLock() {
@@ -177,6 +188,7 @@ func (w *Worker) Acquire() bool {
 	return bOK
 }
 
+// Release release
 func (w *Worker) Release() {
 	w.mutex.Lock()
 	if len(w.msgQueue) > 0 {
@@ -189,14 +201,17 @@ func (w *Worker) Release() {
 	w.mutex.Unlock()
 }
 
+// TerminateExecution terminateExecution
 func (w *Worker) TerminateExecution() {
 	C.v8_terminate_execution(w.cWorker)
 }
 
+// SetExpireTime set expire time
 func (w *Worker) SetExpireTime(expireTime int64) {
 	w.expireTime = expireTime
 }
 
+// GetExpireTime get expire time
 func (w *Worker) GetExpireTime() int64 {
 	return w.expireTime
 }
