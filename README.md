@@ -52,7 +52,7 @@ gossr is a server-side rendering framework (SSR) for web development, implemente
    - env: indicates that the server is running in the development environment or in production environment. "dev" means the development environment, "prod" means the production environment, or you can customize the environment. In js defines a global variable APP_ENV, which is the value
    - v8_maxcount: indicates how many V8 VM instances to run at most
    - v8_lifetime: indicates the life time of each V8 VM instance, in seconds. During the lifetime of the instance, the loaded js script will remain in memory and will not be reloaded. In the development environment, it can be set to 0 to force the instance to be recreated every time when requested.
-   - js_project_path: directory of js project
+   - client_path: directory of js project
    - static_url_path: the prefix of resource url, which generated client js, img, css and other resource
    - is_api_delegate: Whether the server does api delegating. If it is true, it will delegate the browser-end ajax request prefixed by /api to the server configured by internal_api_host.
    - internal_api_host: the server that delegated the request

@@ -1,11 +1,11 @@
-// Copyright 2020-present, lizc2003@gmail.com
-//
+// Copyright 2021 brodyliao@gmail.com
+
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+
 //     http://www.apache.org/licenses/LICENSE-2.0
-//
+
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,14 +17,16 @@ package server
 import (
 	"errors"
 	"fmt"
-	"github.com/magicalcosmos/goblogssr/common/tlog"
-	"github.com/magicalcosmos/goblogssr/common/util"
-	v8 "github.com/magicalcosmos/goblogssr/v8"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/magicalcosmos/goblogssr/common/conf"
+	"github.com/magicalcosmos/goblogssr/common/tlog"
+	"github.com/magicalcosmos/goblogssr/common/util"
+	v8 "github.com/magicalcosmos/goblogssr/v8"
 
 	"github.com/facebookgo/grace/gracehttp"
 	"github.com/gin-gonic/gin"
@@ -35,48 +37,27 @@ const (
 	DIST_DIR_SERVER = "server_dist"
 )
 
-type Config struct {
-	Host            string        `toml:"host"`
-	Log             tlog.Config   `toml:"Log"`
-	Env             string        `toml:"env"`
-	V8MaxCount      int32         `toml:"v8_maxcount"`
-	V8LifeTime      int           `toml:"v8_lifetime"`
-	JsProjectPath   string        `toml:"js_project_path"`
-	StaticUrlPath   string        `toml:"static_url_path"`
-	InternalApiHost string        `toml:"internal_api_host"`
-	InternalApiIp   string        `toml:"internal_api_ip"`
-	InternalApiPort int32         `toml:"internal_api_port"`
-	IsApiDelegate   bool          `toml:"is_api_delegate"`
-	TemplateName    string        `toml:"template_name"`
-	ClientCookie    string        `toml:"client_cookie"`
-	RedirectOnerror string        `toml:"redirect_onerror"`
-	SsrCtx          []string      `toml:"ssr_ctx"`
-	TemplateVars    []TemplateVar `toml:"template_vars"`
-}
-
-type TemplateVar struct {
-	Key  string `toml:"key"`
-	Type string `toml:"type"`
-}
-
+// Server server
 type Server struct {
-	RequstMgr       *RequestMgr
+	RequestMgr      *RequestMgr
 	V8Mgr           *v8.V8Mgr
 	HostPort        int
-	JsProjectPath   string
+	ClientPath      string
 	Env             string
-	IsApiDelegate   bool
+	IsAPIDelegate   bool
 	ClientCookie    string
 	RedirectOnerror string
 	SsrTemplate     string
 	SsrCtx          []string
 	TemplateVars    map[string]string
-	TemplateUrlEnv  string
+	TemplateURLEnv  string
 }
 
+// ThisServer this server
 var ThisServer *Server
 
-func NewServer(c *Config) error {
+// NewServer new server
+func NewServer(c *conf.Config) error {
 	templateVars := map[string]string{"State": "js"}
 	for _, v := range c.TemplateVars {
 		if _, ok := templateVars[v.Key]; !ok {
@@ -84,11 +65,11 @@ func NewServer(c *Config) error {
 		}
 	}
 
-	jsProjectPath := getJsProjectPath(c.JsProjectPath)
-	if jsProjectPath == "" {
-		return errors.New("Error: the path of js project is empty.")
+	clientPath := getClientPath(c.ClientPath)
+	if clientPath == "" {
+		return errors.New("Error: the path of js project is empty")
 	}
-	c.JsProjectPath = jsProjectPath
+	c.ClientPath = clientPath
 
 	tmp := strings.Index(c.Host, ":")
 	hostPort := int(util.StringToInt64(c.Host[tmp+1:], 0))
@@ -98,15 +79,15 @@ func NewServer(c *Config) error {
 	}
 
 	ThisServer = &Server{
-		RequstMgr:       NewRequestMgr(),
+		RequestMgr:      NewRequestMgr(),
 		HostPort:        hostPort,
-		JsProjectPath:   c.JsProjectPath,
+		ClientPath:      c.ClientPath,
 		SsrTemplate:     c.TemplateName,
 		ClientCookie:    c.ClientCookie,
 		RedirectOnerror: c.RedirectOnerror,
 		Env:             c.Env,
 		SsrCtx:          c.SsrCtx,
-		IsApiDelegate:   c.IsApiDelegate,
+		IsAPIDelegate:   c.IsAPIDelegate,
 		TemplateVars:    templateVars,
 	}
 
@@ -117,50 +98,54 @@ func NewServer(c *Config) error {
 	}
 	ThisServer.V8Mgr = v8mgr
 
-	handler := getHttpHandler(c)
+	handler := getHTTPHandler(c)
 	fmt.Println(util.FormatFullTime(time.Now()), "running ...")
 	return gracehttp.Serve(&http.Server{Addr: c.Host, Handler: handler})
 }
 
-func getHttpHandler(c *Config) http.Handler {
+func getHTTPHandler(c *conf.Config) http.Handler {
 	gin.SetMode(gin.ReleaseMode)
 	e := gin.New()
 
-	localStaticPath := ThisServer.JsProjectPath + DIST_DIR_WWW
+	localStaticPath := ThisServer.ClientPath + DIST_DIR_WWW
 	e.Use(GetStaticAndProxyHandler(c.StaticUrlPath, localStaticPath))
 	e.StaticFile("/favicon.ico", localStaticPath+"/favicon.ico")
-	e.LoadHTMLGlob(c.JsProjectPath + DIST_DIR_SERVER + "/template/*")
+	e.LoadHTMLGlob(c.ClientPath + DIST_DIR_SERVER + "/template/*")
 
 	e.NoRoute(HandleSsrRequest)
 	return e
 }
 
-func getJsProjectPath(jsProjectPath string) string {
-	if jsProjectPath == "" {
+func getClientPath(clientPath string) string {
+	if clientPath == "" {
 		return ""
 	}
-	if jsProjectPath[0] != '/' {
+	if clientPath[0] != '/' {
 		basepath, err := filepath.Abs(filepath.Dir(os.Args[0]))
 		if err != nil {
 			return ""
 		}
-		jsProjectPath = basepath + "/" + jsProjectPath
+		clientPath = basepath + "/" + clientPath
 	}
-	if jsProjectPath[len(jsProjectPath)-1] != '/' {
-		jsProjectPath += "/"
+	if clientPath[len(clientPath)-1] != '/' {
+		clientPath += "/"
 	}
-	return jsProjectPath
+	return clientPath
 }
 
-func newV8Mgr(c *Config) (*v8.V8Mgr, error) {
-	serverPath := c.JsProjectPath + DIST_DIR_SERVER + "/"
+func newV8Mgr(c *conf.Config) (*v8.V8Mgr, error) {
+	serverPath := c.ClientPath + DIST_DIR_SERVER + "/"
 	serverPathMain := serverPath + "g/"
-	vuePath := c.JsProjectPath + "node_modules/"
+	vuePath := c.ClientPath + "node_modules/"
 
 	v8Conf := v8.V8MgrConfig{
-		JsPaths:      []string{serverPathMain, serverPath, vuePath},
-		SendCallback: v8SendCallback,
-		Env:          c.Env, MaxWorkerCount: c.V8MaxCount, WorkerLifeTime: c.V8LifeTime,
-		InternalApiHost: c.InternalApiHost, InternalApiIp: c.InternalApiIp, InternalApiPort: c.InternalApiPort}
+		JsPaths:         []string{serverPathMain, serverPath, vuePath},
+		SendCallback:    v8SendCallback,
+		Env:             c.Env,
+		MaxWorkerCount:  c.V8MaxCount,
+		WorkerLifeTime:  c.V8LifeTime,
+		InternalApiHost: c.InternalAPIHost,
+		InternalApiIp:   c.InternalAPIIp,
+		InternalApiPort: c.InternalAPIPort}
 	return v8.NewV8Mgr(&v8Conf)
 }

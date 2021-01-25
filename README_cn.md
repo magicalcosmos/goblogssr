@@ -50,7 +50,7 @@ gossr 是一个用于Web开发的服务器端渲染框架(SSR)，使用 golang +
    - env： 表示服务器运行在开发环境下，还是正式环境下。"dev"表示开发环境，"prod"表示正式环境，也可以自定义环境。js定义了一个全局变量APP_ENV, 就是该值
    - v8_maxcount：表示最多运行多少个V8 VM实例
    - v8_lifetime：表示每个V8 VM实例的生命期，单位秒。在实例的生命期内，加载的js脚本会保持在内存，不会重新加载，在开发环境中，可以设置为0，来强制每次请求都重新创建实例。
-   - js_project_path：js工程的目录
+   - client_path：js工程的目录
    - static_url_path：资源url的前缀，生成的客户端js，img，css等资源的url前缀
    - is_api_delegate：服务器是否做api转发，如果为true，则会把/api前缀的前端ajax请求，转发到internal_api_host配置的服务器上的。
    - internal_api_host：转发请求的host
