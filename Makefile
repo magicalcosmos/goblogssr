@@ -8,6 +8,9 @@ v8build:
 build:
 	go build
 
+gql:
+	go generate ./...
+
 gotest:
 	go test -v ./v8worker
 

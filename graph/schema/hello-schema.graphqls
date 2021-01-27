@@ -2,14 +2,14 @@
 #
 # https://gqlgen.com/getting-started/
 
-type Todo {
+type Hello {
   id: ID!
   text: String!
   done: Boolean!
   user: User!
 }
 
-type User {
-  id: ID!
-  name: String!
+
+type Query {
+  he: [Hello!]!
 }

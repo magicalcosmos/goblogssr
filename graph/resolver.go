@@ -1,6 +1,6 @@
-package graph
+//go:generate go run github.com/99designs/gqlgen
 
-import "github.com/magicalcosmos/goblogssr/graph/model"
+package graph
 
 // This file will not be regenerated automatically.
 //
@@ -8,5 +8,4 @@ import "github.com/magicalcosmos/goblogssr/graph/model"
 
 // Resolver resolver
 type Resolver struct {
-	todos []*model.Todo
 }
