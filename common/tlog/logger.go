@@ -138,7 +138,7 @@ func (l *Logger) p(level LEVEL, args ...interface{}) {
 	file, line := getFileNameAndLine()
 	if l == nil || l.debug {
 		mu.Lock()
-		fmt.Printf("%s %s %s:%d ", genTime(), levelText[level], file, line)
+		fmt.Printf("[%s] %s %s:%d ", genTime(), levelText[level], file, line)
 		fmt.Println(args...)
 		mu.Unlock()
 		return
@@ -165,7 +165,7 @@ func (l *Logger) pf(level LEVEL, format string, args ...interface{}) {
 	file, line := getFileNameAndLine()
 	if l == nil || l.debug {
 		mu.Lock()
-		fmt.Printf("%s %s %s:%d ", genTime(), levelText[level], file, line)
+		fmt.Printf("[%s] %s %s:%d ", genTime(), levelText[level], file, line)
 		fmt.Printf(format, args...)
 		fmt.Println()
 		mu.Unlock()
@@ -218,7 +218,7 @@ func genTime() []byte {
 		'2', '0', byte((year%100)/10) + 48, byte(year%10) + 48, '-',
 		byte(month/10) + 48, byte(month%10) + 48, '-', byte(day/10) + 48, byte(day%10) + 48, ' ',
 		byte(hour/10) + 48, byte(hour%10) + 48, ':', byte(minute/10) + 48, byte(minute%10) + 48, ':',
-		byte(second/10) + 48, byte(second%10) + 48, ' '}
+		byte(second/10) + 48, byte(second%10) + 48}
 }
 
 func getFileNameAndLine() (string, int) {
