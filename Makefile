@@ -18,3 +18,6 @@ clean:
 	rm -f ./v8worker/depsc++/libdepsc++.a
 	rm -f ./v8worker/depsc++/v8binding.o
 	go clean
+
+watch:
+	cd client;npm run watch

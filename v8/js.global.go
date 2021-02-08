@@ -15,6 +15,7 @@
 package v8
 
 const globalJsContent = `
+this["document"] = {};
 this["console"] = {
 	debug(...args) {
 		v8worker.print(0, ...args)

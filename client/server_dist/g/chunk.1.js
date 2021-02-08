@@ -1,1 +1,16 @@
-exports.ids=[1],exports.modules={166:function(t,e,n){var s=n(168);"string"==typeof s&&(s=[[t.i,s,""]]),s.locals&&(t.exports=s.locals);var r=n(86).default;t.exports.__inject__=function(t){r("7c07f37b",s,!0,t)}},167:function(t,e,n){"use strict";n.r(e);var s=n(166),r=n.n(s);for(var c in s)"default"!==c&&function(t){n.d(e,t,(function(){return s[t]}))}(c);e.default=r.a},168:function(t,e,n){(e=n(85)(!1)).push([t.i,".btn{width:45px;height:30px;background-color:gray;margin:5px;border-radius:3px}\n",""]),t.exports=e},169:function(t,e,n){"use strict";n.r(e);var s={props:{count:Number,increaseCount:Function,decreaseCount:Function}},r=n(39);var c=Object(r.a)(s,(function(){var t=this.$createElement;return(this._self._c||t)("div",[this._ssrNode("<div>"+this._ssrEscape(this._s(this.count))+'</div> <div><button class="btn"> +1 </button> <button class="btn"> -1 </button></div>')])}),[],!1,(function(t){var e=n(167);e.__inject__&&e.__inject__(t)}),null,"1c39ea16").exports,o=n(37),i={asyncData:({store:t,route:e,context:n})=>t.dispatch("xhrTest"),components:{Counter:c},computed:{...Object(o.c)(["count","xhrResult"])},methods:{...Object(o.b)(["increaseCount","decreaseCount"])}},u=Object(r.a)(i,(function(){var t=this.$createElement,e=this._self._c||t;return e("div",[e("Counter",{attrs:{count:this.count,"increase-count":this.increaseCount,"decrease-count":this.decreaseCount}}),this._ssrNode(" <br><br> <p>XMLHttpRequest result:</p> <div>"+this._ssrEscape(this._s(this.xhrResult))+"</div>")],2)}),[],!1,null,null,"34f613ce");e.default=u.exports}};
+exports.ids = [1];
+exports.modules = {
+
+/***/ "./src/views/markdown/index.vue":
+/*!**************************************!*\
+  !*** ./src/views/markdown/index.vue ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed (from ./node_modules/vue-loader/lib/index.js):\nError: ENOENT: no such file or directory, open '/Users/brodyliao/golang-lab/go-blog-ssr/client/src/views/markdown/index.vue'");
+
+/***/ })
+
+};;
+//# sourceMappingURL=chunk.1.js.map

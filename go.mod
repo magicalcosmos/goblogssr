@@ -19,4 +19,5 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/vektah/gqlparser/v2 v2.0.1
 	golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd // indirect
+	honnef.co/go/js/dom/v2 v2.0.0-20200509013220-d4405f7ab4d8
 )
