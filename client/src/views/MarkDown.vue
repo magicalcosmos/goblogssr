@@ -1,7 +1,7 @@
 <template lang="html">
   <div>
   <editor
-    :initialValue="viewerText"
+    :initialValue="editorText"
     :options="editorOptions"
     @load="onEditorLoad"
     @focus="onEditorFocus"
