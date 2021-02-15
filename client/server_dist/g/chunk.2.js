@@ -12,6 +12,22 @@ exports.modules = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _toast_ui_vue_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @toast-ui/vue-editor */ "./node_modules/@toast-ui/vue-editor/dist/toastui-vue-editor.js");
 /* harmony import */ var _toast_ui_vue_editor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_toast_ui_vue_editor__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _toast_ui_editor_plugin_chart__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @toast-ui/editor-plugin-chart */ "./node_modules/@toast-ui/editor-plugin-chart/dist/toastui-editor-plugin-chart.js");
+/* harmony import */ var _toast_ui_editor_plugin_chart__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_toast_ui_editor_plugin_chart__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _toast_ui_editor_plugin_code_syntax_highlight__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @toast-ui/editor-plugin-code-syntax-highlight */ "./node_modules/@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.js");
+/* harmony import */ var _toast_ui_editor_plugin_code_syntax_highlight__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_toast_ui_editor_plugin_code_syntax_highlight__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var highlight_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! highlight.js */ "./node_modules/highlight.js/lib/index.js");
+/* harmony import */ var highlight_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(highlight_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _toast_ui_editor_plugin_color_syntax__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @toast-ui/editor-plugin-color-syntax */ "./node_modules/@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.js");
+/* harmony import */ var _toast_ui_editor_plugin_color_syntax__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_toast_ui_editor_plugin_color_syntax__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _toast_ui_editor_plugin_table_merged_cell__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @toast-ui/editor-plugin-table-merged-cell */ "./node_modules/@toast-ui/editor-plugin-table-merged-cell/dist/toastui-editor-plugin-table-merged-cell.js");
+/* harmony import */ var _toast_ui_editor_plugin_table_merged_cell__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_toast_ui_editor_plugin_table_merged_cell__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _toast_ui_editor_plugin_uml__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @toast-ui/editor-plugin-uml */ "./node_modules/@toast-ui/editor-plugin-uml/dist/toastui-editor-plugin-uml.js");
+/* harmony import */ var _toast_ui_editor_plugin_uml__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_toast_ui_editor_plugin_uml__WEBPACK_IMPORTED_MODULE_6__);
+//
+//
+//
+//
 //
 //
 //
@@ -24,20 +40,55 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
+
+
+
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    editor: _toast_ui_vue_editor__WEBPACK_IMPORTED_MODULE_0__["Editor"]
+    Editor: _toast_ui_vue_editor__WEBPACK_IMPORTED_MODULE_0__["Editor"]
   },
 
   data() {
     return {
-      editorText: 'This is initialValue.',
+      editorText: '',
       editorOptions: {
-        hideModeSwitch: true
+        plugins: [_toast_ui_editor_plugin_chart__WEBPACK_IMPORTED_MODULE_1___default.a, [_toast_ui_editor_plugin_code_syntax_highlight__WEBPACK_IMPORTED_MODULE_2___default.a, {
+          hljs: (highlight_js__WEBPACK_IMPORTED_MODULE_3___default())
+        }], _toast_ui_editor_plugin_color_syntax__WEBPACK_IMPORTED_MODULE_4___default.a, _toast_ui_editor_plugin_table_merged_cell__WEBPACK_IMPORTED_MODULE_5___default.a, _toast_ui_editor_plugin_uml__WEBPACK_IMPORTED_MODULE_6___default.a]
       }
     };
-  }
+  },
 
+  methods: {
+    // scroll() {
+    //   this.$refs.toastuiEditor.invoke('scrollTop', 10);
+    // },
+    // moveTop() {
+    //   this.$refs.toastuiEditor.invoke('moveCursorToStart');
+    // },
+    // getHtml() {
+    //   let html = this.$refs.toastuiEditor.invoke('getHtml');
+    //   this.viewerText = html
+    // },
+    onEditorLoad() {// implement your code
+    },
+
+    onEditorFocus() {// implement your code
+    },
+
+    onEditorBlur() {// implement your code
+    },
+
+    onEditorChange() {// implement your code
+    },
+
+    onEditorStateChange() {// implement your code
+    }
+
+  }
 });
 
 /***/ }),
@@ -62,11 +113,16 @@ var render = function() {
     [
       _c("editor", {
         attrs: {
-          initialValue: _vm.editorText,
+          initialValue: _vm.viewerText,
           options: _vm.editorOptions,
-          height: "500px",
-          initialEditType: "wysiwyg",
-          previewStyle: "vertical"
+          height: "500px"
+        },
+        on: {
+          load: _vm.onEditorLoad,
+          focus: _vm.onEditorFocus,
+          blur: _vm.onEditorBlur,
+          change: _vm.onEditorChange,
+          stateChange: _vm.onEditorStateChange
         }
       })
     ],

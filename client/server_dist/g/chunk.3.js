@@ -16,28 +16,22 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "test" },
-    [
-      _vm._ssrNode("\n  this is home\n  "),
-      _vm._ssrNode(
-        "<div>",
-        "</div>",
-        [
-          _c("router-link", { attrs: { to: "/counter" } }, [
-            _vm._v("go to counter")
-          ]),
-          _vm._ssrNode(" "),
-          _c("router-link", { attrs: { to: "/markdown" } }, [
-            _vm._v("go to markdown")
-          ])
-        ],
-        2
-      )
-    ],
-    2
-  )
+  return _c("div", { staticClass: "home" }, [
+    _vm._ssrNode(
+      "<div>",
+      "</div>",
+      [
+        _c("router-link", { attrs: { to: "/counter" } }, [
+          _vm._v("go to counter")
+        ]),
+        _vm._ssrNode(" "),
+        _c("router-link", { attrs: { to: "/markdown" } }, [
+          _vm._v("go to markdown")
+        ])
+      ],
+      2
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

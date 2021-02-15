@@ -4,7 +4,6 @@ import App from './App.vue';
 import { createRouter } from './router'
 import { createStore } from './store'
 import axios from 'axios';
-
 export function createApp (context) {
   const store = createStore(context);
   const router = createRouter();
