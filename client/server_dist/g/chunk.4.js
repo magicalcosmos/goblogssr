@@ -21,8 +21,8 @@ var render = function() {
       "<div>",
       "</div>",
       [
-        _c("router-link", { attrs: { to: "/login" } }, [
-          _vm._v(_vm._s(_vm.$t("login.name")))
+        _c("router-link", { attrs: { to: "/admin/login" } }, [
+          _vm._v(_vm._s(_vm.$t("button.login")))
         ]),
         _vm._ssrNode(" "),
         _c("router-link", { attrs: { to: "/details" } }, [

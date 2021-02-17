@@ -10,8 +10,8 @@ export function createRouter () {
             {path: '/', component: () => import('../views/Home')},
             {path: '/:id/details', component: () => import('../views/Details')},
             {path: '/counter', component: () => import('../views/Counter')},
-            {path: '/markdown', component: () => import('../views/MarkDown')},
-            {path: '/login', component: () => import('../views/Login')}
+            {path: '/admin/posts', component: () => import('../views/admin/Posts')},
+            {path: '/admin/login', component: () => import('../views/admin/Login')}
         ]
     });
 }
