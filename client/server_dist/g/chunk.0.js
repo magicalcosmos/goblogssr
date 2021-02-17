@@ -48,10 +48,10 @@ __webpack_require__.r(__webpack_exports__);
      */
     handleSubmit() {
       // this.$router.push('/admin/posts');
-      const userName = this.$refs.refUserName.value;
+      const username = this.$refs.refUserName.value;
       const password = this.$refs.refPassword.value;
       _api__WEBPACK_IMPORTED_MODULE_0__["Login"].login({
-        userName,
+        username,
         password
       }).then(() => {
         this.$router.push('/admin/posts');
@@ -110,10 +110,12 @@ const Login = {
    * @param {*} params 
    */
   login(params) {
-    debugger;
-    return _utils_ajax__WEBPACK_IMPORTED_MODULE_0__["default"].mutation(`
-      UserLogin {
-        
+    params.apiName = 'createUser';
+    return _utils_ajax__WEBPACK_IMPORTED_MODULE_0__["default"].mutation(params, `
+      ${params.apiName}(input:{username: "${params.username}", password: "${params.password}"}) {
+        id,
+        username,
+        password
       }
     `);
   }
@@ -197,30 +199,37 @@ const Ajax = {
   /**
    * 公用
    * @param {*} type 
+   * @param {*} apiName 
    * @param {*} graphQL 
    */
-  common(type, graphQL) {
+  common(type, params, graphQL) {
     return axios__WEBPACK_IMPORTED_MODULE_0___default()({
       url: _env_local__WEBPACK_IMPORTED_MODULE_1__["default"].API_BASE,
       method: 'post',
-      query: `${type}{${graphQL}}`
+      data: {
+        operationName: params.apiName,
+        variables: {},
+        query: `${type} ${params.apiName} { ${graphQL} }`
+      }
     });
   },
 
   /**
    * 查询
+   * @param {*} params 
    * @param {*} graphQL 
    */
-  query(graphQL) {
-    this.common('query', graphQL);
+  query(params, graphQL) {
+    return this.common('query', graphQL);
   },
 
   /**
    * 持久化
+   * @param {*} params 
    * @param {*} graphQL 
    */
-  mutation(graphQL) {
-    this.common('mutation', graphQL);
+  mutation(params, graphQL) {
+    return this.common('mutation', params, graphQL);
   }
 
 };
