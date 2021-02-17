@@ -1,8 +1,11 @@
 import Vue from 'vue';
+import './theme/index.scss'; // global css
 import App from './App.vue';
 import { createRouter } from './router'
 import { createStore } from './store'
 import axios from 'axios';
+import i18n from '@/i18n';
+
 
 export function createApp (context) {
   const store = createStore(context);
@@ -16,6 +19,7 @@ export function createApp (context) {
   axios.defaults.baseURL = API_BASE_URL;
 
   const app = new Vue({
+      i18n,
       router,
       store,
       render: h => h(App)

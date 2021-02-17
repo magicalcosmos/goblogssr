@@ -8,7 +8,10 @@ export function createRouter () {
         mode: 'history',
         routes: [
             {path: '/', component: () => import('../views/Home')},
-            {path: '/counter', component: () => import('../views/Counter')}
+            {path: '/:id/details', component: () => import('../views/Details')},
+            {path: '/counter', component: () => import('../views/Counter')},
+            {path: '/admin/posts', component: () => import('../views/admin/Posts')},
+            {path: '/admin/login', component: () => import('../views/admin/Login')}
         ]
     });
 }

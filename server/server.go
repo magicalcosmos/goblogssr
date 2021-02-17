@@ -26,6 +26,7 @@ import (
 	"github.com/magicalcosmos/goblogssr/common/tlog"
 	"github.com/magicalcosmos/goblogssr/common/util"
 	"github.com/magicalcosmos/goblogssr/conf"
+	graphRoute "github.com/magicalcosmos/goblogssr/graph/router"
 	v8 "github.com/magicalcosmos/goblogssr/v8"
 
 	"github.com/facebookgo/grace/gracehttp"
@@ -99,21 +100,23 @@ func NewServer(c *conf.Config) error {
 	ThisServer.V8Mgr = v8mgr
 
 	handler := getHTTPHandler(c)
-	fmt.Println(util.FormatFullTime(time.Now()), "running ...")
+	fmt.Printf("[%s] Server is listenning on %s", util.FormatFullTime(time.Now()), c.Host)
 	return gracehttp.Serve(&http.Server{Addr: c.Host, Handler: handler})
 }
 
 func getHTTPHandler(c *conf.Config) http.Handler {
 	gin.SetMode(gin.ReleaseMode)
-	e := gin.New()
+	router := gin.New()
+
+	graphRoute.Init(router)
 
 	localStaticPath := ThisServer.ClientPath + DIST_DIR_WWW
-	e.Use(GetStaticAndProxyHandler(c.StaticURLPath, localStaticPath))
-	e.StaticFile("/favicon.ico", localStaticPath+"/favicon.ico")
-	e.LoadHTMLGlob(c.ClientPath + DIST_DIR_SERVER + "/template/*")
+	router.Use(GetStaticAndProxyHandler(c.StaticURLPath, localStaticPath))
+	router.StaticFile("/favicon.ico", localStaticPath+"/favicon.ico")
+	router.LoadHTMLGlob(c.ClientPath + DIST_DIR_SERVER + "/template/*")
 
-	e.NoRoute(HandleSsrRequest)
-	return e
+	router.NoRoute(HandleSsrRequest)
+	return router
 }
 
 func getClientPath(clientPath string) string {
