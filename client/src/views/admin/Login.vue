@@ -21,10 +21,10 @@
        */
       handleSubmit() {
         // this.$router.push('/admin/posts');
-        const userName = this.$refs.refUserName.value;
+        const username = this.$refs.refUserName.value;
         const password = this.$refs.refPassword.value;
         Login.login({
-          userName,
+          username,
           password
         }).then(() => {
           this.$router.push('/admin/posts');

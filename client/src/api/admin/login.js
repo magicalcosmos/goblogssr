@@ -5,10 +5,12 @@ const Login = {
    * @param {*} params 
    */
   login(params) {
-    debugger;
-    return ajax.mutation(`
-      UserLogin {
-        
+    params.apiName = 'createUser';
+    return ajax.mutation(params, `
+      ${params.apiName}(input:{username: "${params.username}", password: "${params.password}"}) {
+        id,
+        username,
+        password
       }
     `);
   }
