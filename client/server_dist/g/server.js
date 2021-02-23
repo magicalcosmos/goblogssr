@@ -27611,19 +27611,19 @@ function createRouter() {
     mode: 'history',
     routes: [{
       path: '/',
-      component: () => __webpack_require__.e(/*! import() */ 4).then(__webpack_require__.bind(null, /*! ../views/Home */ "./src/views/Home.vue"))
+      component: () => __webpack_require__.e(/*! import() */ 5).then(__webpack_require__.bind(null, /*! ../views/Home */ "./src/views/Home.vue"))
     }, {
       path: '/:id/details',
-      component: () => __webpack_require__.e(/*! import() */ 5).then(__webpack_require__.bind(null, /*! ../views/Details */ "./src/views/Details.vue"))
+      component: () => __webpack_require__.e(/*! import() */ 3).then(__webpack_require__.bind(null, /*! ../views/Details */ "./src/views/Details.vue"))
     }, {
       path: '/counter',
       component: () => __webpack_require__.e(/*! import() */ 1).then(__webpack_require__.bind(null, /*! ../views/Counter */ "./src/views/Counter.vue"))
     }, {
       path: '/admin/posts',
-      component: () => Promise.all(/*! import() */[__webpack_require__.e(3), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ../views/admin/Posts */ "./src/views/admin/Posts.vue"))
+      component: () => Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(4)]).then(__webpack_require__.bind(null, /*! ../views/admin/Posts */ "./src/views/admin/Posts.vue"))
     }, {
       path: '/admin/login',
-      component: () => __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ../views/admin/Login */ "./src/views/admin/Login.vue"))
+      component: () => __webpack_require__.e(/*! import() */ 2).then(__webpack_require__.bind(null, /*! ../views/admin/Login */ "./src/views/admin/Login.vue"))
     }]
   });
 }
