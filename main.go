@@ -23,9 +23,14 @@ import (
 	"github.com/magicalcosmos/goblogssr/common/tlog"
 	"github.com/magicalcosmos/goblogssr/common/util"
 	"github.com/magicalcosmos/goblogssr/conf"
+	db "github.com/magicalcosmos/goblogssr/graph/db"
 	logic "github.com/magicalcosmos/goblogssr/server"
 )
 
+func init() {
+	// initialize database
+	db.Init()
+}
 func main() {
 	var c conf.Config
 	if !util.ParseConfig("./conf/goblogssr-dev.toml", &c) {

@@ -6,6 +6,8 @@ type User {
   id: ID!
   username: String!
   password: String!
+  email: String!
+  status: Int!
 }
 
 type Query {
@@ -17,5 +19,6 @@ input NewUser {
   password: String!
 }
 type Mutation {
+  login(input: NewUser!): Boolean!
   createUser(input: NewUser!): User!
 }

@@ -100,7 +100,7 @@ func NewServer(c *conf.Config) error {
 	ThisServer.V8Mgr = v8mgr
 
 	handler := getHTTPHandler(c)
-	fmt.Printf("[%s] Server is listenning on %s", util.FormatFullTime(time.Now()), c.Host)
+	fmt.Printf("[%s] Server is listenning on %s \n", util.FormatFullTime(time.Now()), c.Host)
 	return gracehttp.Serve(&http.Server{Addr: c.Host, Handler: handler})
 }
 

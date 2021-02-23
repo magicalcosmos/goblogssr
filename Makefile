@@ -10,7 +10,8 @@ build:
 
 gql:
 	go generate ./...
-
+gqlgen:
+	go run github.com/99designs/gqlgen generate.
 gotest:
 	go test -v ./v8worker
 
