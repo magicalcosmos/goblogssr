@@ -6,11 +6,12 @@ package service
 import (
 	"context"
 	"fmt"
+	"math/rand"
+
+	"github.com/magicalcosmos/goblogssr/graph/dao"
 
 	"github.com/magicalcosmos/goblogssr/graph"
-	"github.com/magicalcosmos/goblogssr/graph/dao"
 	"github.com/magicalcosmos/goblogssr/graph/model"
-	"math/rand"
 )
 
 func (r *mutationResolver) Login(ctx context.Context, input model.NewUser) (bool, error) {

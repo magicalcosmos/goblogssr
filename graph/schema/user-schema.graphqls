@@ -1,13 +1,13 @@
 # GraphQL schema example
 #
 # https://gqlgen.com/getting-started/
-
+scalar Time
 type User {
   id: ID!
   username: String!
-  password: String!
   email: String!
   status: Int!
+  created: Time!
 }
 
 type Query {
