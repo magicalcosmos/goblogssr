@@ -1,4 +1,4 @@
-import ajax from '@/utils/ajax';
+import { Ajax } from '@/utils';
 const Posts = {
   /**
    * query posts
@@ -12,7 +12,7 @@ const Posts = {
    * @param {*} params 
    */
   save(params) {
-    return ajax.mutation(`
+    return Ajax.mutation(`
       create user {
         
       }

@@ -10,15 +10,7 @@ type User {
   created: Time!
 }
 
-type Query {
-  users: [User!]!
-}
-
 input NewUser {
   username: String!
   password: String!
-}
-type Mutation {
-  login(input: NewUser!): Boolean!
-  createUser(input: NewUser!): User!
 }

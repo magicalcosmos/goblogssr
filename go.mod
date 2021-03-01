@@ -15,7 +15,10 @@ require (
 	github.com/facebookgo/subset v0.0.0-20200203212716-c811ad88dec4 // indirect
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/google/uuid v1.2.0 // indirect
 	github.com/jmoiron/sqlx v1.3.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/vektah/gqlparser/v2 v2.1.0
+	gorm.io/driver/mysql v1.0.4 // indirect
+	gorm.io/gorm v1.20.12 // indirect
 )

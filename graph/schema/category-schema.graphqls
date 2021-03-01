@@ -1,0 +1,12 @@
+type Category {
+  id: ID!
+  name: String!
+  pid: ID!
+  sort: Int!
+  status: Int!
+}
+
+input NewCategory {
+  id: ID
+  name: String
+}

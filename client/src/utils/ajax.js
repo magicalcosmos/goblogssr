@@ -3,18 +3,17 @@ import ENV from '../../env/local';
 const Ajax = {
   /**
    * 公用
-   * @param {*} type 
-   * @param {*} apiName 
-   * @param {*} graphQL 
+   * @param {*} params
+   * @param {*} graphQL  return struct
    */
-  common(type, params, graphQL) {
+  common(params, graphQL) {
     return axios({
       url: ENV.API_BASE,
       method: 'post',
       data: {
         operationName: params.apiName,
-        variables: {},
-        query: `${type} ${params.apiName} { ${graphQL} }`
+        variables: params.variables || {},
+        query: graphQL
       },
     });
   },
@@ -24,7 +23,7 @@ const Ajax = {
    * @param {*} graphQL 
    */
   query(params, graphQL) {
-    return this.common('query', graphQL);
+    return this.common(params, graphQL);
   },
   /**
    * 持久化
@@ -32,7 +31,7 @@ const Ajax = {
    * @param {*} graphQL 
    */
   mutation(params, graphQL) {
-    return this.common('mutation', params, graphQL);
+    return this.common(params, graphQL);
   }
   
 };
