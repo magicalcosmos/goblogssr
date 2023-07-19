@@ -1,14 +1,14 @@
-var path = require('path')
-var merge = require('webpack-merge')
-var baseWebpackConfig = require('./webpack.base.config.js')
+const path = require('path')
+const { merge } = require('webpack-merge');
+const baseWebpackConfig = require('./webpack.base.config.js')
 
-var webpackConfig = merge(baseWebpackConfig, {
+const webpackConfig = merge(baseWebpackConfig, {
   target: 'node',
   entry: {
     app: './src/server.js'
   },
   output: {
-    path: path.resolve(__dirname, './server_dist/g'),
+    path: path.resolve(__dirname, './dist_server/g'),
     filename: 'server.js',
     chunkFilename: 'chunk.[name].js',
     libraryTarget: 'commonjs2'
@@ -24,5 +24,5 @@ var webpackConfig = merge(baseWebpackConfig, {
       },
     ]
   },
-})
-module.exports = webpackConfig
+});
+module.exports = webpackConfig;

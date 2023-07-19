@@ -1,12 +1,13 @@
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const ProgressBarPlugin  = require('progress-bar-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const HappyPack=require('happypack')
+const autoprefixer = require('autoprefixer');
+const pxtorem = require('postcss-pxtorem');
 
-const isProd = process.env.NODE_ENV === 'production'
+const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
   mode: isProd ? 'production' : 'development',
@@ -27,7 +28,9 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use:'happypack/loader?id=js'
+        use:[
+          {loader: 'babel-loader'}
+        ]
       },
       {
         test: /\.css$/,
@@ -41,15 +44,38 @@ module.exports = {
         use:[
           'vue-style-loader',
           'css-loader',
-          'sass-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions:{
+                plugins: [
+                  autoprefixer({}),
+                  pxtorem({
+                    rootValue: 75,
+                    unitPrecision: 8,
+                    propList: ['*'],
+                    selectorBlackList: ['.norem'],
+                    replace: true,
+                    mediaQuery: false,
+                    minPixelValue: 1
+                  }),
+                ],
+              }
+            }
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+            },
+          },
         ]
       },
       {
         test: /\.(png|jpg|gif|svg|ttf|woff2|woff|eot)$/,
         loader: 'url-loader',
         options: {
-          limit: 10000, //10k以内的打成base64
-          name: 'img/[name].[ext]?[hash:9]'
+          limit: 10000, // encode base64 within 10K
+          name: 'img/[name].[hash:9].[ext]'
         }
       },
     ],
@@ -63,12 +89,8 @@ module.exports = {
     }),
     new ProgressBarPlugin({
       format: 'build [:bar] :percent (:elapsed seconds)',
-      clear: false, 
+      clear: false,
       width: 60
-    }),
-    new HappyPack({
-      id:'js',
-      loaders:['babel-loader'],
     }),
   ],
   resolve: {
@@ -89,17 +111,13 @@ module.exports = {
     hints: false
   },
   devtool: 'eval-source-map',
-}
+};
 
 if (isProd) {
   module.exports.optimization = {
     minimize: true,
-    minimizer: [new TerserPlugin()],
-  }
+    minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
+  };
 
-  module.exports.plugins = (module.exports.plugins || []).concat([
-    new OptimizeCSSPlugin(),
-  ])
-
-  module.exports.devtool = 'cheap-source-map'
+  module.exports.devtool = 'cheap-source-map';
 }
