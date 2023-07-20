@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import VueI18n from 'vue-i18n';
+import * as VueI18n from 'vue-i18n';
 import zhLocal from './zh-CN.js';
 import enLocal from './en-US.js';
 import jaLocal from './ja-JP.js';
@@ -17,13 +17,15 @@ const messages = {
     ...jaLocal
   }
 };
-Vue.use(VueI18n);
 
 const lang = getLang() ? getLang() : getTimezoneName();
-const i18n = new VueI18n({
-  locale: getLang() || 'zh-CN',
+const i18n = VueI18n.createI18n({
+  locale: lang || 'zh-CN',
   fallbackLocale: 'zh-CN',
   messages
 });
+
+Vue.use(i18n);
+
 export default i18n;
 

@@ -7,6 +7,11 @@ const M = {
     name: '首页',
     read_all: '阅读全文'
   },
+  backend: {
+    name: '后台首页',
+    category: '分类目录',
+    article: '文章'
+  },
   details: {
     name: '详情'
   },

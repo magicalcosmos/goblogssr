@@ -1,11 +1,11 @@
-// Copyright 2021 brodyliao@gmail.com
-
+// Copyright 2020-present, lizc2003@gmail.com
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,9 @@ package v8
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/magicalcosmos/goblogssr/alarm"
+	"github.com/magicalcosmos/goblogssr/common/tlog"
+	"github.com/magicalcosmos/goblogssr/v8worker"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -24,9 +27,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/magicalcosmos/goblogssr/common/tlog"
-	"github.com/magicalcosmos/goblogssr/v8worker"
 )
 
 type xmlHttpReq struct {
@@ -49,13 +49,12 @@ type xmlHttpEvent struct {
 	Response string            `json:"response,omitempty"`
 }
 
-// Reset reset
-func (that *xmlHttpEvent) Reset() {
-	that.Event = ""
-	that.Error = ""
-	that.Status = 0
-	that.Headers = nil
-	that.Response = ""
+func (this *xmlHttpEvent) Reset() {
+	this.Event = ""
+	this.Error = ""
+	this.Status = 0
+	this.Headers = nil
+	this.Response = ""
 }
 
 func processXMLHttpRequestCmd(w *v8worker.Worker, msg string) string {
@@ -104,7 +103,6 @@ type xmlHttpRequestMgr struct {
 	maxId           int
 }
 
-// NewXmlHttpRequestMgr new xml http request management
 func NewXmlHttpRequestMgr(maxCount int, internalApiHost string, internalApiIp string, internalApiPort int32) *xmlHttpRequestMgr {
 	queue := make(chan *xmlHttpReq, maxCount*2)
 	reqs := make(map[int]*xmlHttpReq)
@@ -125,38 +123,38 @@ func NewXmlHttpRequestMgr(maxCount int, internalApiHost string, internalApiIp st
 	return that
 }
 
-func (that *xmlHttpRequestMgr) open(req *xmlHttpReq) int {
-	if len(that.internalApiIp) > 0 {
+func (this *xmlHttpRequestMgr) open(req *xmlHttpReq) int {
+	if len(this.internalApiIp) > 0 {
 		pos := strings.Index(req.Url, "://")
 		if pos > 0 {
 			req.Url = req.Url[pos+3:]
 			pos = strings.Index(req.Url, "/")
 			req.Url = req.Url[pos:]
 		}
-		req.Url = fmt.Sprintf("http://%s:%d%s", that.internalApiIp, that.internalApiPort, req.Url)
+		req.Url = fmt.Sprintf("http://%s:%d%s", this.internalApiIp, this.internalApiPort, req.Url)
 	}
 
-	that.mutex.Lock()
-	that.maxId++
-	req.HttpId = that.maxId
-	that.reqs[req.HttpId] = req
-	that.mutex.Unlock()
+	this.mutex.Lock()
+	this.maxId++
+	req.HttpId = this.maxId
+	this.reqs[req.HttpId] = req
+	this.mutex.Unlock()
 
 	beginTime := time.Now()
-	that.queue <- req
+	this.queue <- req
 	tlog.Infof("xhr request %d: %s, wait time: %v", req.HttpId, req.Url, time.Since(beginTime))
 	return req.HttpId
 }
 
-func (that *xmlHttpRequestMgr) abort(httpId int) {
-	that.mutex.Lock()
-	if req, ok := that.reqs[httpId]; ok {
+func (this *xmlHttpRequestMgr) abort(httpId int) {
+	this.mutex.Lock()
+	if req, ok := this.reqs[httpId]; ok {
 		req.Aborted = true
 	}
-	that.mutex.Unlock()
+	this.mutex.Unlock()
 }
 
-func (that *xmlHttpRequestMgr) performRequest(req *xmlHttpReq) {
+func (this *xmlHttpRequestMgr) performRequest(req *xmlHttpReq) {
 	worker := req.Worker
 	evt := xmlHttpEvent{HttpId: req.HttpId}
 	if req.Aborted {
@@ -188,8 +186,8 @@ func (that *xmlHttpRequestMgr) performRequest(req *xmlHttpReq) {
 		sendHttpErrorEvent(worker, &evt, err)
 		return
 	}
-	if len(that.internalApiHost) > 0 {
-		request.Host = that.internalApiHost
+	if len(this.internalApiHost) > 0 {
+		request.Host = this.internalApiHost
 	}
 	for k, v := range req.Headers {
 		if k == "SSR-Ctx" {
@@ -216,7 +214,7 @@ func (that *xmlHttpRequestMgr) performRequest(req *xmlHttpReq) {
 		return
 	}
 
-	resp, err := that.httpClient.Do(request)
+	resp, err := this.httpClient.Do(request)
 	if req.Aborted {
 		evt.Event = "onfinish"
 		sendHttpEvent(worker, &evt)
@@ -262,6 +260,7 @@ func (that *xmlHttpRequestMgr) performRequest(req *xmlHttpReq) {
 
 func sendHttpErrorEvent(w *v8worker.Worker, evt *xmlHttpEvent, err error) {
 	tlog.Error(err)
+	go alarm.SendMessage(err.Error())
 
 	evt.Event = "onerror"
 	evt.Error = err.Error()

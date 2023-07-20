@@ -1,11 +1,11 @@
-// Copyright 2021 brodyliao@gmail.com
-
+// Copyright 2020-present, lizc2003@gmail.com
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,12 +18,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/magicalcosmos/goblogssr/common/tlog"
+	"github.com/magicalcosmos/goblogssr/v8worker"
 	"io/ioutil"
 	"path"
 	"strings"
-
-	"github.com/magicalcosmos/goblogssr/common/tlog"
-	"github.com/magicalcosmos/goblogssr/v8worker"
 )
 
 var gJsPaths []string
@@ -54,13 +53,19 @@ func (m *v8module) load() {
 	if len(gJsPaths) == 0 {
 		err = errors.New("js paths not inited")
 	} else {
+		var firstErr error
 		for _, path := range gJsPaths {
 			filename := path + jsId
 			content, err = ioutil.ReadFile(filename)
 			if err == nil {
 				m.Filename = filename
 				break
+			} else if firstErr == nil {
+				firstErr = err
 			}
+		}
+		if err != nil {
+			err = firstErr
 		}
 	}
 

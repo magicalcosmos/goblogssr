@@ -1,0 +1,17 @@
+.category {
+  margin: 10px;
+  .category-item {
+    text-align: right;
+    width: 300px;
+  }
+  input {
+    border: 1px solid #333;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  button {
+    border: 1px solid #333;
+    border-radius: 5px;
+  }
+
+}
