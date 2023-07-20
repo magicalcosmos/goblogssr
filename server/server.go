@@ -1,11 +1,11 @@
-// Copyright 2021 brodyliao@gmail.com
-
+// Copyright 2020-present, lizc2003@gmail.com
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,48 +17,67 @@ package server
 import (
 	"errors"
 	"fmt"
+	"github.com/magicalcosmos/goblogssr/alarm"
+	"github.com/magicalcosmos/goblogssr/common/tlog"
+	"github.com/magicalcosmos/goblogssr/common/util"
+	v8 "github.com/magicalcosmos/goblogssr/v8"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
-
-	"github.com/magicalcosmos/goblogssr/common/tlog"
-	"github.com/magicalcosmos/goblogssr/common/util"
-	"github.com/magicalcosmos/goblogssr/conf"
-	graphRoute "github.com/magicalcosmos/goblogssr/graph/router"
-	v8 "github.com/magicalcosmos/goblogssr/v8"
-
-	"github.com/facebookgo/grace/gracehttp"
-	"github.com/gin-gonic/gin"
 )
 
 const (
-	DIST_DIR_WWW    = "public"
-	DIST_DIR_SERVER = "server_dist"
+	DIST_DIR_WWW    = "dist"
+	DIST_DIR_SERVER = "dist_server"
 )
 
-// Server server
+type Config struct {
+	Host            string        `toml:"host"`
+	Log             tlog.Config   `toml:"Log"`
+	Env             string        `toml:"env"`
+	V8MaxCount      int32         `toml:"v8_maxcount"`
+	V8LifeTime      int           `toml:"v8_lifetime"`
+	JsProjectPath   string        `toml:"js_project_path"`
+	ClientPath      string        `toml:"client_path"`
+	StaticUrlPath   string        `toml:"static_url_path"`
+	InternalApiHost string        `toml:"internal_api_host"`
+	InternalApiIp   string        `toml:"internal_api_ip"`
+	InternalApiPort int32         `toml:"internal_api_port"`
+	IsApiDelegate   bool          `toml:"is_api_delegate"`
+	TemplateName    string        `toml:"template_name"`
+	ClientCookie    string        `toml:"client_cookie"`
+	RedirectOnerror string        `toml:"redirect_onerror"`
+	SsrCtx          []string      `toml:"ssr_ctx"`
+	TemplateVars    []TemplateVar `toml:"template_vars"`
+	AlarmUrl        string        `toml:"alarm_url"`
+	AlarmSecret     string        `toml:"alarm_secret"`
+}
+
+type TemplateVar struct {
+	Key  string `toml:"key"`
+	Type string `toml:"type"`
+}
+
 type Server struct {
-	RequestMgr      *RequestMgr
+	RequstMgr       *RequestMgr
 	V8Mgr           *v8.V8Mgr
 	HostPort        int
-	ClientPath      string
+	JsProjectPath   string
 	Env             string
-	IsAPIDelegate   bool
+	IsApiDelegate   bool
 	ClientCookie    string
 	RedirectOnerror string
 	SsrTemplate     string
 	SsrCtx          []string
 	TemplateVars    map[string]string
-	TemplateURLEnv  string
+	TemplateUrlEnv  string
 }
 
-// ThisServer this server
 var ThisServer *Server
 
-// NewServer new server
-func NewServer(c *conf.Config) error {
+func NewServer(c *Config) error {
 	templateVars := map[string]string{"State": "js"}
 	for _, v := range c.TemplateVars {
 		if _, ok := templateVars[v.Key]; !ok {
@@ -66,29 +85,31 @@ func NewServer(c *conf.Config) error {
 		}
 	}
 
-	clientPath := getClientPath(c.ClientPath)
-	if clientPath == "" {
-		return errors.New("Error: the path of js project is empty")
+	jsProjectPath := getJsProjectPath(c.JsProjectPath)
+	if jsProjectPath == "" {
+		return errors.New("Error: the path of js project is empty.")
 	}
-	c.ClientPath = clientPath
+	c.JsProjectPath = jsProjectPath
 
 	tmp := strings.Index(c.Host, ":")
 	hostPort := int(util.StringToInt64(c.Host[tmp+1:], 0))
 
-	if c.InternalAPIPort == 0 {
-		c.InternalAPIPort = 80
+	if c.InternalApiPort == 0 {
+		c.InternalApiPort = 80
 	}
 
+	alarm.InitAlarm(c.Env, c.AlarmUrl, c.AlarmSecret)
+
 	ThisServer = &Server{
-		RequestMgr:      NewRequestMgr(),
+		RequstMgr:       NewRequestMgr(),
 		HostPort:        hostPort,
-		ClientPath:      c.ClientPath,
+		JsProjectPath:   c.JsProjectPath,
 		SsrTemplate:     c.TemplateName,
 		ClientCookie:    c.ClientCookie,
 		RedirectOnerror: c.RedirectOnerror,
 		Env:             c.Env,
 		SsrCtx:          c.SsrCtx,
-		IsAPIDelegate:   c.IsAPIDelegate,
+		IsApiDelegate:   c.IsApiDelegate,
 		TemplateVars:    templateVars,
 	}
 
@@ -99,56 +120,49 @@ func NewServer(c *conf.Config) error {
 	}
 	ThisServer.V8Mgr = v8mgr
 
-	handler := getHTTPHandler(c)
-	fmt.Printf("[%s] Server is listenning on %s \n", util.FormatFullTime(time.Now()), c.Host)
-	return gracehttp.Serve(&http.Server{Addr: c.Host, Handler: handler})
+	handler := getHttpHandler(c)
+	fmt.Println(util.FormatFullTime(time.Now()), "running ...")
+	return util.GraceHttpServe(c.Host, handler)
 }
 
-func getHTTPHandler(c *conf.Config) http.Handler {
-	gin.SetMode(gin.ReleaseMode)
-	router := gin.New()
+func getHttpHandler(c *Config) http.Handler {
+	e := util.NewGinEngine()
 
-	graphRoute.Init(router)
+	localStaticPath := ThisServer.JsProjectPath + DIST_DIR_WWW
+	e.Use(GetStaticAndProxyHandler(c.StaticUrlPath, localStaticPath))
+	e.StaticFile("/favicon.ico", localStaticPath+"/favicon.ico")
+	e.LoadHTMLGlob(c.JsProjectPath + DIST_DIR_SERVER + "/template/*")
 
-	localStaticPath := ThisServer.ClientPath + DIST_DIR_WWW
-	router.Use(GetStaticAndProxyHandler(c.StaticURLPath, localStaticPath))
-	router.StaticFile("/favicon.ico", localStaticPath+"/favicon.ico")
-	router.LoadHTMLGlob(c.ClientPath + DIST_DIR_SERVER + "/template/*")
-
-	router.NoRoute(HandleSsrRequest)
-	return router
+	e.NoRoute(HandleSsrRequest)
+	return e
 }
 
-func getClientPath(clientPath string) string {
-	if clientPath == "" {
+func getJsProjectPath(jsProjectPath string) string {
+	if jsProjectPath == "" {
 		return ""
 	}
-	if clientPath[0] != '/' {
+	if jsProjectPath[0] != '/' {
 		basepath, err := filepath.Abs(filepath.Dir(os.Args[0]))
 		if err != nil {
 			return ""
 		}
-		clientPath = basepath + "/" + clientPath
+		jsProjectPath = basepath + "/" + jsProjectPath
 	}
-	if clientPath[len(clientPath)-1] != '/' {
-		clientPath += "/"
+	if jsProjectPath[len(jsProjectPath)-1] != '/' {
+		jsProjectPath += "/"
 	}
-	return clientPath
+	return jsProjectPath
 }
 
-func newV8Mgr(c *conf.Config) (*v8.V8Mgr, error) {
-	serverPath := c.ClientPath + DIST_DIR_SERVER + "/"
+func newV8Mgr(c *Config) (*v8.V8Mgr, error) {
+	serverPath := c.JsProjectPath + DIST_DIR_SERVER + "/"
 	serverPathMain := serverPath + "g/"
-	vuePath := c.ClientPath + "node_modules/"
+	vuePath := c.JsProjectPath + "node_modules/"
 
 	v8Conf := v8.V8MgrConfig{
-		JsPaths:         []string{serverPathMain, serverPath, vuePath},
-		SendCallback:    v8SendCallback,
-		Env:             c.Env,
-		MaxWorkerCount:  c.V8MaxCount,
-		WorkerLifeTime:  c.V8LifeTime,
-		InternalApiHost: c.InternalAPIHost,
-		InternalApiIp:   c.InternalAPIIp,
-		InternalApiPort: c.InternalAPIPort}
+		JsPaths:      []string{serverPathMain, serverPath, vuePath},
+		SendCallback: v8SendCallback,
+		Env:          c.Env, MaxWorkerCount: c.V8MaxCount, WorkerLifeTime: c.V8LifeTime,
+		InternalApiHost: c.InternalApiHost, InternalApiIp: c.InternalApiIp, InternalApiPort: c.InternalApiPort}
 	return v8.NewV8Mgr(&v8Conf)
 }

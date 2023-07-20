@@ -1,11 +1,11 @@
-// Copyright 2021 brodyliao@gmail.com
-
+// Copyright 2020-present, lizc2003@gmail.com
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,16 +15,20 @@
 package v8
 
 import (
+	"errors"
 	"fmt"
-	"sync/atomic"
-	"time"
-
+	"github.com/magicalcosmos/goblogssr/alarm"
 	"github.com/magicalcosmos/goblogssr/common/tlog"
 	"github.com/magicalcosmos/goblogssr/v8worker"
+	"os"
+	"sync/atomic"
+	"time"
 )
 
 const (
 	DELETE_DALAY_TIME = 2 * time.Minute
+	V8_REQ_TIMEOUT    = 8 // seconds
+	V8_EXIT_THRESHOLD = 1000
 )
 
 type V8SendCallback func(msgType int, msg string, userdata int64)
@@ -48,12 +52,11 @@ type V8Mgr struct {
 	workerLifeTime     int64
 	maxWorkerCount     int32
 	currentWorkerCount int32
+	unavailableCount   int32
 }
 
-// TheV8Mgr the v8 manager
 var TheV8Mgr *V8Mgr
 
-// NewV8Mgr new v8 manager
 func NewV8Mgr(c *V8MgrConfig) (*V8Mgr, error) {
 	initV8Module(c.JsPaths)
 	initV8NewJs()
@@ -78,46 +81,52 @@ func NewV8Mgr(c *V8MgrConfig) (*V8Mgr, error) {
 	return TheV8Mgr, nil
 }
 
-// Execute executes
-func (that *V8Mgr) Execute(name string, code string) error {
-	w := that.acquireWorker()
+func (this *V8Mgr) Execute(name string, code string) (error, bool) {
+	w := this.acquireWorker()
+	if w == nil {
+		err := errors.New("V8 worker not available.")
+		tlog.Error(err)
+		alarm.SendMessage(err.Error())
+		return err, true
+	}
 	err := w.Execute(name, code)
 	if err != nil {
 		tlog.Error(err)
 	}
-	that.releaseWorker(w)
-	return err
+	this.releaseWorker(w)
+	return err, false
 }
 
-// GetInternelApiUrl get internel API url
-func (that *V8Mgr) GetInternelApiUrl() string {
-	if that.httpMgr.internalApiHost != "" {
-		return fmt.Sprintf("http://%s:%d", that.httpMgr.internalApiHost, that.httpMgr.internalApiPort)
+func (this *V8Mgr) GetInternelApiUrl() string {
+	if this.httpMgr.internalApiHost != "" {
+		return fmt.Sprintf("http://%s:%d", this.httpMgr.internalApiHost, this.httpMgr.internalApiPort)
 	}
 	return ""
 }
 
-func (that *V8Mgr) acquireWorker() *v8worker.Worker {
+func (this *V8Mgr) acquireWorker() *v8worker.Worker {
 	var busyWorkers []*v8worker.Worker
+	reqStartTime := time.Now().Unix()
 	for {
 		var ret *v8worker.Worker
 		bEmpty := false
 		select {
-		case worker := <-that.workers:
+		case worker := <-this.workers:
 			if worker.Acquire() {
 				ret = worker
 			} else {
 				busyWorkers = append(busyWorkers, worker)
 			}
 		default:
-			if that.currentWorkerCount < that.maxWorkerCount {
-				worker, err := newV8Worker(that.env)
+			if this.currentWorkerCount < this.maxWorkerCount {
+				atomic.AddInt32(&this.currentWorkerCount, 1)
+				worker, err := newV8Worker(this.env)
 				if err == nil {
-					atomic.AddInt32(&that.currentWorkerCount, 1)
-					worker.SetExpireTime(time.Now().Unix() + that.workerLifeTime)
+					worker.SetExpireTime(time.Now().Unix() + this.workerLifeTime)
 					worker.Acquire()
 					ret = worker
 				} else {
+					atomic.AddInt32(&this.currentWorkerCount, -1)
 					bEmpty = true
 				}
 			} else {
@@ -127,34 +136,45 @@ func (that *V8Mgr) acquireWorker() *v8worker.Worker {
 
 		if ret != nil {
 			for _, w := range busyWorkers {
-				that.workers <- w
+				this.workers <- w
 			}
 			return ret
 		} else if bEmpty {
 			if len(busyWorkers) > 0 {
 				for _, w := range busyWorkers {
-					that.workers <- w
+					this.workers <- w
 				}
 				busyWorkers = busyWorkers[:0]
 			}
 			time.Sleep(10 * time.Millisecond)
 		}
+
+		if time.Now().Unix()-reqStartTime > V8_REQ_TIMEOUT {
+			errCount := atomic.AddInt32(&this.unavailableCount, 1)
+			if errCount == V8_EXIT_THRESHOLD {
+				errMsg := "v8 unavailable too many times, exit!"
+				tlog.Error(errMsg)
+				alarm.SendMessage(errMsg)
+				os.Exit(1)
+			}
+			return nil
+		}
 	}
 }
 
-func (that *V8Mgr) releaseWorker(worker *v8worker.Worker) {
+func (this *V8Mgr) releaseWorker(worker *v8worker.Worker) {
 	if worker != nil {
 		worker.Release()
 
 		if time.Now().Unix() >= worker.GetExpireTime() {
-			atomic.AddInt32(&that.currentWorkerCount, -1)
+			atomic.AddInt32(&this.currentWorkerCount, -1)
 
 			go func(w *v8worker.Worker) {
 				time.Sleep(DELETE_DALAY_TIME)
 				w.Dispose()
 			}(worker)
 		} else {
-			that.workers <- worker
+			this.workers <- worker
 		}
 	}
 }

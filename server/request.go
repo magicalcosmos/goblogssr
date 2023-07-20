@@ -1,35 +1,19 @@
-// Copyright 2021 brodyliao@gmail.com
-
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-
-//     http://www.apache.org/licenses/LICENSE-2.0
-
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package server
 
 import (
 	"encoding/json"
+	"github.com/magialcosmos/goblogssr/common/tlog"
+	"github.com/magialcosmos/goblogssr/common/util"
+	uuid "github.com/satori/go.uuid"
 	"html/template"
 	"math/rand"
 	"net/http"
 	"strconv"
 	"strings"
 
-	"github.com/magicalcosmos/goblogssr/common/tlog"
-	"github.com/magicalcosmos/goblogssr/common/util"
-	uuid "github.com/satori/go.uuid"
-
 	"github.com/gin-gonic/gin"
 )
 
-// HandleSsrRequest handle ssr request
 func HandleSsrRequest(c *gin.Context) {
 	reqURL := c.Request.URL
 	url := reqURL.Path
@@ -40,19 +24,19 @@ func HandleSsrRequest(c *gin.Context) {
 
 	cookie := c.GetHeader("Cookie")
 	if ThisServer.ClientCookie != "" {
-		var clientID string
+		var clientId string
 		cookieName := ThisServer.ClientCookie
 		cookieVal, err := c.Request.Cookie(cookieName)
 		if err == nil && len(cookieVal.Value) > 0 {
-			clientID = cookieVal.Value
+			clientId = cookieVal.Value
 		} else {
-			clientID = generateUUID() + strconv.FormatInt(int64(rand.Int31n(10)), 10)
-			c.SetCookie(cookieName, clientID, 24*3600*365*10,
+			clientId = generateUUID() + strconv.FormatInt(int64(rand.Int31n(10)), 10)
+			c.SetCookie(cookieName, clientId, 24*3600*365*10,
 				"/", util.GetDomainFromHost(c.Request.Host), false, false)
 			if len(cookie) > 0 {
-				cookie = cookieName + "=" + clientID + "; " + cookie
+				cookie = cookieName + "=" + clientId + "; " + cookie
 			} else {
-				cookie = cookieName + "=" + clientID
+				cookie = cookieName + "=" + clientId
 			}
 		}
 	}
@@ -66,23 +50,23 @@ func HandleSsrRequest(c *gin.Context) {
 	}
 
 	tlog.Infof("http request: %s", url)
-	result, bOK := generateSsrResult(url, ssrCtx)
+	result, bOK, bNoV8 := generateSsrResult(url, ssrCtx)
 
-	if !bOK && ThisServer.RedirectOnerror != "" && reqURL.Path != ThisServer.RedirectOnerror {
+	if !bOK && !bNoV8 && ThisServer.RedirectOnerror != "" && reqURL.Path != ThisServer.RedirectOnerror {
 		tlog.Errorf("redirect: %s?%s", reqURL.Path, reqURL.RawQuery)
 		c.Redirect(302, ThisServer.RedirectOnerror)
 		return
 	}
 
-	outputHTML(c, result)
+	outputHtml(c, result)
 }
 
-func outputHTML(c *gin.Context, result SsrResult) {
+func outputHtml(c *gin.Context, result SsrResult) {
 	templName := ThisServer.SsrTemplate
 	templObj := gin.H{
-		"Html":   template.HTML(result.HTML),
-		"Css":    template.HTML(result.CSS),
-		"UrlEnv": template.JS(ThisServer.TemplateURLEnv),
+		"Html":   template.HTML(result.Html),
+		"Css":    template.HTML(result.Css),
+		"UrlEnv": template.JS(ThisServer.TemplateUrlEnv),
 	}
 	for k, v := range result.Meta {
 		if v != "" {
@@ -100,34 +84,36 @@ func outputHTML(c *gin.Context, result SsrResult) {
 	c.HTML(http.StatusOK, templName, templObj)
 }
 
-func generateSsrResult(url string, ssrCtx map[string]string) (SsrResult, bool) {
-	req := ThisServer.RequestMgr.NewRequest()
+func generateSsrResult(url string, ssrCtx map[string]string) (SsrResult, bool, bool) {
+	req := ThisServer.RequstMgr.NewRequest()
 
-	headerJSON, _ := json.Marshal(ssrCtx)
+	ssrCtxJson, _ := json.Marshal(ssrCtx)
+	urlJson, _ := json.Marshal(url)
+
 	var jsCode strings.Builder
-	jsCode.Grow(renderJsLength + len(headerJSON) + len(url) + 30)
+	jsCode.Grow(renderJsLength + len(ssrCtxJson) + len(urlJson) + 28)
 	jsCode.WriteString(renderJsPart1)
 	jsCode.WriteString(`{v8reqId:`)
-	jsCode.WriteString(strconv.FormatInt(req.reqID, 10))
-	jsCode.WriteString(`,url:"`)
-	jsCode.WriteString(url)
-	jsCode.WriteString(`",ssrCtx:`)
-	jsCode.Write(headerJSON)
+	jsCode.WriteString(strconv.FormatInt(req.reqId, 10))
+	jsCode.WriteString(`,url:`)
+	jsCode.Write(urlJson)
+	jsCode.WriteString(`,ssrCtx:`)
+	jsCode.Write(ssrCtxJson)
 	jsCode.WriteString(`}`)
 	jsCode.WriteString(renderJsPart2)
 
 	//fmt.Println(jsCode.String())
 
-	err := ThisServer.V8Mgr.Execute("bundle.js", jsCode.String())
+	err, bNoV8 := ThisServer.V8Mgr.Execute("bundle.js", jsCode.String())
 
 	if err == nil {
 		req.wg.Wait()
 	} else {
-		req.result.HTML = err.Error()
+		req.result.Html = err.Error()
 	}
-	ThisServer.RequestMgr.DestroyRequest(req.reqID)
+	ThisServer.RequstMgr.DestroyRequest(req.reqId)
 
-	return req.result, req.bOK
+	return req.result, req.bOK, bNoV8
 }
 
 func generateUUID() string {
