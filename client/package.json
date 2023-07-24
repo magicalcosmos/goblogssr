@@ -36,7 +36,7 @@
         "mini-css-extract-plugin": "^2.1.0"
     },
     "dependencies": {
-        "@babel/runtime-corejs3": "^7.14.8",
+        "@babel/runtime-corejs3": "^7.22.6",
         "@toast-ui/editor-plugin-chart": "^3.0.1",
         "@toast-ui/editor-plugin-code-syntax-highlight": "^3.1.0",
         "@toast-ui/editor-plugin-color-syntax": "^3.1.0",

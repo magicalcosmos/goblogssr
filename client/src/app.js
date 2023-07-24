@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import './theme/default/index.scss'; // global css
 import App from './App.vue';
 import { createRouter } from './router'
 import { createStore } from './store'

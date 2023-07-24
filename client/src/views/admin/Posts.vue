@@ -49,7 +49,8 @@ export default {
   },
   data() {
     return {
-      editorText: '',
+      language: 'en-US',
+      editorText: 'this value',
       editorOptions: {
         plugins: [chart, [codeSyntaxHighlight, { hljs }], colorSyntax, tableMergedCell, uml]
       }
