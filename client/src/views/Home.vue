@@ -1,8 +1,9 @@
 <template lang="html">
-  <div>
-    this is home
+  <div class="home">
     <div>
-      <router-link to="/counter">go to counter</router-link>
+      <router-link to="/admin/login">{{ $t('button.login')}}</router-link>
+      <router-link to="/details">{{ $t('details.name')}}</router-link>
+      <router-link to="/admin">{{ $t('home.name')}}</router-link>
     </div>
   </div>
 </template>
