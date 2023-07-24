@@ -21,7 +21,7 @@
     computed: {
       ...mapState([
         'count',
-        'xhrResult'
+        'xhrResult',
       ])
     },
     methods: {

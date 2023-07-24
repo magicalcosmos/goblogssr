@@ -18,11 +18,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/magicalcosmos/goblogssr/common/tlog"
-	"github.com/magicalcosmos/goblogssr/v8worker"
 	"io/ioutil"
 	"path"
 	"strings"
+
+	"github.com/magicalcosmos/goblogssr/common/tlog"
+	"github.com/magicalcosmos/goblogssr/v8worker"
 )
 
 var gJsPaths []string

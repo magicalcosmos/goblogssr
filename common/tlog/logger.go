@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"log/syslog"
 	"os"
 	"os/exec"
 	"path"
@@ -18,20 +17,18 @@ var l *Logger
 var mu sync.Mutex
 
 type Logger struct {
-	fileSize  int64
-	fileNum   int
-	fileName  string
-	dir       string
-	host      string
-	debug     bool
-	level     LEVEL
-	byteBuff  bytes.Buffer
-	bytePool  *sync.Pool
-	ch        chan *Msg
-	f         *os.File
-	w         *bufio.Writer
-	useSyslog bool
-	syslogW   *syslog.Writer
+	fileSize int64
+	fileNum  int
+	fileName string
+	dir      string
+	host     string
+	debug    bool
+	level    LEVEL
+	byteBuff bytes.Buffer
+	bytePool *sync.Pool
+	ch       chan *Msg
+	f        *os.File
+	w        *bufio.Writer
 }
 
 type Msg struct {
@@ -60,14 +57,6 @@ func newLogger(config Config) {
 	os.MkdirAll(l.dir, 0755)
 	l.f, _ = os.OpenFile(l.fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	l.w = bufio.NewWriterSize(l.f, 1024*1024)
-
-	if config.UseSyslog {
-		var err error
-		l.syslogW, err = syslog.New(syslog.LOG_LOCAL3|syslog.LOG_INFO, config.SyslogTag)
-		if err == nil {
-			l.useSyslog = true
-		}
-	}
 }
 
 func (l *Logger) run() {
@@ -111,9 +100,6 @@ func (l *Logger) writeLoop() {
 		l.makeLog(a)
 		b := l.byteBuff.Bytes()
 		l.w.Write(b)
-		if l.useSyslog {
-			l.syslogW.Write(b)
-		}
 		l.byteBuff.Reset()
 	}
 }
@@ -138,7 +124,7 @@ func (l *Logger) p(level LEVEL, args ...interface{}) {
 	file, line := getFileNameAndLine()
 	if l == nil || l.debug {
 		mu.Lock()
-		fmt.Printf("[%s] %s %s:%d ", genTime(), levelText[level], file, line)
+		fmt.Printf("%s %s %s:%d ", genTime(), levelText[level], file, line)
 		fmt.Println(args...)
 		mu.Unlock()
 		return
@@ -165,7 +151,7 @@ func (l *Logger) pf(level LEVEL, format string, args ...interface{}) {
 	file, line := getFileNameAndLine()
 	if l == nil || l.debug {
 		mu.Lock()
-		fmt.Printf("[%s] %s %s:%d ", genTime(), levelText[level], file, line)
+		fmt.Printf("%s %s %s:%d ", genTime(), levelText[level], file, line)
 		fmt.Printf(format, args...)
 		fmt.Println()
 		mu.Unlock()
@@ -218,7 +204,7 @@ func genTime() []byte {
 		'2', '0', byte((year%100)/10) + 48, byte(year%10) + 48, '-',
 		byte(month/10) + 48, byte(month%10) + 48, '-', byte(day/10) + 48, byte(day%10) + 48, ' ',
 		byte(hour/10) + 48, byte(hour%10) + 48, ':', byte(minute/10) + 48, byte(minute%10) + 48, ':',
-		byte(second/10) + 48, byte(second%10) + 48}
+		byte(second/10) + 48, byte(second%10) + 48, ' '}
 }
 
 func getFileNameAndLine() (string, int) {

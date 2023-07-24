@@ -1,8 +1,8 @@
-const path = require('path')
+var path = require('path')
 const { merge } = require('webpack-merge');
-const baseWebpackConfig = require('./webpack.base.config.js')
+var baseWebpackConfig = require('./webpack.base.config.js')
 
-const webpackConfig = merge(baseWebpackConfig, {
+var webpackConfig = merge(baseWebpackConfig, {
   target: 'node',
   entry: {
     app: './src/server.js'
@@ -24,5 +24,5 @@ const webpackConfig = merge(baseWebpackConfig, {
       },
     ]
   },
-});
-module.exports = webpackConfig;
+})
+module.exports = webpackConfig

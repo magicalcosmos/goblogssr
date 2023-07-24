@@ -1,8 +1,9 @@
 package alarm
 
 import (
-	"github.com/magicalcosmos/goblogssr/common/util"
 	"strings"
+
+	"github.com/magicalcosmos/goblogssr/common/util"
 )
 
 var gAlarmDingding *util.RobotDingDing

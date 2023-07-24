@@ -17,15 +17,16 @@ package server
 import (
 	"errors"
 	"fmt"
-	"github.com/magicalcosmos/goblogssr/alarm"
-	"github.com/magicalcosmos/goblogssr/common/tlog"
-	"github.com/magicalcosmos/goblogssr/common/util"
-	v8 "github.com/magicalcosmos/goblogssr/v8"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/magicalcosmos/goblogssr/alarm"
+	"github.com/magicalcosmos/goblogssr/common/tlog"
+	"github.com/magicalcosmos/goblogssr/common/util"
+	v8 "github.com/magicalcosmos/goblogssr/v8"
 )
 
 const (
@@ -39,7 +40,6 @@ type Config struct {
 	Env             string        `toml:"env"`
 	V8MaxCount      int32         `toml:"v8_maxcount"`
 	V8LifeTime      int           `toml:"v8_lifetime"`
-	JsProjectPath   string        `toml:"js_project_path"`
 	ClientPath      string        `toml:"client_path"`
 	StaticUrlPath   string        `toml:"static_url_path"`
 	InternalApiHost string        `toml:"internal_api_host"`
@@ -64,7 +64,7 @@ type Server struct {
 	RequstMgr       *RequestMgr
 	V8Mgr           *v8.V8Mgr
 	HostPort        int
-	JsProjectPath   string
+	ClientPath      string
 	Env             string
 	IsApiDelegate   bool
 	ClientCookie    string
@@ -85,11 +85,11 @@ func NewServer(c *Config) error {
 		}
 	}
 
-	jsProjectPath := getJsProjectPath(c.JsProjectPath)
-	if jsProjectPath == "" {
+	clientPath := getClientPath(c.ClientPath)
+	if clientPath == "" {
 		return errors.New("Error: the path of js project is empty.")
 	}
-	c.JsProjectPath = jsProjectPath
+	c.ClientPath = clientPath
 
 	tmp := strings.Index(c.Host, ":")
 	hostPort := int(util.StringToInt64(c.Host[tmp+1:], 0))
@@ -103,7 +103,7 @@ func NewServer(c *Config) error {
 	ThisServer = &Server{
 		RequstMgr:       NewRequestMgr(),
 		HostPort:        hostPort,
-		JsProjectPath:   c.JsProjectPath,
+		ClientPath:      c.ClientPath,
 		SsrTemplate:     c.TemplateName,
 		ClientCookie:    c.ClientCookie,
 		RedirectOnerror: c.RedirectOnerror,
@@ -128,36 +128,36 @@ func NewServer(c *Config) error {
 func getHttpHandler(c *Config) http.Handler {
 	e := util.NewGinEngine()
 
-	localStaticPath := ThisServer.JsProjectPath + DIST_DIR_WWW
+	localStaticPath := ThisServer.ClientPath + DIST_DIR_WWW
 	e.Use(GetStaticAndProxyHandler(c.StaticUrlPath, localStaticPath))
 	e.StaticFile("/favicon.ico", localStaticPath+"/favicon.ico")
-	e.LoadHTMLGlob(c.JsProjectPath + DIST_DIR_SERVER + "/template/*")
+	e.LoadHTMLGlob(c.ClientPath + DIST_DIR_SERVER + "/template/*")
 
 	e.NoRoute(HandleSsrRequest)
 	return e
 }
 
-func getJsProjectPath(jsProjectPath string) string {
-	if jsProjectPath == "" {
+func getClientPath(clientPath string) string {
+	if clientPath == "" {
 		return ""
 	}
-	if jsProjectPath[0] != '/' {
-		basepath, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if clientPath[0] != '/' {
+		basePath, err := filepath.Abs(filepath.Dir(os.Args[0]))
 		if err != nil {
 			return ""
 		}
-		jsProjectPath = basepath + "/" + jsProjectPath
+		clientPath = basePath + "/" + clientPath
 	}
-	if jsProjectPath[len(jsProjectPath)-1] != '/' {
-		jsProjectPath += "/"
+	if clientPath[len(clientPath)-1] != '/' {
+		clientPath += "/"
 	}
-	return jsProjectPath
+	return clientPath
 }
 
 func newV8Mgr(c *Config) (*v8.V8Mgr, error) {
-	serverPath := c.JsProjectPath + DIST_DIR_SERVER + "/"
+	serverPath := c.ClientPath + DIST_DIR_SERVER + "/"
 	serverPathMain := serverPath + "g/"
-	vuePath := c.JsProjectPath + "node_modules/"
+	vuePath := c.ClientPath + "node_modules/"
 
 	v8Conf := v8.V8MgrConfig{
 		JsPaths:      []string{serverPathMain, serverPath, vuePath},
