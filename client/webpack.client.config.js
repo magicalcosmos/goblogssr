@@ -1,10 +1,10 @@
-const path = require('path');
+var path = require('path');
 const { merge } = require('webpack-merge');
-const baseWebpackConfig = require('./webpack.base.config.js');
+var baseWebpackConfig = require('./webpack.base.config.js')
 
 const isAppProd = process.env.APP_ENV === 'prod'
 
-const webpackConfig = merge(baseWebpackConfig, {
+var webpackConfig = merge(baseWebpackConfig, {
   target: 'web',
   entry: './src/client.js',
   output: {
@@ -13,5 +13,5 @@ const webpackConfig = merge(baseWebpackConfig, {
     filename: 'client.js?[hash:9]',
     chunkFilename: 'chunk.[name].[hash:9].js'
   },
-});
-module.exports = webpackConfig;
+})
+module.exports = webpackConfig

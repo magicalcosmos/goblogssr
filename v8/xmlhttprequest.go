@@ -17,9 +17,6 @@ package v8
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/magicalcosmos/goblogssr/alarm"
-	"github.com/magicalcosmos/goblogssr/common/tlog"
-	"github.com/magicalcosmos/goblogssr/v8worker"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -27,6 +24,10 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/magicalcosmos/goblogssr/alarm"
+	"github.com/magicalcosmos/goblogssr/common/tlog"
+	"github.com/magicalcosmos/goblogssr/v8worker"
 )
 
 type xmlHttpReq struct {

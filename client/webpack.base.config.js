@@ -1,13 +1,13 @@
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const ProgressBarPlugin  = require('progress-bar-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 const pxtorem = require('postcss-pxtorem');
 
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = process.env.NODE_ENV === 'production'
 
 module.exports = {
   mode: isProd ? 'production' : 'development',
@@ -111,13 +111,13 @@ module.exports = {
     hints: false
   },
   devtool: 'eval-source-map',
-};
+}
 
 if (isProd) {
   module.exports.optimization = {
     minimize: true,
     minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
-  };
+  }
 
-  module.exports.devtool = 'cheap-source-map';
+  module.exports.devtool = 'cheap-source-map'
 }

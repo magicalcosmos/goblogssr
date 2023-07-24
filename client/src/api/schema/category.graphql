@@ -1,9 +1,0 @@
-const createCategory = `
-      mutation createCategory($name: String!) {
-        createCategory(input: { name: $name}) { name }
-      }
-  `;
-export {
-  createCategory
-};
-

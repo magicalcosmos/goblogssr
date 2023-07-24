@@ -8,10 +8,6 @@ v8build:
 build:
 	go build
 
-gql:
-	go generate ./...
-gqlgen:
-	go run github.com/99designs/gqlgen generate.
 gotest:
 	go test -v ./v8worker
 
@@ -19,6 +15,3 @@ clean:
 	rm -f ./v8worker/depsc++/libdepsc++.a
 	rm -f ./v8worker/depsc++/v8binding.o
 	go clean
-
-watch:
-	cd client;npm run watch
