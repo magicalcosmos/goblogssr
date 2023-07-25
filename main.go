@@ -22,11 +22,11 @@ import (
 
 	"github.com/magicalcosmos/goblogssr/common/tlog"
 	"github.com/magicalcosmos/goblogssr/common/util"
-	logic "github.com/magicalcosmos/goblogssr/server"
+	Server "github.com/magicalcosmos/goblogssr/server"
 )
 
 func main() {
-	var c logic.Config
+	var c Server.Config
 	if !util.ParseConfig("./conf/goblogssr-dev.toml", &c) {
 		return
 	}
@@ -39,7 +39,7 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	rand.Seed(time.Now().UnixNano())
 
-	if err := logic.NewServer(&c); err == nil {
+	if err := Server.NewServer(&c); err == nil {
 	} else {
 		fmt.Println(err)
 	}

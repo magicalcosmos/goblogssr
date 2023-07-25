@@ -71,7 +71,6 @@ func (m *v8module) load() {
 	}
 
 	if err != nil {
-		tlog.Error(err)
 		m.Err = err
 		return
 	}

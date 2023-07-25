@@ -30,19 +30,25 @@
       height="400px"
       />
     </div>
+<vue-markdown>this is the default slot</vue-markdown>
     <div class="posts-item operate">
       <button>{{$t('button.save')}}</button>
     </div>
   </div>
 </template>
 <script>
+import '@toast-ui/editor/dist/toastui-editor.css';
+import '@toast-ui/chart/dist/toastui-chart.css';
+import 'prismjs/themes/prism.css';
+import '@toast-ui/editor-plugin-table-merged-cell/dist/toastui-editor-plugin-table-merged-cell.css';
+
 import { Editor } from '@toast-ui/vue-editor';
 import chart from '@toast-ui/editor-plugin-chart';
 import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight';
-import hljs from 'highlight.js';
+import Prism from 'prismjs'
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import tableMergedCell from '@toast-ui/editor-plugin-table-merged-cell';
-import uml from '@toast-ui/editor-plugin-uml'
+import uml from '@toast-ui/editor-plugin-uml';
 export default {
   components: {
     Editor
@@ -51,7 +57,7 @@ export default {
     return {
       editorText: '',
       editorOptions: {
-        plugins: [chart, [codeSyntaxHighlight, { hljs }], colorSyntax, tableMergedCell, uml]
+        plugins: [chart, [codeSyntaxHighlight, { highlighter: Prism }], colorSyntax, tableMergedCell, uml]
       }
     };
   },
