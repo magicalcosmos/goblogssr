@@ -8,3 +8,5 @@ client/dist
 client/dist_server
 client/package-lock.json
 go.sum
+client/yarn.lock
+.vscode

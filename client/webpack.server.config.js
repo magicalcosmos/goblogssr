@@ -15,14 +15,14 @@ var webpackConfig = merge(baseWebpackConfig, {
   },
   devtool: 'cheap-source-map',
   module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: [
-          'css-loader',
-        ]
-      },
-    ]
+    // rules: [
+    //   {
+    //     test: /\.css$/,
+    //     use: [
+    //       'css-loader',
+    //     ]
+    //   },
+    // ]
   },
 })
 module.exports = webpackConfig
