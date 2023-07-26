@@ -5,7 +5,7 @@ Vue.use(Router);
 
 export function createRouter () {
     return new Router({
-        mode: 'history',
+        mode: 'hash',
         routes: [
             {path: '/', component: () => import('../views/Home')},
             {path: '/:id/details', component: () => import('../views/Details')},

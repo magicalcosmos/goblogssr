@@ -1,7 +1,19 @@
 const M = {
+  common: {
+    email: '邮箱地址',
+    password: '密码'
+  },
   button: {
     login: '登录',
-    save: '保存'
+    save: '保存',
+    submit: '提交',
+    reset: '重置'
+
+  },
+  login: {
+    already_member: '已经加入会员',
+    login_here: '在这儿登录',
+    rember_me: '记住我'
   },
   home: {
     name: '首页',

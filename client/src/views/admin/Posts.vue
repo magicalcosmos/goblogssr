@@ -30,7 +30,6 @@
       height="400px"
       />
     </div>
-<vue-markdown>this is the default slot</vue-markdown>
     <div class="posts-item operate">
       <button>{{$t('button.save')}}</button>
     </div>
