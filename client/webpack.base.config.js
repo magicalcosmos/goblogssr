@@ -72,10 +72,9 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|gif|svg|ttf|woff2|woff|eot)$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000, // encode base64 within 10K
-          name: 'img/[name].[hash:9].[ext]'
+        type: 'asset/resource',
+        generator: {
+          filename: 'img/[name].[hash:8].[ext]'
         }
       },
     ],
@@ -96,7 +95,8 @@ module.exports = {
   resolve: {
     alias: {
       'vue$': 'vue/dist/vue.common.js',
-      '@': path.resolve('src')
+      '@': path.resolve('src'),
+      '@static': path.resolve('static')
     },
     modules: [ path.resolve(__dirname,'node_modules') ],
     extensions: ['*', '.js', '.vue', '.json','.scss']

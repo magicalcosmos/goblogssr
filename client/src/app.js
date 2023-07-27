@@ -6,6 +6,7 @@ import { createStore } from './store'
 import axios from 'axios';
 import { i18n } from './i18n';
 
+
 export function createApp (context) {
   const store = createStore(context);
   const router = createRouter();
