@@ -4,6 +4,7 @@ html, body, #app {
 }
 
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
@@ -16,4 +17,10 @@ ul, li {
   display: inline-block;
   position: relative;
   top: -1px;
+}
+
+.clearfix::after{
+  content: "";
+  clear: both;
+  display: block;
 }

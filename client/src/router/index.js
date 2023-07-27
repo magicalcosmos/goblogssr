@@ -15,11 +15,23 @@ export function createRouter () {
             children: [
               {
                 path: '/',
-                component: () => import('@/views/home')
+                redirect: '/blog'
+              },
+              {
+                path: '/blog',
+                component: () => import('@/views/Blog')
               },
               {
                 path: '/:id/details',
                 component: () => import('@/views/Details')
+              },
+              {
+                path: '/gallery',
+                component: () => import('@/views/Gallery')
+              },
+              {
+                path: '/contact',
+                component: () => import('@/views/Contact')
               }
             ]
           },
@@ -40,12 +52,12 @@ export function createRouter () {
               {
                 path: '/admin/category',
                 component: () => import('@/views/admin/Category')
-              },
-              {
-                path: '/admin/login',
-                component: () => import('@/views/admin/Login')
               }
             ]
+          },
+          {
+            path: '/admin/login',
+            component: () => import('@/views/admin/Login')
           }
         ]
     });

@@ -17,7 +17,7 @@ const M = {
   },
   home: {
     name: '首页',
-    read_all: '阅读全文'
+    read_all: '阅读全文',
   },
   backend: {
     name: '后台首页',
@@ -31,8 +31,16 @@ const M = {
     title: '标题',
     content_brief: '内容简介',
     content_extended: '内容扩展'
+  },
+  blog: {
+    name: '我的文'
+  },
+  contact: {
+    name: '联系我'
+  },
+  gallery: {
+    name: '随心拍'
   }
-
 };
 
 export default M;
