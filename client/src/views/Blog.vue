@@ -4,7 +4,7 @@
       <ul class="content-list">
         <li class="content-item">
           <h2>
-            <a href="/blog/post/vim-macos-enable-vim-shortcuts-keys-in-terminal">[Vim] [MacOS] Enable vim shortcuts keys in terminal</a>
+            <a href="#/0/details">[Vim] [MacOS] Enable vim shortcuts keys in terminal</a>
           </h2> 
           <div class="author">
             <span>所属目录：Frontend</span>
@@ -20,7 +20,7 @@
         </li>
         <li class="content-item">
           <h2>
-            <a href="/blog/post/vim-macos-enable-vim-shortcuts-keys-in-terminal">[Vim] [MacOS] Enable vim shortcuts keys in terminal</a>
+            <a href="#/1/details">[Vim] [MacOS] Enable vim shortcuts keys in terminal</a>
           </h2> 
           <div class="author">
             <span>所属目录：Frontend</span>

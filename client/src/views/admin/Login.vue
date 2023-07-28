@@ -69,7 +69,7 @@
 .login-frame .right {
   float: left;
   margin-left: 10px;
-  width: 220px;
+  width: 235px;
 
 }
 
@@ -83,12 +83,12 @@
   height: 28px;
   opacity: 1;
   padding: 0 7px;
-  width: 220px;
+  width: 100%;
 }
 
 .login-frame .right input[type="text"]::placeholder,
 .login-frame .right input[type="password"]::placeholder {
-  font-size: 14px;
+  font-size: 12px;
   font-family: HelveticaLT-Condensed, HelveticaLT;
   font-weight: normal;
   color: #c3c5c5;
@@ -210,7 +210,6 @@
 
 .login-frame .right .opt .me {
   float: left;
-  margin-top: 6px;
 }
 
 .login-frame .right .opt .buttons {

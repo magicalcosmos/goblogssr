@@ -1,3 +1,8 @@
+html {
+  font-family: sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
 
 html, body, #app {
   height: 100%;
@@ -7,6 +12,12 @@ html, body, #app {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+*:before, *:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 ul, li {
