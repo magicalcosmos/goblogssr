@@ -4,7 +4,7 @@
       <div class="container clearfix">
         <ul class="left-list">
           <li class="left-item">
-            <a href="#/admin/posts">
+            <a href="#/admin">
               <i class="pi pi-home"></i>
             </a>
           </li>
@@ -15,7 +15,7 @@
             <a href="#/admin/galleries">Galleries</a>
           </li>
           <li class="left-item">
-            <a href="#/admin/enquires">Enquires</a>
+            <a href="#/admin/enquiries">Enquiries</a>
           </li>
           <li class="left-item">
             <a href="#/admin/users">users</a>
@@ -35,7 +35,7 @@
         </ul>
       </div>
     </nav>
-    <nav class="secondary-navbar">
+    <nav v-if="$route.meta.hasNav" class="secondary-navbar">
       <div class="container">
         <ul class="dir-list clearfix">
           <li class="dir-item active">

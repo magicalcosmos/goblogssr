@@ -1,91 +1,220 @@
 <template lang="html">
-  <div class="posts">
-    <div class="posts-item">
-      <label>{{$t('markdown.title')}}:</label>
-      <input type="text" class="posts-title"/>
+  <section class="posts">
+    <div class="opt-list">
     </div>
-    <div class="posts-item">
-      <label>{{$t('markdown.content_brief')}}:</label>
-      <editor
-      :initialValue="editorText"
-      :options="editorOptions"
-      @load="onEditorLoad"
-      @focus="onEditorFocus"
-      @blur="onEditorBlur"
-      @change="onEditorChange"
-      @stateChange="onEditorStateChange"
-      height="200px"
-      />
+    <div class="card">
+      <div class="toolbar clearfix">
+        <div class="left">
+          <Button
+            label="New"
+            icon="pi pi-plus"
+            class="p-button-success mr-2"
+            @click="openNew"
+          />
+          <Button
+            label="Delete"
+            icon="pi pi-trash"
+            class="p-button-danger"
+            @click="confirmDeleteSelected"
+            :disabled="!selectedPosts || !selectedPosts.length"
+          />
+        </div>
+        <div class="right">
+          <Button
+            label="Export"
+            icon="pi pi-upload"
+            class="p-button-help"
+            @click="exportCSV($event)"
+          />
+        </div>
+      </div>
+      <DataTable
+        :value="posts"
+        :paginator="true"
+        :rows="10" 
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        :rowsPerPageOptions="[5,10,25]"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} posts" 
+        responsiveLayout="scroll"
+      >
+        <template #header>
+            <div class="table-header flex flex-column md:flex-row md:justify-content-between">
+                <h5 class="mb-2 md:m-0 md:align-self-center">Manage Products</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search" />
+                    <InputText v-model="filters['global'].value" placeholder="Search..." />
+                </span>
+            </div>
+        </template>
+        <Column
+          selectionMode="multiple"
+          :exportable="false"
+        ></Column>
+        <Column
+          field="title"
+          header="Title"
+          :sortable="true"
+        ></Column>
+        <Column
+          field="state"
+          header="State"
+          :sortable="true"
+        ></Column>
+        <Column
+          field="author"
+          header="Author"
+          :sortable="true"
+        ></Column>
+        <Column
+          field="published_date"
+          header="Published Date"
+          :sortable="true"
+        ></Column>
+        <Column
+          :exportable="false"
+          :styles="{'min-width':'8rem'}"
+        >
+          <template #body="slotProps">
+            <Button
+              icon="pi pi-pencil"
+              class="p-button-rounded p-button-success mr-2"
+              @click="editPost(slotProps.data)"
+            />
+            <Button
+              icon="pi pi-trash"
+              class="p-button-rounded p-button-warning"
+              @click="confirmDeletePost(slotProps.data)"
+            />
+          </template>
+        </Column>
+      </DataTable>
     </div>
-    <div class="posts-item">
-      <label>{{$t('markdown.content_extended')}}:</label>
-      <editor
-      :initialValue="editorText"
-      :options="editorOptions"
-      @load="onEditorLoad"
-      @focus="onEditorFocus"
-      @blur="onEditorBlur"
-      @change="onEditorChange"
-      @stateChange="onEditorStateChange"
-      height="400px"
-      />
-    </div>
-    <div class="posts-item operate">
-      <button>{{$t('button.save')}}</button>
-    </div>
-  </div>
+  </section>
 </template>
 <script>
-import '@toast-ui/editor/dist/toastui-editor.css';
-import '@toast-ui/chart/dist/toastui-chart.css';
-import 'prismjs/themes/prism.css';
-import '@toast-ui/editor-plugin-table-merged-cell/dist/toastui-editor-plugin-table-merged-cell.css';
+  import 'primevue/resources/primevue.min.css';
+  import 'primeicons/primeicons.css'
+  import 'primevue/resources/themes/lara-light-blue/theme.css';
+  import DataTable from 'primevue/DataTable';
+  import Column from 'primevue/Column';
+  import InputText from 'primevue/InputText';
+  import Toolbar from 'primevue/Toolbar';
+  import Button from 'primevue/Button';
+  import FileUpload from 'primevue/Fileupload';
 
-import { Editor } from '@toast-ui/vue-editor';
-import chart from '@toast-ui/editor-plugin-chart';
-import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight';
-import Prism from 'prismjs'
-import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
-import tableMergedCell from '@toast-ui/editor-plugin-table-merged-cell';
-import uml from '@toast-ui/editor-plugin-uml';
-export default {
-  components: {
-    Editor
-  },
-  data() {
-    return {
-      editorText: '',
-      editorOptions: {
-        plugins: [chart, [codeSyntaxHighlight, { highlighter: Prism }], colorSyntax, tableMergedCell, uml]
-      }
-    };
-  },
-  methods: {
-    // scroll() {
-    //   this.$refs.toastuiEditor.invoke('scrollTop', 10);
-    // },
-    // moveTop() {
-    //   this.$refs.toastuiEditor.invoke('moveCursorToStart');
-    // },
-    // getHtml() {
-    //   let html = this.$refs.toastuiEditor.invoke('getHtml');
-    //   this.viewerText = html
-    // },
-    onEditorLoad() {
-        // implement your code
-    },
-    onEditorFocus() {
-        // implement your code
-    },
-    onEditorBlur() {
-        // implement your code
-    },
-    onEditorChange() {
-        // implement your code
-    },
-    onEditorStateChange() {
-        // implement your code
-    },
-  }
+const posts = {
+	"data": [
+		{
+			"id": "1000",
+			"title": "[NodeJS] NodeJS基本工作原理及流程",
+			"state": "Published",
+			"author": "Admin User",
+			"published_date": "May 12th 2023",
+		},
+		{
+			"id": "1000",
+			"title": "[NodeJS] NodeJS基本工作原理及流程",
+			"state": "Published",
+			"author": "Admin User",
+			"published_date": "May 12th 2023",
+		},
+		{
+			"id": "1000",
+			"title": "[NodeJS] NodeJS基本工作原理及流程",
+			"state": "Published",
+			"author": "Admin User",
+			"published_date": "May 12th 2023",
+		},
+		{
+			"id": "1000",
+			"title": "[NodeJS] NodeJS基本工作原理及流程",
+			"state": "Published",
+			"author": "Admin User",
+			"published_date": "May 12th 2023",
+		},
+	]
 };
+  export default {
+    components: {
+      Button,
+      Column,
+      DataTable,
+      FileUpload,
+      InputText,
+      Toolbar,
+    },
+    data() {
+      return {
+        posts: posts.data,
+        filters: {
+          global: {
+            value: ''
+          }
+        },
+        selectedPosts: []
+      }
+    },
+    methods: {
+      openNew() {},
+      editPost() {},
+      confirmDeleteSelected() {
+        
+      },
+      confirmDeletePost() {
+        
+      },
+      exportCSV() {}
+    }
+  }
 </script>
+<style scoped>
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pi-trash {
+  color: #ccc;
+  font-size: 16px;
+}
+
+:deep(.p-datatable) .p-datatable-tbody > tr > td {
+  padding: 8px;
+}
+
+:deep(.p-button).p-button-icon-only.p-button-rounded {
+  height: 20px;
+  padding: 0;
+  width: 20px;
+}
+
+:deep(.p-button).p-button-icon-only.p-button-rounded .pi {
+  font-size: 10px;
+}
+
+  .toolbar {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    margin: 10px 0 20px 0;
+    padding: 10px;
+  }
+
+  .toolbar .left {
+    float: left;
+  }
+
+  .toolbar .right {
+    float: right;
+  }
+
+  :deep(.p-button) {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+
+  :deep(.p-button) {
+    
+  }
+</style>
