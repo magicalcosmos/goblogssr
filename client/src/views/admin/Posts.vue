@@ -43,7 +43,7 @@
                 <span class="p-input-icon-left">
                     <i class="pi pi-search" />
                     <InputText v-model="filters['global'].value" placeholder="Search..." />
-                </span>
+                </Span>
             </div>
         </template>
         <Column
@@ -51,10 +51,13 @@
           :exportable="false"
         ></Column>
         <Column
-          field="title"
           header="Title"
           :sortable="true"
-        ></Column>
+        >
+          <template #body="slotProps">
+            <a class="post-title" :href="`/#/admin/posts/${slotProps.data.id}`">{{ slotProps.data.title }}</a>
+          </template>
+        </Column>
         <Column
           field="state"
           header="State"
@@ -89,6 +92,24 @@
         </Column>
       </DataTable>
     </div>
+    <Dialog
+      :visible.sync="isCreatePost"
+      :modal="true"
+      class="dlg"
+    >
+      <template #header>
+        <h3>Create a new Post</h3>
+      </template>
+      <div class="content">
+
+        <InputText class="title" v-model="title" placeholder="type title" />
+      </div>
+      <template #footer>
+        <Button label="Cancel" class="p-button-text" @click="isCreatePost = false" />
+        <Button label="Create" @click="confirmCreate" />
+      </template>
+    </Dialog>
+
   </section>
 </template>
 <script>
@@ -101,6 +122,7 @@
   import Toolbar from 'primevue/Toolbar';
   import Button from 'primevue/Button';
   import FileUpload from 'primevue/Fileupload';
+  import Dialog from 'primevue/Dialog';
 
 const posts = {
 	"data": [
@@ -112,21 +134,21 @@ const posts = {
 			"published_date": "May 12th 2023",
 		},
 		{
-			"id": "1000",
+			"id": "2000",
 			"title": "[NodeJS] NodeJS基本工作原理及流程",
 			"state": "Published",
 			"author": "Admin User",
 			"published_date": "May 12th 2023",
 		},
 		{
-			"id": "1000",
+			"id": "3000",
 			"title": "[NodeJS] NodeJS基本工作原理及流程",
 			"state": "Published",
 			"author": "Admin User",
 			"published_date": "May 12th 2023",
 		},
 		{
-			"id": "1000",
+			"id": "4000",
 			"title": "[NodeJS] NodeJS基本工作原理及流程",
 			"state": "Published",
 			"author": "Admin User",
@@ -139,23 +161,30 @@ const posts = {
       Button,
       Column,
       DataTable,
+      Dialog,
       FileUpload,
       InputText,
-      Toolbar,
+      Toolbar
     },
     data() {
       return {
+        title: '',
         posts: posts.data,
         filters: {
           global: {
             value: ''
           }
         },
-        selectedPosts: []
+        selectedPosts: [],
+        isCreatePost: false
       }
     },
     methods: {
-      openNew() {},
+      openNew() {
+        this.isCreatePost = true;
+      },
+      confirmCreate() {},
+      
       editPost() {},
       confirmDeleteSelected() {
         
@@ -165,6 +194,7 @@ const posts = {
       },
       exportCSV() {}
     }
+
   }
 </script>
 <style scoped>
@@ -193,28 +223,38 @@ const posts = {
   font-size: 10px;
 }
 
-  .toolbar {
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 5px;
-    margin: 10px 0 20px 0;
-    padding: 10px;
-  }
+.toolbar {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  margin: 10px 0 20px 0;
+  padding: 10px;
+}
 
-  .toolbar .left {
-    float: left;
-  }
+.toolbar .left {
+  float: left;
+}
 
-  .toolbar .right {
-    float: right;
-  }
+.toolbar .right {
+  float: right;
+}
 
-  :deep(.p-button) {
-    font-size: 12px;
-    padding: 10px 12px;
-  }
+:deep(.p-button) {
+  font-size: 12px;
+  padding: 10px 12px;
+}
 
-  :deep(.p-button) {
-    
-  }
+:deep(.p-datatable-table) td {
+  font-size: 14px;
+}
+
+.post-title {
+  color: #333;
+  text-decoration: none;
+}
+
+.post-title:hover {
+  text-decoration: underline;
+}
+
 </style>

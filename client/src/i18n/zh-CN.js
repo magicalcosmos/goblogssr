@@ -4,12 +4,17 @@ const M = {
     password: '密码',
     select_one: '选一个',
     send: '发送',
+    state: '发布状态',
+    author: '作者',
+    publish_date: '发布时间',
+
   },
   button: {
     login: '登录',
     save: '保存',
     submit: '提交',
-    reset: '重置'
+    reset: '重置',
+    today: '今天'
   },
   login: {
     already_member: '已经加入会员',
