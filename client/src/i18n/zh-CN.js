@@ -28,7 +28,8 @@ const M = {
   backend: {
     name: '后台首页',
     category: '分类目录',
-    article: '文章'
+    article: '文章',
+    tag: '标签'
   },
   details: {
     name: '详情'

@@ -67,6 +67,17 @@
       height="400px"
       />
     </li>
+    <li class="posts-item">
+      <label>{{$t('backend.category')}}:</label>
+      <Dropdown
+        class="dropdown"
+        v-model="category"
+        :options="categories"
+        optionLabel="name"
+        optionValue="code"
+        :showClear="true"
+      />
+    </li>
     <li class="posts-item operate">
       <Button
         class="save"
@@ -95,9 +106,9 @@ import Prism from 'prismjs'
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import tableMergedCell from '@toast-ui/editor-plugin-table-merged-cell';
 import uml from '@toast-ui/editor-plugin-uml';
-import InputText from 'primevue/InputText';
-import Dropdown from 'primevue/Dropdown';
-import Button from 'primevue/Button';
+import InputText from 'primevue/inputtext';
+import Dropdown from 'primevue/dropdown';
+import Button from 'primevue/button';
 
 export default {
   components: {
@@ -135,6 +146,29 @@ export default {
           name: 'Brody Liao',
           code: 2
         }
+      ],
+      category: 1,
+      categories: [
+        {
+          name: 'Docker',
+          code: 1
+        },
+        {
+          name: 'Frontend',
+          code: 2
+        },
+        {
+          name: 'Golang',
+          code: 3
+        },
+        {
+          name: 'Ubuntu',
+          code: 4
+        },
+        {
+          name: 'other',
+          code: 5
+        },
       ],
       editorText: '',
       editorOptions: {

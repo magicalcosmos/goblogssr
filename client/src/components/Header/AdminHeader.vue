@@ -8,17 +8,8 @@
               <i class="pi pi-home"></i>
             </a>
           </li>
-          <li class="left-item active">
-            <a href="#/admin/posts">Posts</a>
-          </li>
-          <li class="left-item">
-            <a href="#/admin/galleries">Galleries</a>
-          </li>
-          <li class="left-item">
-            <a href="#/admin/enquiries">Enquiries</a>
-          </li>
-          <li class="left-item">
-            <a href="#/admin/users">users</a>
+          <li v-for="item in navBar" :class="['left-item', item.active ? 'active' : '']">
+            <a :href="item.href">{{ item.name }}</a>
           </li>
         </ul>
         <ul class="right-list">
@@ -38,11 +29,8 @@
     <nav v-if="$route.meta.hasNav" class="secondary-navbar">
       <div class="container">
         <ul class="dir-list clearfix">
-          <li class="dir-item active">
-            <a href="#/admin/posts-list">Posts</a>
-          </li>
-          <li class="dir-item">
-            <a href="#/admin/category-list">Post Categories</a>
+          <li v-for="secondary in secondaryNavbar" :class="['dir-item', secondary.active ? ' active' : '']">
+            <a :href="secondary.href">{{ secondary.name }}</a>
           </li>
         </ul>
       </div>
@@ -55,13 +43,82 @@
     components: {
       
     },
+    watch: {
+      '$route'() {
+        this.navSwitch();
+      }
+    },
     data: () => {
       return {
-        
+        navBar: [{
+          name: 'Posts',
+          href: '#/admin/posts',
+          active: false
+        }, {
+          name: 'Galleries',
+          href: '#/admin/galleries',
+          active: false
+        }, {
+          name: 'Enquiries',
+          href: '#/admin/enquiries',
+          active: false
+        }, {
+          name: 'Users',
+          href: '#/admin/users',
+          active: false
+        }],
+        secondaryNavbar: []
       }
     },
     methods: {
-      
+      navSwitch() {
+        const path = this.$route.path;
+        let secondaryNavbar = [];
+        switch (path) {
+          case '/admin/posts':
+          case '/admin/categories':
+            secondaryNavbar = [{
+              name: 'Posts',
+              href: `#/admin/posts`,
+              active: path.indexOf('posts') !== -1
+            }, {
+              name: 'Post Categories',
+              href: '#/admin/categories',
+              active: path.indexOf('categories') !== -1
+            }];
+            break;
+          case '/admin/galleries':
+            secondaryNavbar = [{
+              name: 'Galleries',
+              href: `#${path}`,
+              active: true
+            }];
+            break;
+          case '/admin/enquiries':
+            secondaryNavbar = [{
+              name: 'Enquiries',
+              href: `#${path}`,
+              active: true
+            }];
+            break;
+          case '/admin/users':
+            secondaryNavbar = [{
+              name: 'Users',
+              href: `#${path}`,
+              active: true
+            }];
+            break;
+        }
+
+        this.navBar.forEach((item) => {
+          item.active = item.href === `#${path}` || (path === '/admin/categories' && item.href === '#/admin/posts');
+        });
+        this.secondaryNavbar = secondaryNavbar;
+      }
+
+    },
+    mounted() {
+      this.navSwitch();
     }
   };
 </script>
@@ -132,6 +189,10 @@
     z-index: 2;
   }
 
+  .primary-navbar .left-item.active:before {
+    background: none;
+  }
+
   .primary-navbar .left-item.active a{
     background-color: #1073c6;
     color: white;
@@ -159,6 +220,11 @@
     text-decoration: none;
     padding: 5px 10px;
     position: relative;
+  }
+
+
+  .secondary-navbar .dir-item.active a {
+    color: #333;
   }
 
   .secondary-navbar .dir-item a:hover .secondary-navbar .dir-item.active a {

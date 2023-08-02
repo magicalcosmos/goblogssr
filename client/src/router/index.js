@@ -14,16 +14,16 @@ export function createRouter () {
             hidden: true,
             children: [
               {
-                path: '/',
-                redirect: '/blog'
+                path: '',
+                component: () => import('@/views/Home')
               },
               {
                 path: '/blog',
                 component: () => import('@/views/Blog')
               },
               {
-                path: '/:id/details',
-                component: () => import('@/views/Details')
+                path: '/blog/:id',
+                component: () => import('@/views/BlogDetails')
               },
               {
                 path: '/gallery',

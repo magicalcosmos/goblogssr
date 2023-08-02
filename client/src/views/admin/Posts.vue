@@ -116,13 +116,13 @@
   import 'primevue/resources/primevue.min.css';
   import 'primeicons/primeicons.css'
   import 'primevue/resources/themes/lara-light-blue/theme.css';
-  import DataTable from 'primevue/DataTable';
-  import Column from 'primevue/Column';
-  import InputText from 'primevue/InputText';
-  import Toolbar from 'primevue/Toolbar';
-  import Button from 'primevue/Button';
-  import FileUpload from 'primevue/Fileupload';
-  import Dialog from 'primevue/Dialog';
+  import DataTable from 'primevue/datatable';
+  import Column from 'primevue/column';
+  import InputText from 'primevue/inputtext';
+  import Toolbar from 'primevue/toolbar';
+  import Button from 'primevue/button';
+  import FileUpload from 'primevue/fileupload';
+  import Dialog from 'primevue/dialog';
 
 const posts = {
 	"data": [

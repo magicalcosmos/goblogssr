@@ -4,7 +4,7 @@
       <ul class="content-list">
         <li class="content-item">
           <h2>
-            <a href="#/0/details">[Vim] [MacOS] Enable vim shortcuts keys in terminal</a>
+            <a href="#/blog/0">[Vim] [MacOS] Enable vim shortcuts keys in terminal</a>
           </h2> 
           <div class="author">
             <span>所属目录：Frontend</span>
@@ -12,15 +12,14 @@
             <span>创建时间：2012-01-01</span>
           </div>
           <div class="bref">
- 1.export与export default均可用于导出常量、函数、文件、模块等
- 2.在一个文件或模块中，export、import可以有多个，export default仅有一个
- 3.通过export方式导出，在导入时要加{ }，export default则不需要
- 4.export能直接导出变量表达式，export default不行。
+            <viewer
+              initialValue="### test"
+            />
           </div>
         </li>
         <li class="content-item">
           <h2>
-            <a href="#/1/details">[Vim] [MacOS] Enable vim shortcuts keys in terminal</a>
+            <a href="#/blog/1">[Vim] [MacOS] Enable vim shortcuts keys in terminal</a>
           </h2> 
           <div class="author">
             <span>所属目录：Frontend</span>
@@ -28,41 +27,67 @@
             <span>创建时间：2012-01-01</span>
           </div>
           <div class="bref">
-1.export与export default均可用于导出常量、函数、文件、模块等
-2.在一个文件或模块中，export、import可以有多个，export default仅有一个
-3.通过export方式导出，在导入时要加{ }，export default则不需要
-4.export能直接导出变量表达式，export default不行。
+            <viewer
+              initialValue="### test"
+            />
           </div>
         </li>
       </ul>
     </div>
     <div class="blog-category clearfix">
       <ul class="blog-category-list">
-        <li class="blog-category-item all">All Categories</li>
-        <li class="blog-category-item">Docker</li>
-        <li class="blog-category-item">Frontend</li>
-        <li class="blog-category-item">Golang</li>
-        <li class="blog-category-item">Ubuntu</li>
-        <li class="blog-category-item">other</li>
+        <li
+          v-for="(item, index) in categories"
+          :key="index"
+          :class="['blog-category-item', item.className || '']"
+        >{{ item.name }}</li>
       </ul>
     </div>
     <Paginator :rows="10" :totalRecords="totalRecords" :rowsPerPageOptions="[10,20,30]"></Paginator>
   </section>
 </template>
 <script>
-
+  import '@toast-ui/editor/dist/toastui-editor-viewer.css';
+  import '@toast-ui/chart/dist/toastui-chart.css';
+  import 'prismjs/themes/prism.css';
+  import '@toast-ui/editor-plugin-table-merged-cell/dist/toastui-editor-plugin-table-merged-cell.css';
   import 'primevue/resources/primevue.min.css';
   import 'primeicons/primeicons.css'
   import 'primevue/resources/themes/lara-light-blue/theme.css';
+
   import Paginator from 'primevue/paginator';
+  // import { Parser, createRenderHTML } from '@toast-ui/toastmark';
+  import { Viewer } from '@toast-ui/vue-editor';
   export default {
     components: {
+      Viewer,
       Paginator
     },
     data() {
       return {
         page: 1,
         totalRecords: 120,
+        categories: [
+          {
+            name: 'All Categories',
+            className: 'all'
+          },
+          {
+            name: 'Docker'
+          },
+          {
+            name: 'Frontend'
+          },
+          {
+            name: 'Golang'
+          },
+          {
+            name: 'Ubuntu'
+          },
+          {
+            name: 'other'
+          }
+        ]
       }
     },
     methods: {
