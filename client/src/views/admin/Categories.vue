@@ -34,12 +34,12 @@
         :rows="10" 
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         :rowsPerPageOptions="[5,10,25]"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} posts" 
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} categories" 
         responsiveLayout="scroll"
       >
         <template #header>
             <div class="table-header flex flex-column md:flex-row md:justify-content-between">
-                <h5 class="mb-2 md:m-0 md:align-self-center">Manage Products</h5>
+                <h5 class="mb-2 md:m-0 md:align-self-center">Manage Categories</h5>
                 <span class="p-input-icon-left">
                     <i class="pi pi-search" />
                     <InputText v-model="filters['global'].value" placeholder="Search..." />
@@ -51,31 +51,15 @@
           :exportable="false"
         ></Column>
         <Column
-          header="Title"
+          header="Name"
           :sortable="true"
         >
           <template #body="slotProps">
-            <a class="post-title" :href="`/#/admin/posts/${slotProps.data.id}`">{{ slotProps.data.title }}</a>
+            <a class="post-title" :href="`/#/admin/categories/${slotProps.data.id}`">{{ slotProps.data.name }}</a>
           </template>
         </Column>
         <Column
-          field="state"
-          header="State"
-          :sortable="true"
-        ></Column>
-        <Column
-          field="author"
-          header="Author"
-          :sortable="true"
-        ></Column>
-        <Column
-          field="published_date"
-          header="Published Date"
-          :sortable="true"
-        ></Column>
-        <Column
           :exportable="false"
-          :styles="{'min-width':'8rem'}"
         >
           <template #body="slotProps">
             <Button
@@ -128,32 +112,24 @@ const posts = {
 	"data": [
 		{
 			"id": "1000",
-			"title": "[NodeJS] NodeJS基本工作原理及流程",
-			"state": "Published",
-			"author": "Admin User",
-			"published_date": "May 12th 2023",
+			"name": "Docker"
 		},
 		{
 			"id": "2000",
-			"title": "[NodeJS] NodeJS基本工作原理及流程",
-			"state": "Published",
-			"author": "Admin User",
-			"published_date": "May 12th 2023",
+			"name": "Frontend"
 		},
-		{
+    {
 			"id": "3000",
-			"title": "[NodeJS] NodeJS基本工作原理及流程",
-			"state": "Published",
-			"author": "Admin User",
-			"published_date": "May 12th 2023",
+			"name": "Golang"
 		},
 		{
 			"id": "4000",
-			"title": "[NodeJS] NodeJS基本工作原理及流程",
-			"state": "Published",
-			"author": "Admin User",
-			"published_date": "May 12th 2023",
+			"name": "Ubuntu"
 		},
+		{
+			"id": "5000",
+			"name": "other"
+		}
 	]
 };
   export default {

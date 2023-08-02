@@ -1,6 +1,6 @@
 <template>
   <section>
-    Gallery
+    building...
   </section>
 </template>
 <script>

@@ -1,6 +1,9 @@
 <template lang="html">
-  <footer>
-    <p><a href="https://beian.miit.gov.cn/" target="_blank">蜀ICP备14026941号-1</a>&copy2016-{{ date }}</p>
+  <footer class="footer">
+    <p>
+      <a href="https://beian.miit.gov.cn/" target="_blank">蜀ICP备14026941号-1</a>
+      &copy2016-{{ date }}
+    </p>
   </footer>
 </template>
 <script>

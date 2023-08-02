@@ -50,15 +50,15 @@ module.exports = {
               postcssOptions:{
                 plugins: [
                   autoprefixer({}),
-                  pxtorem({
-                    rootValue: 75,
-                    unitPrecision: 8,
-                    propList: ['*'],
-                    selectorBlackList: ['.norem'],
-                    replace: true,
-                    mediaQuery: false,
-                    minPixelValue: 1
-                  }),
+                 // pxtorem({
+                 //   rootValue: 75,
+                 //   unitPrecision: 8,
+                 //   propList: ['*'],
+                 //   selectorBlackList: ['.norem'],
+                 //   replace: true,
+                 //   mediaQuery: false,
+                 //   minPixelValue: 1
+                 // }),
                 ],
               }
             }

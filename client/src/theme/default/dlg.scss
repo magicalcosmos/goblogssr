@@ -1,0 +1,15 @@
+:deep(.p-dialog-header) h3 {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.dlg {
+  .content {
+    padding: 10px;
+    width: 768px;
+
+    .title {
+      width: 100%;
+    }
+  }
+}

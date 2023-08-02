@@ -14,16 +14,16 @@ export function createRouter () {
             hidden: true,
             children: [
               {
-                path: '/',
-                redirect: '/blog'
+                path: '',
+                component: () => import('@/views/Home')
               },
               {
                 path: '/blog',
                 component: () => import('@/views/Blog')
               },
               {
-                path: '/:id/details',
-                component: () => import('@/views/Details')
+                path: '/blog/:id',
+                component: () => import('@/views/BlogDetails')
               },
               {
                 path: '/gallery',
@@ -43,15 +43,87 @@ export function createRouter () {
             children: [
               {
                 path: '',
-                component: () => import('@/views/admin')
+                component: () => import('@/views/admin'),
+                meta: {
+                  hasNav: false
+                }
               },
               {
                 path: '/admin/posts',
-                component: () => import('@/views/admin/Posts')
+                component: () => import('@/views/admin/Posts'),
+                meta: {
+                  hasNav: true
+                }
               },
               {
-                path: '/admin/category',
-                component: () => import('@/views/admin/Category')
+                path: '/admin/posts/:id',
+                component: () => import('@/views/admin/PostDetail'),
+                meta: {
+                  hasNav: true
+                }
+              },
+              {
+                path: '/admin/categories',
+                component: () => import('@/views/admin/Categories'),
+                meta: {
+                  hasNav: true
+                }
+              },
+              {
+                path: '/admin/categories/:id',
+                component: () => import('@/views/admin/CategoryDetail'),
+                meta: {
+                  hasNav: true
+                }
+              },
+              {
+                path: '/admin/category/:id',
+                component: () => import('@/views/admin/CategoryDetail'),
+                meta: {
+                  hasNav: true
+                }
+              },
+              {
+                path: '/admin/galleries',
+                component: () => import('@/views/admin/Galleries'),
+                meta: {
+                  hasNav: true
+                }
+              },
+              {
+                path: '/admin/galleries/:id',
+                component: () => import('@/views/admin/GalleryDetail'),
+                meta: {
+                  hasNav: true
+                }
+              },
+              {
+                path: '/admin/enquiries',
+                component: () => import('@/views/admin/Enquiries'),
+                meta: {
+                  hasNav: true
+                }
+              },
+              {
+                path: '/admin/enquiries/:id',
+                component: () => import('@/views/admin/EnquiryDetail'),
+                meta: {
+                  hasNav: true
+                }
+              },
+              {
+                path: '/admin/users',
+                component: () => import('@/views/admin/Users'),
+                meta: {
+                  hasNav: true
+                }
+              },
+              {
+                path: '/admin/users/:id',
+                component: () => import('@/views/admin/UserDetail'),
+                meta: {
+                  hasNav: true
+                }
               }
             ]
           },
