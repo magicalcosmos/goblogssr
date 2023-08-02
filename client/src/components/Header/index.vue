@@ -45,8 +45,9 @@
     methods: {
       navSwitch() {
         const path = this.$route.path;
+        const pathArr = path.split('/');
         this.navList.forEach((item) => {
-          item.isActive = `#${path}` === item.href;
+          item.isActive = `#${path}` === item.href || (pathArr.length >= 3 ? `#/${pathArr[1]}` === item.href : false);
         });
       }
     },
