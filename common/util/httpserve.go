@@ -24,11 +24,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/magicalcosmos/goblogssr/common/tlog"
+	graphRoute "github.com/magicalcosmos/goblogssr/graph/router"
 )
 
 func NewGinEngine() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	e := gin.New()
+
+	graphRoute.Init(e)
+
 	e.Use(gin.Recovery())
 
 	_ = e.SetTrustedProxies([]string{"127.0.0.1/8", "192.168.0.1/16", "172.16.0.1/12", "10.0.0.1/8"})
