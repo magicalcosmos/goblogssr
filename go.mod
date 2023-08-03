@@ -1,4 +1,4 @@
-module goblogssr
+module github.com/magicalcosmos/goblogssr
 
 go 1.20
 
