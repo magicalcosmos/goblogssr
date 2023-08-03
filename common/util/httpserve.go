@@ -22,9 +22,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/magicalcosmos/goblogssr/common/tlog"
 	graphRoute "github.com/magicalcosmos/goblogssr/graph/router"
+
+	"github.com/gin-gonic/gin"
 )
 
 func NewGinEngine() *gin.Engine {

@@ -6,7 +6,7 @@ v8build:
 	cd v8worker/depsc++;chmod 755 build.sh;./build.sh
 
 build:
-	go build
+	go build -o shareus
 
 gql:
 	go generate ./...
