@@ -1,11 +1,12 @@
 package controller
 
 import (
+	"github.com/magicalcosmos/goblogssr/graph"
+	"github.com/magicalcosmos/goblogssr/graph/service"
+
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-gonic/gin"
-	"github.com/magicalcosmos/goblogssr/graph"
-	"github.com/magicalcosmos/goblogssr/graph/service"
 )
 
 // GraphqlHandler Defining the Graphql handler

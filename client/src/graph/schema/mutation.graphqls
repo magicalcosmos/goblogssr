@@ -1,6 +1,0 @@
-type Mutation {
-  login(input: NewUser!): Boolean!
-  createUser(input: NewUser!): User!
-  createCategory(input: NewCategory!): Category!
-  deleteCategory(input: NewCategory!): String!
-}

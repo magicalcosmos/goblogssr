@@ -4,6 +4,7 @@
 node_modules
 **/*/node_modules
 goblogssr
+shareus
 client/dist
 client/dist_server
 client/package-lock.json

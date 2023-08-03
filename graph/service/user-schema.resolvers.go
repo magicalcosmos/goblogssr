@@ -6,6 +6,7 @@ package service
 import (
 	"context"
 	"fmt"
+
 	"math/rand"
 
 	"github.com/magicalcosmos/goblogssr/graph"
@@ -27,20 +28,15 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) CreateCategory(ctx context.Context, input model.NewCategory) (*model.Category, error) {
-	category, err := dao.CreateCategory(input)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return category, err
-}
-
-func (r *mutationResolver) DeleteCategory(ctx context.Context, input model.NewCategory) (string, error) {
-	message, err := dao.DeleteCategory(input)
-	return message, err
+func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
+	return dao.GetUserInfo(), nil
 }
 
 // Mutation returns graph.MutationResolver implementation.
 func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
 
+// Query returns graph.QueryResolver implementation.
+func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
+
 type mutationResolver struct{ *Resolver }
+type queryResolver struct{ *Resolver }

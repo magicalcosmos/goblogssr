@@ -16,11 +16,12 @@ package server
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 type DebugTransport struct{}

@@ -1,8 +1,9 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/magicalcosmos/goblogssr/graph/controller"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Init init
