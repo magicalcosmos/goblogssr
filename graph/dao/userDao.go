@@ -9,7 +9,9 @@ import (
 
 // GetUserInfo get user info
 func GetUserInfo() (user []*model.User) {
-	db.DB.Select(&user, "SELECT * FROM user")
-	fmt.Println(user[0].Password)
-	return
+	err := db.DB.Select(&user, "SELECT * FROM user")
+	if err != nil {
+		fmt.Println("GetUserInfo occur error: ", err)
+	}
+	return user
 }

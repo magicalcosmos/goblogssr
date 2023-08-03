@@ -26,6 +26,7 @@ import (
 	"github.com/magicalcosmos/goblogssr/alarm"
 	"github.com/magicalcosmos/goblogssr/common/tlog"
 	"github.com/magicalcosmos/goblogssr/common/util"
+	"github.com/magicalcosmos/goblogssr/graph/db"
 	v8 "github.com/magicalcosmos/goblogssr/v8"
 )
 
@@ -120,8 +121,12 @@ func NewServer(c *Config) error {
 	}
 	ThisServer.V8Mgr = v8mgr
 
+	db.Init()
+	fmt.Println(util.FormatFullTime(time.Now()), "db running ...")
+
 	handler := getHttpHandler(c)
-	fmt.Println(util.FormatFullTime(time.Now()), "running ...")
+	fmt.Println(util.FormatFullTime(time.Now()), "server running ...")
+
 	return util.GraceHttpServe(c.Host, handler)
 }
 
