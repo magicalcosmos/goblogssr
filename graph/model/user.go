@@ -12,9 +12,3 @@ type User struct {
 	CreateTime time.Time `json:"create_time" db:"create_time"`
 	UpdateTime time.Time `json:"update_time" db:"update_time"`
 }
-
-// NewUser new user for gql
-type NewUser struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
