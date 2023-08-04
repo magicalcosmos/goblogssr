@@ -16,7 +16,7 @@ input NewUser {
 extend type Query {
 
   """ 获取用户列表 """
-  users: [User!]!
+  userList: [User!]!
 }
 
 extend type Mutation {

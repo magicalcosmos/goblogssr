@@ -12,6 +12,7 @@ gql:
 	go generate ./...
 
 gqlgen:
+	go get github.com/99designs/gqlgen@v0.17.36
 	go run github.com/99designs/gqlgen generate.
 
 gotest:

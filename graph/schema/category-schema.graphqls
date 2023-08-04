@@ -17,7 +17,7 @@ input NewCategory {
 
 extend type Query {
   """ 获取分类目录列表 """
-  categories: [Category!]!
+  categoryList: [Category!]!
 
 }
 

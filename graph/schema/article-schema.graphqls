@@ -35,7 +35,7 @@ input NewArticle {
 
 extend type Query {
   """ 获取文章列表 """
-  articles: [Article!]!
+  articleList: [Article!]!
 
 }
 

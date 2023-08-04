@@ -43,9 +43,9 @@ func (r *mutationResolver) UpdateArticle(ctx context.Context, input model.NewArt
 	panic(fmt.Errorf("not implemented: UpdateArticle - updateArticle"))
 }
 
-// Articles is the resolver for the articles field.
-func (r *queryResolver) Articles(ctx context.Context) ([]*model.Article, error) {
-	panic(fmt.Errorf("not implemented: Articles - articles"))
+// ArticleList is the resolver for the articleList field.
+func (r *queryResolver) ArticleList(ctx context.Context) ([]*model.Article, error) {
+	panic(fmt.Errorf("not implemented: ArticleList - articleList"))
 }
 
 // Article returns generated.ArticleResolver implementation.
@@ -60,3 +60,13 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 type articleResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *queryResolver) Articles(ctx context.Context) ([]*model.Article, error) {
+	panic(fmt.Errorf("not implemented: Articles - articles"))
+}

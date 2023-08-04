@@ -80,9 +80,9 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Articles   func(childComplexity int) int
-		Categories func(childComplexity int) int
-		Users      func(childComplexity int) int
+		ArticleList  func(childComplexity int) int
+		CategoryList func(childComplexity int) int
+		UserList     func(childComplexity int) int
 	}
 
 	User struct {
@@ -337,26 +337,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateCategory(childComplexity, args["input"].(model.NewCategory)), true
 
-	case "Query.articles":
-		if e.complexity.Query.Articles == nil {
+	case "Query.articleList":
+		if e.complexity.Query.ArticleList == nil {
 			break
 		}
 
-		return e.complexity.Query.Articles(childComplexity), true
+		return e.complexity.Query.ArticleList(childComplexity), true
 
-	case "Query.categories":
-		if e.complexity.Query.Categories == nil {
+	case "Query.categoryList":
+		if e.complexity.Query.CategoryList == nil {
 			break
 		}
 
-		return e.complexity.Query.Categories(childComplexity), true
+		return e.complexity.Query.CategoryList(childComplexity), true
 
-	case "Query.users":
-		if e.complexity.Query.Users == nil {
+	case "Query.userList":
+		if e.complexity.Query.UserList == nil {
 			break
 		}
 
-		return e.complexity.Query.Users(childComplexity), true
+		return e.complexity.Query.UserList(childComplexity), true
 
 	case "User.createAt":
 		if e.complexity.User.CreateAt == nil {
@@ -552,7 +552,7 @@ input NewArticle {
 
 extend type Query {
   """ 获取文章列表 """
-  articles: [Article!]!
+  articleList: [Article!]!
 
 }
 
@@ -583,7 +583,7 @@ input NewCategory {
 
 extend type Query {
   """ 获取分类目录列表 """
-  categories: [Category!]!
+  categoryList: [Category!]!
 
 }
 
@@ -618,7 +618,7 @@ input NewUser {
 extend type Query {
 
   """ 获取用户列表 """
-  users: [User!]!
+  userList: [User!]!
 }
 
 extend type Mutation {

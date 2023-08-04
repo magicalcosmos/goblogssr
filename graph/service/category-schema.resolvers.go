@@ -38,12 +38,22 @@ func (r *mutationResolver) UpdateCategory(ctx context.Context, input model.NewCa
 	panic(fmt.Errorf("not implemented: UpdateCategory - updateCategory"))
 }
 
-// Categories is the resolver for the categories field.
-func (r *queryResolver) Categories(ctx context.Context) ([]*model.Category, error) {
-	panic(fmt.Errorf("not implemented: Categories - categories"))
+// CategoryList is the resolver for the categoryList field.
+func (r *queryResolver) CategoryList(ctx context.Context) ([]*model.Category, error) {
+	panic(fmt.Errorf("not implemented: CategoryList - categoryList"))
 }
 
 // Category returns generated.CategoryResolver implementation.
 func (r *Resolver) Category() generated.CategoryResolver { return &categoryResolver{r} }
 
 type categoryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *queryResolver) Categories(ctx context.Context) ([]*model.Category, error) {
+	panic(fmt.Errorf("not implemented: Categories - categories"))
+}
