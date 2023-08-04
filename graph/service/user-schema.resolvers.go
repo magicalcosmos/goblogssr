@@ -7,39 +7,39 @@ package service
 import (
 	"context"
 	"fmt"
-	"math/rand"
+	"time"
 
-	"github.com/magicalcosmos/goblogssr/graph"
 	"github.com/magicalcosmos/goblogssr/graph/dao"
+	"github.com/magicalcosmos/goblogssr/graph/generated"
 	"github.com/magicalcosmos/goblogssr/graph/model"
 )
 
 // Login is the resolver for the login field.
 func (r *mutationResolver) Login(ctx context.Context, input model.NewUser) (bool, error) {
-	user := &model.User{
-		ID:       fmt.Sprintf("T%d", rand.Int()),
-		Username: input.Username,
-		Password: input.Password,
-	}
-	fmt.Println(user.Password)
-	return true, nil
+	panic(fmt.Errorf("not implemented: Login - login"))
 }
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
 }
 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	return dao.GetUserInfo(), nil
+	return dao.GetUserList(), nil
 }
 
-// Mutation returns graph.MutationResolver implementation.
-func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
+// CreateAt is the resolver for the createAt field.
+func (r *userResolver) CreateAt(ctx context.Context, obj *model.User) (*time.Time, error) {
+	panic(fmt.Errorf("not implemented: CreateAt - createAt"))
+}
 
-// Query returns graph.QueryResolver implementation.
-func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
+// UpdateAt is the resolver for the updateAt field.
+func (r *userResolver) UpdateAt(ctx context.Context, obj *model.User) (*time.Time, error) {
+	panic(fmt.Errorf("not implemented: UpdateAt - updateAt"))
+}
 
-type mutationResolver struct{ *Resolver }
-type queryResolver struct{ *Resolver }
+// User returns generated.UserResolver implementation.
+func (r *Resolver) User() generated.UserResolver { return &userResolver{r} }
+
+type userResolver struct{ *Resolver }

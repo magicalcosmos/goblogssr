@@ -4,7 +4,10 @@ schema:
 
 # Where should the generated server code go?
 exec:
-  filename: graph/generated.go
+  layout: follow-schema
+  dir: graph/generated
+  package: generated
+
 
 # Uncomment to enable federation
 # federation:
@@ -13,7 +16,7 @@ exec:
 
 # Where should any generated models go?
 model:
-  filename: graph/model/*.go
+  filename: graph/model/models_gen.go
   package: model
 
 # Where should the resolver implementations go?
@@ -43,6 +46,7 @@ autobind:
 # modelgen, the others will be allowed when binding to fields. Configure them to
 # your liking
 models:
+
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.ID

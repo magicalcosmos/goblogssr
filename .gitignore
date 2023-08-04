@@ -11,3 +11,4 @@ client/package-lock.json
 go.sum
 client/yarn.lock
 .vscode
+__debug_**

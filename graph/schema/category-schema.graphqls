@@ -1,0 +1,31 @@
+type Category {
+  id: ID!
+  name: String!
+  parentId: String!
+  sort: Int!
+  status: Int!
+  createAt: Time!
+  updateAt: Time!
+}
+
+input NewCategory {
+  id: ID
+  name: String
+  parentId: Int
+  sort: Int
+}
+
+extend type Query {
+  """ 获取分类目录列表 """
+  categories: [Category!]!
+
+}
+
+extend type Mutation {
+
+  """ 创建分类 """
+  createCategory(input: NewCategory!): Category!
+
+  """ 更新分类 """
+  updateCategory(input: NewCategory!): Category!
+}

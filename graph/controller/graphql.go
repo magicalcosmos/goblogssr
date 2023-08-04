@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/magicalcosmos/goblogssr/graph"
+	graph "github.com/magicalcosmos/goblogssr/graph/generated"
 	"github.com/magicalcosmos/goblogssr/graph/service"
 
 	"github.com/99designs/gqlgen/graphql/handler"

@@ -1,0 +1,49 @@
+
+type Article {
+  id: ID!
+  authorId: Int!
+  parentId: Int!
+  title: String!
+  brief: String!
+  content: String!
+  published: Int!
+  tag: String!
+  pv: Int!
+  review: Int!
+  recommend: Int!
+  like: Int!
+  status: Int!
+  createAt: Time!
+  updateAt: Time!
+}
+
+input NewArticle {
+  id: ID
+  authorId: Int
+  parentId: Int
+  title: String
+  brief: String
+  content: String
+  published: Int
+  tag: String
+  pv: Int
+  review: Int
+  recommend: Int
+  like: Int
+  status: Int
+}
+
+extend type Query {
+  """ 获取文章列表 """
+  articles: [Article!]!
+
+}
+
+extend type Mutation {
+
+  """ 创建文章 """
+  createArticle(input: NewArticle!): Article!
+
+  """ 更新文章 """
+  updateArticle(input: NewArticle!): Article!
+}

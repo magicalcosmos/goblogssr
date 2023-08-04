@@ -1,24 +1,29 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
-
 type User {
   id: ID!
   username: String!
   password: String!
   email: String!
   status: Int!
-}
-
-type Query {
-  users: [User!]!
+  createAt: Time!
+  updateAt: Time!
 }
 
 input NewUser {
   username: String!
   password: String!
 }
-type Mutation {
+
+extend type Query {
+
+  """ 获取用户列表 """
+  users: [User!]!
+}
+
+extend type Mutation {
+
+  """ 登录 """
   login(input: NewUser!): Boolean!
+
+  """ 创建用户 """
   createUser(input: NewUser!): User!
 }
