@@ -70,7 +70,7 @@
             <Button
               icon="pi pi-trash"
               class="p-button-rounded p-button-warning"
-              @click="confirmDeletePost(slotProps.data)"
+              @click="deletePost(slotProps.data)"
             />
           </template>
         </Column>
@@ -82,17 +82,31 @@
       class="dlg"
     >
       <template #header>
-        <h3>Create a new Post</h3>
+        <h3>{{ dialogTitle }}</h3>
       </template>
       <div class="content">
-
-        <InputText class="title" v-model="title" placeholder="type title" />
+        <InputText class="title" v-model="title" placeholder="type post category name" />
       </div>
       <template #footer>
-        <Button label="Cancel" class="p-button-text" @click="isCreatePost = false" />
-        <Button label="Create" @click="confirmCreate" />
+        <Button label="Cancel" class="p-button-text" @click="cancelCreate" />
+        <Button :label="currentPost ? 'Update' : 'Create'" @click="confirmCreate" />
       </template>
     </Dialog>
+    <Dialog
+      :visible.sync="isDeletePost"
+      :modal="true"
+      class="dlg"
+    >
+      <template #header>
+        <h3>Are you sure want to delete {{ currentPost.name }}</h3>
+      </template>
+      <div class="content">This canot be undone</div>
+      <template #footer>
+        <Button label="Cancel" class="p-button-text" @click="cancelDelete" />
+        <Button label="Delete" @click="confirmDeletePost" />
+      </template>
+    </Dialog>
+
 
   </section>
 </template>
@@ -107,31 +121,8 @@
   import Button from 'primevue/button';
   import FileUpload from 'primevue/fileupload';
   import Dialog from 'primevue/dialog';
+  import { Category } from '@/api';
 
-const posts = {
-	"data": [
-		{
-			"id": "1000",
-			"name": "Docker"
-		},
-		{
-			"id": "2000",
-			"name": "Frontend"
-		},
-    {
-			"id": "3000",
-			"name": "Golang"
-		},
-		{
-			"id": "4000",
-			"name": "Ubuntu"
-		},
-		{
-			"id": "5000",
-			"name": "other"
-		}
-	]
-};
   export default {
     components: {
       Button,
@@ -145,32 +136,87 @@ const posts = {
     data() {
       return {
         title: '',
-        posts: posts.data,
+        dialogTitle: 'Create a new Post Category',
+        posts: [],
         filters: {
           global: {
             value: ''
           }
         },
         selectedPosts: [],
-        isCreatePost: false
+        isCreatePost: false,
+        isDeletePost: false,
+        currentPost: null 
       }
     },
     methods: {
+      cancelCreate() {
+        this.isCreatePost = false;
+        this.currentPost = null;
+      },
+
+      cancelDelete() {
+        this.isDeletePost = false;
+        this.currentPost = null;
+      },
+
+      getDialogTitle(isCreate) {
+       this.dialogTitle = isCreate ? 'Create a new Post Category' : 'Update Post Category';
+      },
+
       openNew() {
         this.isCreatePost = true;
       },
-      confirmCreate() {},
-      
-      editPost() {},
-      confirmDeleteSelected() {
-        
-      },
-      confirmDeletePost() {
-        
-      },
-      exportCSV() {}
-    }
 
+      confirmCreate() {
+        const params = {
+          name: this.title,
+        };
+        if (this.currentPost) {
+          params.id = this.currentPost.id;
+        }
+        Category[this.currentPost ? 'update' : 'save'](params).then(() => {
+          this.currentPost = null
+          this.isCreatePost = false;
+          this.getList();
+        });
+      },
+      
+      editPost(data) {
+        this.currentPost = data;
+        this.title = data.name;
+        this.isCreatePost = true;
+      },
+
+      deletePost(data) {
+        this.currentPost = data;
+        this.isDeletePost = true;
+      },
+
+      confirmDeletePost() {
+        Category.del({
+          id: this.currentPost.id,
+        }).then(res => {
+          this.currentPost = null;
+          this.isDeletePost = false;
+          this.getList();
+        });
+      },
+
+      confirmDeleteSelected() {},
+
+      exportCSV() {},
+
+      getList() {
+        Category.list().then(res => {
+          this.posts = res.data.data.categoryList;
+        });
+      }
+    },
+
+    mounted() {
+      this.getList();
+    }
   }
 </script>
 <style scoped>

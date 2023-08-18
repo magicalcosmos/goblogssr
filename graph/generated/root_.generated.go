@@ -64,7 +64,7 @@ type ComplexityRoot struct {
 		CreateAt func(childComplexity int) int
 		ID       func(childComplexity int) int
 		Name     func(childComplexity int) int
-		ParentId func(childComplexity int) int
+		ParentID func(childComplexity int) int
 		Sort     func(childComplexity int) int
 		Status   func(childComplexity int) int
 		UpdateAt func(childComplexity int) int
@@ -74,6 +74,7 @@ type ComplexityRoot struct {
 		CreateArticle  func(childComplexity int, input model.NewArticle) int
 		CreateCategory func(childComplexity int, input model.NewCategory) int
 		CreateUser     func(childComplexity int, input model.NewUser) int
+		DeleteCategory func(childComplexity int, input model.NewCategory) int
 		Login          func(childComplexity int, input model.NewUser) int
 		UpdateArticle  func(childComplexity int, input model.NewArticle) int
 		UpdateCategory func(childComplexity int, input model.NewCategory) int
@@ -238,11 +239,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Category.Name(childComplexity), true
 
 	case "Category.parentId":
-		if e.complexity.Category.ParentId == nil {
+		if e.complexity.Category.ParentID == nil {
 			break
 		}
 
-		return e.complexity.Category.ParentId(childComplexity), true
+		return e.complexity.Category.ParentID(childComplexity), true
 
 	case "Category.sort":
 		if e.complexity.Category.Sort == nil {
@@ -300,6 +301,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(model.NewUser)), true
+
+	case "Mutation.deleteCategory":
+		if e.complexity.Mutation.DeleteCategory == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteCategory_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteCategory(childComplexity, args["input"].(model.NewCategory)), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -594,6 +607,9 @@ extend type Mutation {
 
   """ 更新分类 """
   updateCategory(input: NewCategory!): Category!
+
+  """ 删除分类 """
+  deleteCategory(input: NewCategory!): String!
 }`, BuiltIn: false},
 	{Name: "../schema/schema.graphqls", Input: `""" 文件上传 """
 scalar Upload

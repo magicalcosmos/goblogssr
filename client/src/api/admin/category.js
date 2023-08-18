@@ -1,23 +1,49 @@
 import { Ajax } from '@/utils';
-import * as CategoryGraphQL from '@/api/schema/category.graphql'
+import { CategorySchemas } from '@/schemas';
 const Category = {
   /**
    * query posts
    * @param {*} params 
    */
-  query(params) {
-
+  list(params) {
+    return Ajax.query({
+      apiName: 'categoryList',
+      variables: params
+    }, CategorySchemas.categoryListSchema)
   },
+
   /**
-   * Save the posts which user submit
+   * Save the posts
    * @param {*} params 
    */
   save(params) {
-    debugger;
     return Ajax.mutation({
       apiName: 'createCategory',
       variables: params
-    }, CategoryGraphQL.createCategory)
+    }, CategorySchemas.createCategorySchema)
+  },
+
+
+  /**
+   * update the posts 
+   * @param {*} params 
+   */
+  update(params) {
+    return Ajax.mutation({
+      apiName: 'updateCategory',
+      variables: params
+    }, CategorySchemas.updateCategorySchema)
+  },
+
+  /**
+   * delete the posts 
+   * @param {*} params 
+   */
+  del(params) {
+    return Ajax.mutation({
+      apiName: 'deleteCategory',
+      variables: params
+    }, CategorySchemas.deleteCategorySchema)
   }
 };
 export default Category;

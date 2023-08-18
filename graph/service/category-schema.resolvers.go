@@ -9,9 +9,15 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/magicalcosmos/goblogssr/graph/dao"
 	"github.com/magicalcosmos/goblogssr/graph/generated"
 	"github.com/magicalcosmos/goblogssr/graph/model"
 )
+
+// ParentID is the resolver for the parentId field.
+func (r *categoryResolver) ParentID(ctx context.Context, obj *model.Category) (string, error) {
+	panic(fmt.Errorf("not implemented: ParentID - parentId"))
+}
 
 // Sort is the resolver for the sort field.
 func (r *categoryResolver) Sort(ctx context.Context, obj *model.Category) (int, error) {
@@ -30,17 +36,32 @@ func (r *categoryResolver) UpdateAt(ctx context.Context, obj *model.Category) (*
 
 // CreateCategory is the resolver for the createCategory field.
 func (r *mutationResolver) CreateCategory(ctx context.Context, input model.NewCategory) (*model.Category, error) {
-	panic(fmt.Errorf("not implemented: CreateCategory - createCategory"))
+	var category = &model.Category{
+		Name: *input.Name,
+	}
+	return dao.SaveCategory(category), nil
 }
 
 // UpdateCategory is the resolver for the updateCategory field.
 func (r *mutationResolver) UpdateCategory(ctx context.Context, input model.NewCategory) (*model.Category, error) {
-	panic(fmt.Errorf("not implemented: UpdateCategory - updateCategory"))
+	var category = &model.Category{
+		ID:   *input.ID,
+		Name: *input.Name,
+	}
+	return dao.UpdateCategory(category), nil
+}
+
+// UpdateCategory is the resolver for the updateCategory field.
+func (r *mutationResolver) DeleteCategory(ctx context.Context, input model.NewCategory) (string, error) {
+	var category = &model.Category{
+		ID: *input.ID,
+	}
+	return dao.DeleteCategoryById(category), nil
 }
 
 // CategoryList is the resolver for the categoryList field.
 func (r *queryResolver) CategoryList(ctx context.Context) ([]*model.Category, error) {
-	panic(fmt.Errorf("not implemented: CategoryList - categoryList"))
+	return dao.GetCategoryList(), nil
 }
 
 // Category returns generated.CategoryResolver implementation.

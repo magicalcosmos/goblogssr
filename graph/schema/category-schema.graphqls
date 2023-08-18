@@ -28,4 +28,7 @@ extend type Mutation {
 
   """ 更新分类 """
   updateCategory(input: NewCategory!): Category!
+
+  """ 删除分类 """
+  deleteCategory(input: NewCategory!): String!
 }
