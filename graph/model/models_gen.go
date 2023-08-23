@@ -2,30 +2,45 @@
 
 package model
 
+import (
+	"time"
+)
+
 type NewArticle struct {
-	ID        *string `json:"id,omitempty"`
-	AuthorID  *int    `json:"authorId,omitempty"`
-	ParentID  *int    `json:"parentId,omitempty"`
-	Title     *string `json:"title,omitempty"`
-	Brief     *string `json:"brief,omitempty"`
-	Content   *string `json:"content,omitempty"`
-	Published *int    `json:"published,omitempty"`
-	Tag       *string `json:"tag,omitempty"`
-	Pv        *int    `json:"pv,omitempty"`
-	Review    *int    `json:"review,omitempty"`
-	Recommend *int    `json:"recommend,omitempty"`
-	Like      *int    `json:"like,omitempty"`
-	Status    *int    `json:"status,omitempty"`
+	ID         *int       `json:"id,omitempty"`
+	UserID     *int       `json:"userId,omitempty"`
+	CategoryID *int       `json:"categoryId,omitempty"`
+	Title      *string    `json:"title,omitempty"`
+	Brief      *string    `json:"brief,omitempty"`
+	Content    *string    `json:"content,omitempty"`
+	Published  *int       `json:"published,omitempty"`
+	PublishAt  *time.Time `json:"publishAt,omitempty"`
+	Tag        *string    `json:"tag,omitempty"`
+	Pv         *int       `json:"pv,omitempty"`
+	Review     *int       `json:"review,omitempty"`
+	Recommend  *int       `json:"recommend,omitempty"`
+	Like       *int       `json:"like,omitempty"`
+	Status     *int       `json:"status,omitempty"`
 }
 
 type NewCategory struct {
-	ID       *string `json:"id,omitempty"`
+	ID       *int    `json:"id,omitempty"`
 	Name     *string `json:"name,omitempty"`
 	ParentID *int    `json:"parentId,omitempty"`
 	Sort     *int    `json:"sort,omitempty"`
 }
 
 type NewUser struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	ID       *int    `json:"id,omitempty"`
+	Username *string `json:"username,omitempty"`
+	Password *string `json:"password,omitempty"`
+	Email    *string `json:"email,omitempty"`
+}
+
+type Page struct {
+	Content     *string `json:"content,omitempty"`
+	PageSize    *int    `json:"pageSize,omitempty"`
+	Total       *int    `json:"total,omitempty"`
+	CurrentPage *int    `json:"currentPage,omitempty"`
+	OrderBy     *string `json:"orderBy,omitempty"`
 }

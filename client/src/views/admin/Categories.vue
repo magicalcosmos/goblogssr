@@ -30,12 +30,16 @@
       </div>
       <DataTable
         :value="posts"
-        :paginator="true"
+        paginator
+        lazy
         :rows="10" 
+        dataKey="id"
+        :totalRecords="page.total"
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         :rowsPerPageOptions="[5,10,25]"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} categories" 
         responsiveLayout="scroll"
+        @page="handlePage($event)"
       >
         <template #header>
             <div class="table-header flex flex-column md:flex-row md:justify-content-between">
@@ -47,6 +51,7 @@
             </div>
         </template>
         <Column
+          className="ckb"
           selectionMode="multiple"
           :exportable="false"
         ></Column>
@@ -77,6 +82,7 @@
       </DataTable>
     </div>
     <Dialog
+      v-if="isCreatePost"
       :visible.sync="isCreatePost"
       :modal="true"
       class="dlg"
@@ -106,8 +112,6 @@
         <Button label="Delete" @click="confirmDeletePost" />
       </template>
     </Dialog>
-
-
   </section>
 </template>
 <script>
@@ -118,9 +122,9 @@
   import Column from 'primevue/column';
   import InputText from 'primevue/inputtext';
   import Toolbar from 'primevue/toolbar';
-  import Button from 'primevue/button';
   import FileUpload from 'primevue/fileupload';
   import Dialog from 'primevue/dialog';
+  import Button from 'primevue/button';
   import { Category } from '@/api';
 
   export default {
@@ -146,7 +150,12 @@
         selectedPosts: [],
         isCreatePost: false,
         isDeletePost: false,
-        currentPost: null 
+        currentPost: null,
+        page: {
+          currentPage: 1,
+          pageSize: 10,
+          total: 0,
+        }
       }
     },
     methods: {
@@ -165,7 +174,10 @@
       },
 
       openNew() {
+        this.title = '';
+        this.currentPost = null;
         this.isCreatePost = true;
+        this.getDialogTitle(true);
       },
 
       confirmCreate() {
@@ -186,13 +198,13 @@
         this.currentPost = data;
         this.title = data.name;
         this.isCreatePost = true;
+        this.getDialogTitle(false);
       },
 
       deletePost(data) {
         this.currentPost = data;
         this.isDeletePost = true;
       },
-
       confirmDeletePost() {
         Category.del({
           id: this.currentPost.id,
@@ -208,9 +220,16 @@
       exportCSV() {},
 
       getList() {
-        Category.list().then(res => {
-          this.posts = res.data.data.categoryList;
+        Category.list(this.page).then(res => {
+          this.posts = res.categoryList.categories;
+          this.page = Object.assign(this.page, res.categoryList.page);
         });
+      },
+
+      handlePage(event) {
+        this.page.currentPage = ++event.page;
+        this.page.pageSize = event.rows;
+        this.getList();
       }
     },
 
@@ -233,6 +252,10 @@
 
 :deep(.p-datatable) .p-datatable-tbody > tr > td {
   padding: 8px;
+}
+
+:deep(.p-datatable) .p-datatable-tbody > tr > td.ckb {
+  padding-left: 16px;
 }
 
 :deep(.p-button).p-button-icon-only.p-button-rounded {

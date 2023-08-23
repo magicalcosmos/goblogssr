@@ -34,6 +34,17 @@ func (r *categoryResolver) UpdateAt(ctx context.Context, obj *model.Category) (*
 	panic(fmt.Errorf("not implemented: UpdateAt - updateAt"))
 }
 
+// Page is the resolver for the page field.
+func (r *categoryWithPageResolver) Page(ctx context.Context, obj *model.CategoryWithPage) (*model.Page, error) {
+	return &model.Page{
+		Content:     &obj.Page.Content,
+		PageSize:    &obj.Page.PageSize,
+		Total:       &obj.Page.Total,
+		CurrentPage: &obj.Page.CurrentPage,
+		OrderBy:     &obj.Page.OrderBy,
+	}, nil
+}
+
 // CreateCategory is the resolver for the createCategory field.
 func (r *mutationResolver) CreateCategory(ctx context.Context, input model.NewCategory) (*model.Category, error) {
 	var category = &model.Category{
@@ -60,14 +71,20 @@ func (r *mutationResolver) DeleteCategory(ctx context.Context, input model.NewCa
 }
 
 // CategoryList is the resolver for the categoryList field.
-func (r *queryResolver) CategoryList(ctx context.Context) ([]*model.Category, error) {
-	return dao.GetCategoryList(), nil
+func (r *queryResolver) CategoryList(ctx context.Context, input model.Q) (*model.CategoryWithPage, error) {
+	return dao.GetCategoryList(input), nil
 }
 
 // Category returns generated.CategoryResolver implementation.
 func (r *Resolver) Category() generated.CategoryResolver { return &categoryResolver{r} }
 
+// CategoryWithPage returns generated.CategoryWithPageResolver implementation.
+func (r *Resolver) CategoryWithPage() generated.CategoryWithPageResolver {
+	return &categoryWithPageResolver{r}
+}
+
 type categoryResolver struct{ *Resolver }
+type categoryWithPageResolver struct{ *Resolver }
 
 // !!! WARNING !!!
 // The code below was going to be deleted when updating resolvers. It has been copied here so you have

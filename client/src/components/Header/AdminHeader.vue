@@ -1,5 +1,6 @@
 <template lang="html">
   <header class="header">
+    <Toast></Toast>
     <nav class="primary-navbar">
       <div class="container clearfix">
         <ul class="left-list">
@@ -39,9 +40,10 @@
 </template>
 <script>
   import 'primeicons/primeicons.css';
+  import Toast from 'primevue/toast';
   export default {
     components: {
-      
+      Toast,
     },
     watch: {
       '$route'() {

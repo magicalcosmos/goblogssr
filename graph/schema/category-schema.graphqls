@@ -1,5 +1,5 @@
 type Category {
-  id: ID!
+  id: Int!
   name: String!
   parentId: String!
   sort: Int!
@@ -8,8 +8,14 @@ type Category {
   updateAt: Time!
 }
 
+type CategoryWithPage {
+  categories: [Category!]!
+  page: Page!
+}
+
+
 input NewCategory {
-  id: ID
+  id: Int
   name: String
   parentId: Int
   sort: Int
@@ -17,8 +23,7 @@ input NewCategory {
 
 extend type Query {
   """ 获取分类目录列表 """
-  categoryList: [Category!]!
-
+  categoryList(input: Q!): CategoryWithPage!
 }
 
 extend type Mutation {

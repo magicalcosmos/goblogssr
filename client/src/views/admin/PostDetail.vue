@@ -1,14 +1,18 @@
 <template lang="html">
+<section>
   <ul class="post-detail">
     <li class="posts-item">
       <label>{{$t('markdown.title')}}:</label>
-      <InputText class="post-title"/>
+      <InputText
+        v-model="data.title"
+        class="post-title"
+      />
     </li>
     <li class="posts-item">
       <label>{{$t('common.state')}}:</label>
       <Dropdown
         class="dropdown"
-        v-model="state"
+        v-model="data.published"
         :options="states"
         optionLabel="name"
         optionValue="code"
@@ -19,7 +23,7 @@
       <label>{{$t('common.author')}}:</label>
       <Dropdown
         class="dropdown"
-        v-model="user"
+        v-model="data.userId"
         :options="users"
         optionLabel="name"
         optionValue="code"
@@ -30,9 +34,11 @@
       <label for="calendar">{{$t('common.publish_date')}}:</label>
       <Calendar
         id="calendar"
-        v-model="publish_date"
+        v-model="data.publishAt"
         dateFormat="yy-mm-dd"
         :showIcon="true"
+        :showTime="true"
+        :showSeconds="true"
       />
       <Button
         :label="$t('button.today')"
@@ -43,7 +49,8 @@
     <li class="posts-item">
       <label>{{$t('markdown.content_brief')}}:</label>
       <editor
-      :initialValue="editorText"
+      ref="refBrief"
+      :initialValue="brief"
       :options="editorOptions"
       @load="onEditorLoad"
       @focus="onEditorFocus"
@@ -57,7 +64,8 @@
     <li class="posts-item">
       <label>{{$t('markdown.content_extended')}}:</label>
       <editor
-      :initialValue="editorText"
+      ref="refContent"
+      :initialValue="content"
       :options="editorOptions"
       @load="onEditorLoad"
       @focus="onEditorFocus"
@@ -71,7 +79,7 @@
       <label>{{$t('backend.category')}}:</label>
       <Dropdown
         class="dropdown"
-        v-model="category"
+        v-model="data.categoryId"
         :options="categories"
         optionLabel="name"
         optionValue="code"
@@ -84,10 +92,27 @@
         :label="$t('button.save')"
         @click="savePost"
       />
-      <a href="#" class="reset">reset changes</a>
-      <a href="#" class="delete-post">delete-post</a>
+      <a href="#" class="reset" @click="resetPost">reset changes</a>
+      <a href="#" class="delete-post" @click="isDeletePost = true">delete-post</a>
     </li>
   </ul>
+    <Dialog
+      :visible.sync="isDeletePost"
+      :modal="true"
+      class="dlg"
+    >
+      <template #header>
+        <div class="dialog-title">Are you sure want to delete <span class="special">{{ data.title }}</span></div>
+      </template>
+      <div class="content">This canot be undone</div>
+      <template #footer>
+        <div>
+          <Button label="Cancel" class="p-button-text" @click="isDeletePost = false" />
+          <Button label="Delete" @click="deletePost" />
+        </div>
+      </template>
+    </Dialog>
+</section>
 </template>
 <script>
 import '@toast-ui/editor/dist/toastui-editor.css';
@@ -109,6 +134,9 @@ import uml from '@toast-ui/editor-plugin-uml';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
+import Dialog from 'primevue/dialog';
+import { User, Article, Category } from '@/api';
+import { formatDate, formatToGreenDate } from '@/utils/time';
 
 export default {
   components: {
@@ -116,61 +144,36 @@ export default {
     Editor,
     InputText,
     Dropdown,
-    Button
+    Button,
+    Dialog,
   },
   data() {
     return {
+      data: {},
       publish_date: null, 
-      state: 1,
+      isDeletePost: false,
       states: [
         {
           name: 'Draft',
-          code: 1
+          code: 0
         },
         {
           name: 'Published',
-          code: 2
+          code: 1
         },
         {
           name: 'Archived',
-          code: 3
-        }
-      ],
-      user: 2,
-      users: [
-        {
-          name: 'Admin User',
-          code: 1
-        },
-        {
-          name: 'Brody Liao',
           code: 2
         }
       ],
-      category: 1,
-      categories: [
-        {
-          name: 'Docker',
-          code: 1
-        },
-        {
-          name: 'Frontend',
-          code: 2
-        },
-        {
-          name: 'Golang',
-          code: 3
-        },
-        {
-          name: 'Ubuntu',
-          code: 4
-        },
-        {
-          name: 'other',
-          code: 5
-        },
-      ],
-      editorText: '',
+      users: [],
+      categories: [],
+      brief: '',
+      content: '',
+      page: {
+        currentPage: 1,
+        pageSize: 100000,
+      },
       editorOptions: {
         plugins: [chart, [codeSyntaxHighlight, { highlighter: Prism }], colorSyntax, tableMergedCell, uml]
       }
@@ -208,7 +211,77 @@ export default {
       const day = today.getUTCDate();
       this.publish_date = `${today.getUTCFullYear()}-${ month > 10 ? month : '0' + month }-${day > 10 ? day : '0' + day}`;
     },
-    savePost() {}
+    savePost() {
+      this.data.brief = this.$refs.refBrief.invoke('getHTML');
+      this.data.content = this.$refs.refContent.invoke('getHTML');
+      Article.update(Object.assign(this.data, {
+        publishAt: formatToGreenDate(new Date(this.data.publishAt)),
+      })).then(() => {
+        this.$toast.add({severity:'success', summary: 'Warm Tip', detail:'Save Success', life: 3000});
+
+        this.$router.push({
+          name: 'Posts',
+        })
+      });
+    },
+
+    getUserList() {
+      User.list(this.page).then(res => {
+        this.users = [];
+        res.userList.users.forEach(item => {
+          this.users.push({
+            name: item.username,
+            code: item.id,
+          });
+        });
+
+        this.handleCommonResult();
+      });
+    },
+    getCategoryList() {
+      Category.list(this.page).then(res => {
+        this.categories = [];
+        res.categoryList.categories.forEach(item => {
+          this.categories.push({
+            name: item.name,
+            code: item.id,
+          });
+        });
+
+        this.handleCommonResult();
+      });
+    },
+    handleCommonResult() {
+      if (this.users.length && this.categories.length) {
+        this.getArticleById();
+      }
+    },
+    /**
+     * 根据ID获取文章
+     */
+    getArticleById() {
+      Article.getArticleById({
+        id: this.$route.params.id
+      }).then(res => {
+        const data = res.getArticleById;
+        data.publishAt = formatDate(new Date(data.publishAt));
+        this.data = data;
+        this.$refs.refBrief.invoke('setHTML', this.data.brief);
+        this.$refs.refContent.invoke('setHTML', this.data.content);
+      });
+    },
+
+    resetPost() {
+      this.getArticleById();
+    },
+
+    deletePost() {
+      Article.del({ id: this.data.id }).then(() => {});
+    }
+  },
+  mounted() {
+    this.getCategoryList();
+    this.getUserList();
   }
 };
 </script>
@@ -259,5 +332,9 @@ export default {
 
   .post-detail .posts-item.operate .delete-post {
     float: right;
+  }
+
+  .dialog-title .special {
+    font-weight: bold;
   }
 </style>

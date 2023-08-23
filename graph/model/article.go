@@ -4,9 +4,9 @@ import "time"
 
 // User User
 type Article struct {
-	ID         string    `json:"id" db:"id"`
-	AuthorId   string    `json:"authorId" db:"author_id"`
-	ParentId   string    `json:"parentId" db:"parent_id"`
+	ID         int       `json:"id" db:"id"`
+	UserId     int       `json:"userId" db:"user_id"`
+	CategoryId int       `json:"categoryId" db:"category_id"`
 	Title      string    `json:"title" db:"title"`
 	Brief      string    `json:"brief" db:"brief"`
 	Content    string    `json:"content" db:"content"`
@@ -17,8 +17,9 @@ type Article struct {
 	Recommend  int       `json:"recommend" db:"recommend"`
 	Like       int       `json:"like" db:"like"`
 	Status     int       `json:"status" db:"status"`
-	CreateTime time.Time `json:"createAt" db:"create_time"`
-	UpdateTime time.Time `json:"updateAt" db:"update_time"`
+	CreateAt   time.Time `json:"createAt" db:"create_time"`
+	PublishAt  time.Time `json:"publishAt" db:"publish_time"`
+	UpdateAt   time.Time `json:"updateAt" db:"update_time"`
 }
 
 type ArticleCategory struct {
@@ -29,4 +30,9 @@ type ArticleCategory struct {
 type ArticleTag struct {
 	ArticleId string `json:"articleId" db:"article_id"`
 	TagId     string `json:"tagId" db:"tag_id"`
+}
+
+type ArticleWithPage struct {
+	Articles []Article `json:"articles"`
+	Page     Q         `json:"page"`
 }

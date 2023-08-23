@@ -2,35 +2,16 @@
   <section class="home">
     <div class="content">
       <ul class="content-list">
-        <li class="content-item">
+        <li v-for="item in articles" class="content-item">
           <h2>
-            <a href="#/blog/0">[Vim] [MacOS] Enable vim shortcuts keys in terminal</a>
+            <a :href="`#/blog/${item.id}`">{{ item.title }}</a>
           </h2> 
           <div class="author">
             <span>所属目录：Frontend</span>
             <span>创建者：Brody</span>
-            <span>创建时间：2012-01-01</span>
+            <span>创建时间：{{formatDate(new Date(item.publishAt))}}</span>
           </div>
-          <div class="bref">
-            <viewer
-              initialValue="### test"
-            />
-          </div>
-        </li>
-        <li class="content-item">
-          <h2>
-            <a href="#/blog/1">[Vim] [MacOS] Enable vim shortcuts keys in terminal</a>
-          </h2> 
-          <div class="author">
-            <span>所属目录：Frontend</span>
-            <span>创建者：Brody</span>
-            <span>创建时间：2012-01-01</span>
-          </div>
-          <div class="bref">
-            <viewer
-              initialValue="### test"
-            />
-          </div>
+          <div class="brief" v-html="item.brief"></div>
         </li>
       </ul>
     </div>
@@ -43,7 +24,13 @@
         >{{ item.name }}</li>
       </ul>
     </div>
-    <Paginator :rows="10" :totalRecords="totalRecords" :rowsPerPageOptions="[10,20,30]"></Paginator>
+    <Paginator
+      v-if="page.total"
+      :rows="page.pageSize"
+      :totalRecords="page.total"
+      :rowsPerPageOptions="[10,20,30]"
+      @page="onPage($event)"
+    ></Paginator>
   </section>
 </template>
 <script>
@@ -58,6 +45,10 @@
   import Paginator from 'primevue/paginator';
   // import { Parser, createRenderHTML } from '@toast-ui/toastmark';
   import { Viewer } from '@toast-ui/vue-editor';
+
+  import { Article, Category } from '@/api';
+  import { formatDate } from '@/utils/time'
+
   export default {
     components: {
       Viewer,
@@ -65,36 +56,49 @@
     },
     data() {
       return {
-        page: 1,
-        totalRecords: 120,
+        formatDate: formatDate,
+        page: {
+          currentPage: 1,
+          pageSize: 10,
+        },
+        articles: [],
         categories: [
           {
             name: 'All Categories',
             className: 'all'
-          },
-          {
-            name: 'Docker'
-          },
-          {
-            name: 'Frontend'
-          },
-          {
-            name: 'Golang'
-          },
-          {
-            name: 'Ubuntu'
-          },
-          {
-            name: 'other'
           }
         ]
       }
     },
     methods: {
-      
+      getArticleList() {
+        Article.list(this.page).then(res => {
+          this.articles = res.articleList.articles;
+          this.page = Object.assign(this.page, res.articleList.page);
+        });
+      },
+      getCategoryList() {
+        Category.list({
+          currentPage: 1,
+          pageSize: 10000,
+        }).then(res => {
+          res.categoryList.categories.forEach((item) => {
+            this.categories.push({
+              name: item.name
+            })
+          });
+          this.page = Object.assign(this.page, res.categoryList.page);
+        });
+      },
+      onPage(event) {
+        this.page.currentPage = ++event.page;
+        this.page.pageSize = event.rows;
+        this.getArticleList();
+      }
     },
     mounted() {
-      
+      this.getArticleList();
+      this.getCategoryList();
     }
   }
 </script>
@@ -112,7 +116,9 @@
     width: 75%;
   }
 
-  .content .bref {
+  .content .brief {
+    padding: 10px 0;
+    word-break: break-all;
     white-space: pre-wrap;
   }
 

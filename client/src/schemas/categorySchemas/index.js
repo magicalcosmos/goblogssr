@@ -1,9 +1,16 @@
 /** 获取文章目录 */
 const categoryListSchema = `
-  query categoryList() {
-    categoryList() {
-      id
-      name
+  query categoryList($currentPage: Int!, $pageSize: Int!) {
+    categoryList(input: {currentPage: $currentPage, pageSize: $pageSize}) {
+      categories {
+        id
+        name
+      }
+      page {
+        currentPage
+        pageSize
+        total
+      }
     }
   }
 `;
@@ -20,7 +27,7 @@ const createCategorySchema = `
 
 /** 更新文章目录 */
 const updateCategorySchema = `
-  mutation updateCategory($name: String!, $id: ID!) {
+  mutation updateCategory($name: String!, $id: Int!) {
     updateCategory(input: { name: $name, id: $id }) {
       name
     }
@@ -30,7 +37,7 @@ const updateCategorySchema = `
 
 /** 删除文章目录 */
 const deleteCategorySchema = `
-  mutation deleteCategory($id: ID!) {
+  mutation deleteCategory($id: Int!) {
     deleteCategory(input: { id: $id })
   }
 `;

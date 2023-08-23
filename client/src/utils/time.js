@@ -17,23 +17,41 @@ var lastMonth = lastMonthDate.getMonth();
  * 格式化日期：yyyy-MM-dd
  * @param {*} date 
  */
-function formatDate(date) {
-  var myyear = date.getFullYear();
-  var mymonth = date.getMonth() + 1;
-  var myweekday = date.getDate();
-  if (mymonth < 10) {
-    mymonth = '0' + mymonth;
-  }
-  if (myweekday < 10) {
-    myweekday = '0' + myweekday;
-  }
-  return (myyear + '-' + mymonth + '-' + myweekday);
+export function formatDate(date) {
+  let year = date.getUTCFullYear();
+  let month = date.getUTCMonth() + 1;
+  let day = date.getUTCDate();
+  let hour = date.getUTCHours();
+  let minute = date.getUTCMinutes();
+  let second = date.getUTCSeconds();
+
+  return `${year}-${compareWithZero(month)}-${compareWithZero(day)} ${compareWithZero(hour)}:${compareWithZero(minute)}:${compareWithZero(second)}`;
 }
+
+/**
+ * 格式化日期：yyyy-MM-dd
+ * @param {*} date 
+ */
+export function formatToGreenDate(date) {
+  let year = date.getUTCFullYear();
+  let month = date.getUTCMonth() + 1;
+  let day = date.getUTCDate();
+  let hour = date.getUTCHours();
+  let minute = date.getUTCMinutes();
+  let second = date.getUTCSeconds();
+
+  return `${year}-${compareWithZero(month)}-${compareWithZero(day)}T${compareWithZero(hour)}:${compareWithZero(minute)}:${compareWithZero(second)}Z`;
+}
+
+export function compareWithZero(n) {
+  return n > 9 ? n : `0${n}`;
+}
+
 /**
  * 获得某月的天数
  * @param {*} myMonth 
  */
-function getMonthDays(myMonth) {
+export function getMonthDays(myMonth) {
   var monthStartDate = new Date(nowYear, myMonth, 1);
   var monthEndDate = new Date(nowYear, myMonth + 1, 1);
   var days = (monthEndDate - monthStartDate) / (1000 * 60 * 60 * 24);
@@ -42,7 +60,7 @@ function getMonthDays(myMonth) {
 /**
  * 获得本季度的开始月份
  */
-function getQuarterStartMonth() {
+export function getQuarterStartMonth() {
   var quarterStartMonth = 0;
   if (nowMonth < 3) {
     quarterStartMonth = 0;
@@ -89,42 +107,42 @@ Time.getLastWeekEndDate = function getLastWeekEndDate() {
 /**
  * 获得本月的开始日期
  */
-function getMonthStartDate() {
+export function getMonthStartDate() {
   var monthStartDate = new Date(nowYear, nowMonth, 1);
   return formatDate(monthStartDate);
 }
 /**
  * 获得本月的结束日期
  */
-function getMonthEndDate() {
+export function getMonthEndDate() {
   var monthEndDate = new Date(nowYear, nowMonth, getMonthDays(nowMonth));
   return formatDate(monthEndDate);
 }
 /**
  * 获得上月开始时间
  */
-function getLastMonthStartDate() {
+export function getLastMonthStartDate() {
   var lastMonthStartDate = new Date(nowYear, lastMonth, 1);
   return formatDate(lastMonthStartDate);
 }
 /**
  * 获得上月结束时间
  */
-function getLastMonthEndDate() {
+export function getLastMonthEndDate() {
   var lastMonthEndDate = new Date(nowYear, lastMonth, getMonthDays(lastMonth));
   return formatDate(lastMonthEndDate);
 }
 /**
  * 获得本季度的开始日期
  */
-function getQuarterStartDate() {
+export function getQuarterStartDate() {
   var quarterStartDate = new Date(nowYear, getQuarterStartMonth(), 1);
   return formatDate(quarterStartDate);
 }
 /**
  * 获得本季度的结束日期
  */
-function getQuarterEndDate() {
+export function getQuarterEndDate() {
   var quarterEndMonth = getQuarterStartMonth() + 2;
   var quarterStartDate = new Date(nowYear, quarterEndMonth,
     getMonthDays(quarterEndMonth));

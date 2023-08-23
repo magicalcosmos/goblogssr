@@ -3,3 +3,19 @@ scalar Upload
 scalar Any
 scalar Time
 scalar Map
+
+input Q {
+	content:     String
+	pageSize:    Int
+	total:       Int 
+	currentPage: Int 
+	orderBy:     String
+}
+
+type Page {
+	content:     String
+	pageSize:    Int
+	total:       Int 
+	currentPage: Int 
+	orderBy:     String
+}

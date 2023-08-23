@@ -30,12 +30,16 @@
       </div>
       <DataTable
         :value="posts"
-        :paginator="true"
+        lazy
+        paginator
         :rows="10" 
+        dataKey="id"
+        :totalRecords="page.total"
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         :rowsPerPageOptions="[5,10,25]"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} posts" 
         responsiveLayout="scroll"
+        @page="handlePage($event)"
       >
         <template #header>
             <div class="table-header flex flex-column md:flex-row md:justify-content-between">
@@ -47,6 +51,7 @@
             </div>
         </template>
         <Column
+          className="ckb"
           selectionMode="multiple"
           :exportable="false"
         ></Column>
@@ -98,7 +103,7 @@
       class="dlg"
     >
       <template #header>
-        <h3>Create a new Post</h3>
+        <h3>{{ dialogTitle }}</h3>
       </template>
       <div class="content">
 
@@ -123,39 +128,8 @@
   import Button from 'primevue/button';
   import FileUpload from 'primevue/fileupload';
   import Dialog from 'primevue/dialog';
+  import { Article } from '@/api';
 
-const posts = {
-	"data": [
-		{
-			"id": "1000",
-			"title": "[NodeJS] NodeJS基本工作原理及流程",
-			"state": "Published",
-			"author": "Admin User",
-			"published_date": "May 12th 2023",
-		},
-		{
-			"id": "2000",
-			"title": "[NodeJS] NodeJS基本工作原理及流程",
-			"state": "Published",
-			"author": "Admin User",
-			"published_date": "May 12th 2023",
-		},
-		{
-			"id": "3000",
-			"title": "[NodeJS] NodeJS基本工作原理及流程",
-			"state": "Published",
-			"author": "Admin User",
-			"published_date": "May 12th 2023",
-		},
-		{
-			"id": "4000",
-			"title": "[NodeJS] NodeJS基本工作原理及流程",
-			"state": "Published",
-			"author": "Admin User",
-			"published_date": "May 12th 2023",
-		},
-	]
-};
   export default {
     components: {
       Button,
@@ -169,22 +143,50 @@ const posts = {
     data() {
       return {
         title: '',
-        posts: posts.data,
+        posts: [],
         filters: {
           global: {
             value: ''
           }
         },
+        currentPost: null,
         selectedPosts: [],
-        isCreatePost: false
+        isCreatePost: false,
+        dialogTitle: 'Create a new Post Article',
+        page: {
+          currentPage: 1,
+          pageSize: 10,
+          total: 0,
+        },
       }
     },
     methods: {
       openNew() {
         this.isCreatePost = true;
       },
-      confirmCreate() {},
-      
+
+      getDialogTitle(isCreate) {
+        this.dialogTitle = isCreate ? 'Create a new Post Article' : 'Update Post Article';
+      },
+
+      confirmCreate() {
+        const params = {
+          title: this.title,
+        };
+        if (this.currentPost) {
+          params.id = this.currentPost.id;
+        }
+        Article[this.currentPost ? 'update' : 'save'](params).then((data) => {
+          this.currentPost = null
+          this.isCreatePost = false;
+          this.$router.push({
+            name: 'PostDetail',
+            params: {
+              id: data.createArticle.id
+            }
+          })
+        });
+      },
       editPost() {},
       confirmDeleteSelected() {
         
@@ -192,9 +194,24 @@ const posts = {
       confirmDeletePost() {
         
       },
-      exportCSV() {}
-    }
+      exportCSV() {},
 
+      getList() {
+        Article.list(this.page).then(res => {
+          this.posts = res.articleList.articles;
+          this.page = Object.assign(this.page, res.articleList.page);
+        });
+      },
+
+      handlePage(event) {
+        this.page.currentPage = ++event.page;
+        this.page.pageSize = event.rows;
+        this.getList();
+      },
+    },
+    mounted() {
+      this.getList();
+    },
   }
 </script>
 <style scoped>
@@ -211,6 +228,10 @@ const posts = {
 
 :deep(.p-datatable) .p-datatable-tbody > tr > td {
   padding: 8px;
+}
+
+:deep(.p-datatable) .p-datatable-tbody > tr > td.ckb {
+  padding-left: 16px;
 }
 
 :deep(.p-button).p-button-icon-only.p-button-rounded {

@@ -1,5 +1,5 @@
 type User {
-  id: ID!
+  id: Int!
   username: String!
   password: String!
   email: String!
@@ -8,15 +8,23 @@ type User {
   updateAt: Time!
 }
 
-input NewUser {
-  username: String!
-  password: String!
+type UserWithPage {
+  users: [User!]!
+  page: Page!
 }
+
+input NewUser {
+  id: Int
+  username: String
+  password: String
+  email: String
+}
+
 
 extend type Query {
 
   """ 获取用户列表 """
-  userList: [User!]!
+  userList(input: Q!): UserWithPage!
 }
 
 extend type Mutation {
@@ -26,4 +34,10 @@ extend type Mutation {
 
   """ 创建用户 """
   createUser(input: NewUser!): User!
+
+  """ 更新用户 """
+  updateUser(input: NewUser!): User!
+
+  """ 删除用户 """
+  deleteUser(input: NewUser!): String!
 }

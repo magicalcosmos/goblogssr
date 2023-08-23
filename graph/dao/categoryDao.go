@@ -9,24 +9,35 @@ import (
 )
 
 // 获取文章目录列表
-func GetCategoryList() (category []*model.Category) {
-	err := db.DB.Select(&category, "SELECT * FROM category where status=1 order by create_time desc")
+func GetCategoryList(input model.Q) *model.CategoryWithPage {
+	// 获取总数
+	var count []int
+	err := db.DB.Select(&count, "SELECT COUNT(*) FROM category WHERE status=1")
 	if err != nil {
 		fmt.Println("GetCategoryList occur error: ", err)
 	}
-	return category
+
+	// 获取具体的值
+	categoryWithPage := &model.CategoryWithPage{}
+	limitStart := (input.CurrentPage - 1) * input.PageSize
+	err = db.DB.Select(&categoryWithPage.Categories, "SELECT * FROM category WHERE status=1 ORDER BY create_time DESC LIMIT ?, ?", limitStart, input.PageSize)
+	if err != nil {
+		fmt.Println("GetCategoryList occur error: ", err)
+	}
+	categoryWithPage.Page.CurrentPage = input.CurrentPage
+	categoryWithPage.Page.PageSize = input.PageSize
+	categoryWithPage.Page.Total = count[0]
+	return categoryWithPage
 }
 
 // 保存文章目录列表
-func SaveCategory(ca *model.Category) (category *model.Category) {
+func SaveCategory(data *model.Category) (category *model.Category) {
 	currentTime := time.Now()
 	date, _ := time.Parse("2006-01-02 15:04:05", currentTime.Format("2006-01-02 15:04:05"))
-	ca.CreateTime = date
-	ca.UpdateTime = date
 	_, err := db.DB.NamedExec(`INSERT INTO category (name,create_time,update_time) VALUES (:name,:createTime,:updateTime)`, map[string]interface{}{
-		"name":       ca.Name,
-		"createTime": ca.CreateTime,
-		"updateTime": ca.UpdateTime,
+		"name":       data.Name,
+		"createTime": date,
+		"updateTime": date,
 	})
 	if err != nil {
 		fmt.Println("SaveCategory occur error: ", err)
@@ -35,33 +46,32 @@ func SaveCategory(ca *model.Category) (category *model.Category) {
 }
 
 // 更新文章目录列表
-func UpdateCategory(ca *model.Category) (category *model.Category) {
+func UpdateCategory(data *model.Category) (category *model.Category) {
 	currentTime := time.Now()
 	date, _ := time.Parse("2006-01-02 15:04:05", currentTime.Format("2006-01-02 15:04:05"))
-	ca.UpdateTime = date
 	_, err := db.DB.NamedExec(`UPDATE category SET name=:name, update_time=:updateTime WHERE id=:id`, map[string]interface{}{
-		"id":         ca.ID,
-		"name":       ca.Name,
-		"updateTime": ca.UpdateTime,
+		"id":         data.ID,
+		"name":       data.Name,
+		"updateTime": date,
 	})
 	if err != nil {
-		fmt.Println("SaveCategory occur error: ", err)
+		fmt.Println("UpdateCategory occur error: ", err)
 	}
 	return category
 }
 
 // 根据ID删除文章目录
-func DeleteCategoryById(ca *model.Category) string {
+func DeleteCategoryById(data *model.Category) string {
 	currentTime := time.Now()
 	date, _ := time.Parse("2006-01-02 15:04:05", currentTime.Format("2006-01-02 15:04:05"))
-	ca.UpdateTime = date
+	data.UpdateTime = date
 	_, err := db.DB.NamedExec(`UPDATE category SET status=:status, update_time=:updateTime WHERE id=:id`, map[string]interface{}{
-		"id":         ca.ID,
+		"id":         data.ID,
 		"status":     2,
-		"updateTime": ca.UpdateTime,
+		"updateTime": data.UpdateTime,
 	})
 	if err != nil {
-		fmt.Println("SaveCategory occur error: ", err)
+		fmt.Println("DeleteCategoryById occur error: ", err)
 	}
 	return "Success"
 }

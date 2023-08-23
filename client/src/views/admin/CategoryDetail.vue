@@ -21,7 +21,6 @@ export default {
       Category.save({
         name: this.category
       }).then(() => {
-        debugger;
       })
     }
   }

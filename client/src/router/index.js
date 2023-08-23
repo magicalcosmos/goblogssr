@@ -14,22 +14,27 @@ export function createRouter () {
             hidden: true,
             children: [
               {
+                name: 'Home',
                 path: '',
                 component: () => import('@/views/Home')
               },
               {
+                name: 'Blog',
                 path: '/blog',
                 component: () => import('@/views/Blog')
               },
               {
+                name: 'BlogDetails',
                 path: '/blog/:id',
                 component: () => import('@/views/BlogDetails')
               },
               {
+                name: 'Gallery',
                 path: '/gallery',
                 component: () => import('@/views/Gallery')
               },
               {
+                name: 'Contact',
                 path: '/contact',
                 component: () => import('@/views/Contact')
               }
@@ -42,6 +47,7 @@ export function createRouter () {
             hidden: true,
             children: [
               {
+                name: 'Admin',
                 path: '',
                 component: () => import('@/views/admin'),
                 meta: {
@@ -49,6 +55,7 @@ export function createRouter () {
                 }
               },
               {
+                name: 'Posts',
                 path: '/admin/posts',
                 component: () => import('@/views/admin/Posts'),
                 meta: {
@@ -56,6 +63,7 @@ export function createRouter () {
                 }
               },
               {
+                name: 'PostDetail',
                 path: '/admin/posts/:id',
                 component: () => import('@/views/admin/PostDetail'),
                 meta: {
@@ -63,6 +71,7 @@ export function createRouter () {
                 }
               },
               {
+                name: 'Categories',
                 path: '/admin/categories',
                 component: () => import('@/views/admin/Categories'),
                 meta: {
@@ -70,6 +79,7 @@ export function createRouter () {
                 }
               },
               {
+                name: 'CategoryDetail',
                 path: '/admin/categories/:id',
                 component: () => import('@/views/admin/CategoryDetail'),
                 meta: {
@@ -77,13 +87,7 @@ export function createRouter () {
                 }
               },
               {
-                path: '/admin/category/:id',
-                component: () => import('@/views/admin/CategoryDetail'),
-                meta: {
-                  hasNav: true
-                }
-              },
-              {
+                name: 'Galleries',
                 path: '/admin/galleries',
                 component: () => import('@/views/admin/Galleries'),
                 meta: {
@@ -91,6 +95,7 @@ export function createRouter () {
                 }
               },
               {
+                name: 'GalleryDetail',
                 path: '/admin/galleries/:id',
                 component: () => import('@/views/admin/GalleryDetail'),
                 meta: {
@@ -98,6 +103,7 @@ export function createRouter () {
                 }
               },
               {
+                name: 'Enquiries',
                 path: '/admin/enquiries',
                 component: () => import('@/views/admin/Enquiries'),
                 meta: {
@@ -105,6 +111,7 @@ export function createRouter () {
                 }
               },
               {
+                name: 'EnquiryDetail',
                 path: '/admin/enquiries/:id',
                 component: () => import('@/views/admin/EnquiryDetail'),
                 meta: {
@@ -112,6 +119,7 @@ export function createRouter () {
                 }
               },
               {
+                name: 'Users',
                 path: '/admin/users',
                 component: () => import('@/views/admin/Users'),
                 meta: {
@@ -119,6 +127,7 @@ export function createRouter () {
                 }
               },
               {
+                name: 'UserDetail',
                 path: '/admin/users/:id',
                 component: () => import('@/views/admin/UserDetail'),
                 meta: {
@@ -128,6 +137,7 @@ export function createRouter () {
             ]
           },
           {
+            name: 'Login',
             path: '/admin/login',
             component: () => import('@/views/admin/Login')
           }

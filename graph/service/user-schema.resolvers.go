@@ -21,12 +21,36 @@ func (r *mutationResolver) Login(ctx context.Context, input model.NewUser) (bool
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+	var user = &model.User{
+		Username: *input.Username,
+		Password: *input.Password,
+		Email:    *input.Email,
+	}
+	return dao.SaveUser(user), nil
+}
+
+// UpdateUser is the resolver for the updateUser field.
+func (r *mutationResolver) UpdateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
+	var user = &model.User{
+		ID:       *input.ID,
+		Username: *input.Username,
+		Email:    *input.Email,
+		Password: *input.Password,
+	}
+	return dao.UpdateUser(user), nil
+}
+
+// DeleteUser is the resolver for the deleteUser field.
+func (r *mutationResolver) DeleteUser(ctx context.Context, input model.NewUser) (string, error) {
+	var user = &model.User{
+		ID: *input.ID,
+	}
+	return dao.DeleteUserById(user), nil
 }
 
 // UserList is the resolver for the userList field.
-func (r *queryResolver) UserList(ctx context.Context) ([]*model.User, error) {
-	return dao.GetUserList(), nil
+func (r *queryResolver) UserList(ctx context.Context, input model.Q) (*model.UserWithPage, error) {
+	return dao.GetUserList(input), nil
 }
 
 // CreateAt is the resolver for the createAt field.
@@ -39,17 +63,22 @@ func (r *userResolver) UpdateAt(ctx context.Context, obj *model.User) (*time.Tim
 	panic(fmt.Errorf("not implemented: UpdateAt - updateAt"))
 }
 
+// Page is the resolver for the page field.
+func (r *userWithPageResolver) Page(ctx context.Context, obj *model.UserWithPage) (*model.Page, error) {
+	return &model.Page{
+		Content:     &obj.Page.Content,
+		PageSize:    &obj.Page.PageSize,
+		Total:       &obj.Page.Total,
+		CurrentPage: &obj.Page.CurrentPage,
+		OrderBy:     &obj.Page.OrderBy,
+	}, nil
+}
+
 // User returns generated.UserResolver implementation.
 func (r *Resolver) User() generated.UserResolver { return &userResolver{r} }
 
-type userResolver struct{ *Resolver }
+// UserWithPage returns generated.UserWithPageResolver implementation.
+func (r *Resolver) UserWithPage() generated.UserWithPageResolver { return &userWithPageResolver{r} }
 
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	return dao.GetUserList(), nil
-}
+type userResolver struct{ *Resolver }
+type userWithPageResolver struct{ *Resolver }

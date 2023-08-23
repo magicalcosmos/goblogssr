@@ -6,50 +6,71 @@ package service
 
 import (
 	"context"
-	"fmt"
-	"time"
 
+	"github.com/magicalcosmos/goblogssr/graph/dao"
 	"github.com/magicalcosmos/goblogssr/graph/generated"
 	"github.com/magicalcosmos/goblogssr/graph/model"
 )
 
-// AuthorID is the resolver for the authorId field.
-func (r *articleResolver) AuthorID(ctx context.Context, obj *model.Article) (int, error) {
-	panic(fmt.Errorf("not implemented: AuthorID - authorId"))
-}
-
-// ParentID is the resolver for the parentId field.
-func (r *articleResolver) ParentID(ctx context.Context, obj *model.Article) (int, error) {
-	panic(fmt.Errorf("not implemented: ParentID - parentId"))
-}
-
-// CreateAt is the resolver for the createAt field.
-func (r *articleResolver) CreateAt(ctx context.Context, obj *model.Article) (*time.Time, error) {
-	panic(fmt.Errorf("not implemented: CreateAt - createAt"))
-}
-
-// UpdateAt is the resolver for the updateAt field.
-func (r *articleResolver) UpdateAt(ctx context.Context, obj *model.Article) (*time.Time, error) {
-	panic(fmt.Errorf("not implemented: UpdateAt - updateAt"))
+// Page is the resolver for the page field.
+func (r *articleWithPageResolver) Page(ctx context.Context, obj *model.ArticleWithPage) (*model.Page, error) {
+	return &model.Page{
+		Content:     &obj.Page.Content,
+		PageSize:    &obj.Page.PageSize,
+		Total:       &obj.Page.Total,
+		CurrentPage: &obj.Page.CurrentPage,
+		OrderBy:     &obj.Page.OrderBy,
+	}, nil
 }
 
 // CreateArticle is the resolver for the createArticle field.
 func (r *mutationResolver) CreateArticle(ctx context.Context, input model.NewArticle) (*model.Article, error) {
-	panic(fmt.Errorf("not implemented: CreateArticle - createArticle"))
+	var article = &model.Article{
+		Title: *input.Title,
+	}
+	return dao.SaveArticle(article), nil
 }
 
 // UpdateArticle is the resolver for the updateArticle field.
 func (r *mutationResolver) UpdateArticle(ctx context.Context, input model.NewArticle) (*model.Article, error) {
-	panic(fmt.Errorf("not implemented: UpdateArticle - updateArticle"))
+	var article = &model.Article{
+		ID:         *input.ID,
+		Brief:      *input.Brief,
+		Title:      *input.Title,
+		Content:    *input.Content,
+		Published:  *input.Published,
+		UserId:     *input.UserID,
+		CategoryId: *input.CategoryID,
+		PublishAt:  *input.PublishAt,
+	}
+	return dao.UpdateArticle(article), nil
+}
+
+// DeleteArticle is the resolver for the deleteArticle field.
+func (r *mutationResolver) DeleteArticle(ctx context.Context, input model.NewArticle) (string, error) {
+	var article = &model.Article{
+		ID: *input.ID,
+	}
+	return dao.DeleteArticleById(article), nil
 }
 
 // ArticleList is the resolver for the articleList field.
-func (r *queryResolver) ArticleList(ctx context.Context) ([]*model.Article, error) {
-	panic(fmt.Errorf("not implemented: ArticleList - articleList"))
+func (r *queryResolver) ArticleList(ctx context.Context, input model.Q) (*model.ArticleWithPage, error) {
+	return dao.GetArticleList(input), nil
 }
 
-// Article returns generated.ArticleResolver implementation.
-func (r *Resolver) Article() generated.ArticleResolver { return &articleResolver{r} }
+// GetArticleByID is the resolver for the getArticleById field.
+func (r *queryResolver) GetArticleByID(ctx context.Context, input model.NewArticle) (*model.Article, error) {
+	var article = &model.Article{
+		ID: *input.ID,
+	}
+	return dao.GetArticleById(article), nil
+}
+
+// ArticleWithPage returns generated.ArticleWithPageResolver implementation.
+func (r *Resolver) ArticleWithPage() generated.ArticleWithPageResolver {
+	return &articleWithPageResolver{r}
+}
 
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
@@ -57,16 +78,6 @@ func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResol
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
-type articleResolver struct{ *Resolver }
+type articleWithPageResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *queryResolver) Articles(ctx context.Context) ([]*model.Article, error) {
-	panic(fmt.Errorf("not implemented: Articles - articles"))
-}

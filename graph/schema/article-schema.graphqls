@@ -1,8 +1,8 @@
 
 type Article {
-  id: ID!
-  authorId: Int!
-  parentId: Int!
+  id: Int!
+  userId: Int!
+  categoryId: Int!
   title: String!
   brief: String!
   content: String!
@@ -15,16 +15,22 @@ type Article {
   status: Int!
   createAt: Time!
   updateAt: Time!
+  publishAt: Time!
+}
+type ArticleWithPage {
+  articles: [Article!]!
+  page: Page!
 }
 
 input NewArticle {
-  id: ID
-  authorId: Int
-  parentId: Int
+  id: Int
+  userId: Int
+  categoryId: Int
   title: String
   brief: String
   content: String
   published: Int
+  publishAt: Time
   tag: String
   pv: Int
   review: Int
@@ -35,8 +41,10 @@ input NewArticle {
 
 extend type Query {
   """ 获取文章列表 """
-  articleList: [Article!]!
+  articleList(input: Q!): ArticleWithPage!
 
+  """ 根据获取文章列表 """
+  getArticleById(input: NewArticle!): Article!
 }
 
 extend type Mutation {
@@ -46,4 +54,7 @@ extend type Mutation {
 
   """ 更新文章 """
   updateArticle(input: NewArticle!): Article!
+
+  """ 删除文章 """
+  deleteArticle(input: NewArticle!): String!
 }

@@ -46,11 +46,11 @@ CREATE TABLE `user` (
 DROP TABLE IF EXISTS `article`;
 CREATE TABLE `article` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `author_id` bigint NOT NULL  COMMENT '创建者ID',
-  `parent_id` bigint NOT NULL  COMMENT '目录ID',
+  `user_id` bigint NOT NULL  COMMENT '创建者ID',
+  `category_id` bigint NOT NULL  COMMENT '目录ID',
   `title` varchar(255) NOT NULL DEFAULT '' COMMENT '标题',
-  `brief` varchar(500) NOT NULL DEFAULT '' COMMENT '摘要',
-  `content`  longtext CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '文章内容',
+  `brief` longtext CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '文章摘要',
+  `content`  longtext CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '文章内容',
   `published` tinyint(1) NOT NULL DEFAULT '0' COMMENT '发布状态，0草稿；1发布;2存档',
   `tag` varchar(255) NOT NULL DEFAULT '' COMMENT 'Tag',
   `pv` int(255) DEFAULT '0' COMMENT 'px',
@@ -59,12 +59,13 @@ CREATE TABLE `article` (
   `like`  int(11) NOT NULL DEFAULT 0 COMMENT '点赞数量',
   `status` int(11) DEFAULT '1' COMMENT '1可用，2禁用，3删除',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间，发布时间',
+  `publish_time` datetime DEFAULT NULL COMMENT '发布时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  KEY `idx_article_user` (`author_id`),
-  KEY `idx_article_parent` (`parent_id`),
-  CONSTRAINT `fk_article_parent` FOREIGN KEY (`parent_id`) REFERENCES `article` (`id`),
-  CONSTRAINT `fk_article_user` FOREIGN KEY (`author_id`) REFERENCES `user` (`id`)
+  KEY `idx_article_user` (`user_id`),
+  KEY `idx_article_category` (`category_id`),
+  CONSTRAINT `fk_article_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`),
+  CONSTRAINT `fk_article_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

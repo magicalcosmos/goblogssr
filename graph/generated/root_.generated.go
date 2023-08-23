@@ -31,11 +31,13 @@ type Config struct {
 }
 
 type ResolverRoot interface {
-	Article() ArticleResolver
+	ArticleWithPage() ArticleWithPageResolver
 	Category() CategoryResolver
+	CategoryWithPage() CategoryWithPageResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 	User() UserResolver
+	UserWithPage() UserWithPageResolver
 }
 
 type DirectiveRoot struct {
@@ -43,21 +45,27 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Article struct {
-		AuthorID  func(childComplexity int) int
-		Brief     func(childComplexity int) int
-		Content   func(childComplexity int) int
-		CreateAt  func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Like      func(childComplexity int) int
-		ParentID  func(childComplexity int) int
-		Published func(childComplexity int) int
-		Pv        func(childComplexity int) int
-		Recommend func(childComplexity int) int
-		Review    func(childComplexity int) int
-		Status    func(childComplexity int) int
-		Tag       func(childComplexity int) int
-		Title     func(childComplexity int) int
-		UpdateAt  func(childComplexity int) int
+		Brief      func(childComplexity int) int
+		CategoryId func(childComplexity int) int
+		Content    func(childComplexity int) int
+		CreateAt   func(childComplexity int) int
+		ID         func(childComplexity int) int
+		Like       func(childComplexity int) int
+		PublishAt  func(childComplexity int) int
+		Published  func(childComplexity int) int
+		Pv         func(childComplexity int) int
+		Recommend  func(childComplexity int) int
+		Review     func(childComplexity int) int
+		Status     func(childComplexity int) int
+		Tag        func(childComplexity int) int
+		Title      func(childComplexity int) int
+		UpdateAt   func(childComplexity int) int
+		UserId     func(childComplexity int) int
+	}
+
+	ArticleWithPage struct {
+		Articles func(childComplexity int) int
+		Page     func(childComplexity int) int
 	}
 
 	Category struct {
@@ -70,20 +78,37 @@ type ComplexityRoot struct {
 		UpdateAt func(childComplexity int) int
 	}
 
+	CategoryWithPage struct {
+		Categories func(childComplexity int) int
+		Page       func(childComplexity int) int
+	}
+
 	Mutation struct {
 		CreateArticle  func(childComplexity int, input model.NewArticle) int
 		CreateCategory func(childComplexity int, input model.NewCategory) int
 		CreateUser     func(childComplexity int, input model.NewUser) int
+		DeleteArticle  func(childComplexity int, input model.NewArticle) int
 		DeleteCategory func(childComplexity int, input model.NewCategory) int
+		DeleteUser     func(childComplexity int, input model.NewUser) int
 		Login          func(childComplexity int, input model.NewUser) int
 		UpdateArticle  func(childComplexity int, input model.NewArticle) int
 		UpdateCategory func(childComplexity int, input model.NewCategory) int
+		UpdateUser     func(childComplexity int, input model.NewUser) int
+	}
+
+	Page struct {
+		Content     func(childComplexity int) int
+		CurrentPage func(childComplexity int) int
+		OrderBy     func(childComplexity int) int
+		PageSize    func(childComplexity int) int
+		Total       func(childComplexity int) int
 	}
 
 	Query struct {
-		ArticleList  func(childComplexity int) int
-		CategoryList func(childComplexity int) int
-		UserList     func(childComplexity int) int
+		ArticleList    func(childComplexity int, input model.Q) int
+		CategoryList   func(childComplexity int, input model.Q) int
+		GetArticleByID func(childComplexity int, input model.NewArticle) int
+		UserList       func(childComplexity int, input model.Q) int
 	}
 
 	User struct {
@@ -94,6 +119,11 @@ type ComplexityRoot struct {
 		Status   func(childComplexity int) int
 		UpdateAt func(childComplexity int) int
 		Username func(childComplexity int) int
+	}
+
+	UserWithPage struct {
+		Page  func(childComplexity int) int
+		Users func(childComplexity int) int
 	}
 }
 
@@ -112,19 +142,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Article.authorId":
-		if e.complexity.Article.AuthorID == nil {
-			break
-		}
-
-		return e.complexity.Article.AuthorID(childComplexity), true
-
 	case "Article.brief":
 		if e.complexity.Article.Brief == nil {
 			break
 		}
 
 		return e.complexity.Article.Brief(childComplexity), true
+
+	case "Article.categoryId":
+		if e.complexity.Article.CategoryId == nil {
+			break
+		}
+
+		return e.complexity.Article.CategoryId(childComplexity), true
 
 	case "Article.content":
 		if e.complexity.Article.Content == nil {
@@ -154,12 +184,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Article.Like(childComplexity), true
 
-	case "Article.parentId":
-		if e.complexity.Article.ParentID == nil {
+	case "Article.publishAt":
+		if e.complexity.Article.PublishAt == nil {
 			break
 		}
 
-		return e.complexity.Article.ParentID(childComplexity), true
+		return e.complexity.Article.PublishAt(childComplexity), true
 
 	case "Article.published":
 		if e.complexity.Article.Published == nil {
@@ -217,6 +247,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Article.UpdateAt(childComplexity), true
 
+	case "Article.userId":
+		if e.complexity.Article.UserId == nil {
+			break
+		}
+
+		return e.complexity.Article.UserId(childComplexity), true
+
+	case "ArticleWithPage.articles":
+		if e.complexity.ArticleWithPage.Articles == nil {
+			break
+		}
+
+		return e.complexity.ArticleWithPage.Articles(childComplexity), true
+
+	case "ArticleWithPage.page":
+		if e.complexity.ArticleWithPage.Page == nil {
+			break
+		}
+
+		return e.complexity.ArticleWithPage.Page(childComplexity), true
+
 	case "Category.createAt":
 		if e.complexity.Category.CreateAt == nil {
 			break
@@ -266,6 +317,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Category.UpdateAt(childComplexity), true
 
+	case "CategoryWithPage.categories":
+		if e.complexity.CategoryWithPage.Categories == nil {
+			break
+		}
+
+		return e.complexity.CategoryWithPage.Categories(childComplexity), true
+
+	case "CategoryWithPage.page":
+		if e.complexity.CategoryWithPage.Page == nil {
+			break
+		}
+
+		return e.complexity.CategoryWithPage.Page(childComplexity), true
+
 	case "Mutation.createArticle":
 		if e.complexity.Mutation.CreateArticle == nil {
 			break
@@ -302,6 +367,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(model.NewUser)), true
 
+	case "Mutation.deleteArticle":
+		if e.complexity.Mutation.DeleteArticle == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteArticle_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteArticle(childComplexity, args["input"].(model.NewArticle)), true
+
 	case "Mutation.deleteCategory":
 		if e.complexity.Mutation.DeleteCategory == nil {
 			break
@@ -313,6 +390,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteCategory(childComplexity, args["input"].(model.NewCategory)), true
+
+	case "Mutation.deleteUser":
+		if e.complexity.Mutation.DeleteUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteUser(childComplexity, args["input"].(model.NewUser)), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -350,26 +439,100 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateCategory(childComplexity, args["input"].(model.NewCategory)), true
 
+	case "Mutation.updateUser":
+		if e.complexity.Mutation.UpdateUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateUser(childComplexity, args["input"].(model.NewUser)), true
+
+	case "Page.content":
+		if e.complexity.Page.Content == nil {
+			break
+		}
+
+		return e.complexity.Page.Content(childComplexity), true
+
+	case "Page.currentPage":
+		if e.complexity.Page.CurrentPage == nil {
+			break
+		}
+
+		return e.complexity.Page.CurrentPage(childComplexity), true
+
+	case "Page.orderBy":
+		if e.complexity.Page.OrderBy == nil {
+			break
+		}
+
+		return e.complexity.Page.OrderBy(childComplexity), true
+
+	case "Page.pageSize":
+		if e.complexity.Page.PageSize == nil {
+			break
+		}
+
+		return e.complexity.Page.PageSize(childComplexity), true
+
+	case "Page.total":
+		if e.complexity.Page.Total == nil {
+			break
+		}
+
+		return e.complexity.Page.Total(childComplexity), true
+
 	case "Query.articleList":
 		if e.complexity.Query.ArticleList == nil {
 			break
 		}
 
-		return e.complexity.Query.ArticleList(childComplexity), true
+		args, err := ec.field_Query_articleList_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ArticleList(childComplexity, args["input"].(model.Q)), true
 
 	case "Query.categoryList":
 		if e.complexity.Query.CategoryList == nil {
 			break
 		}
 
-		return e.complexity.Query.CategoryList(childComplexity), true
+		args, err := ec.field_Query_categoryList_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.CategoryList(childComplexity, args["input"].(model.Q)), true
+
+	case "Query.getArticleById":
+		if e.complexity.Query.GetArticleByID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getArticleById_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetArticleByID(childComplexity, args["input"].(model.NewArticle)), true
 
 	case "Query.userList":
 		if e.complexity.Query.UserList == nil {
 			break
 		}
 
-		return e.complexity.Query.UserList(childComplexity), true
+		args, err := ec.field_Query_userList_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserList(childComplexity, args["input"].(model.Q)), true
 
 	case "User.createAt":
 		if e.complexity.User.CreateAt == nil {
@@ -420,6 +583,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.Username(childComplexity), true
 
+	case "UserWithPage.page":
+		if e.complexity.UserWithPage.Page == nil {
+			break
+		}
+
+		return e.complexity.UserWithPage.Page(childComplexity), true
+
+	case "UserWithPage.users":
+		if e.complexity.UserWithPage.Users == nil {
+			break
+		}
+
+		return e.complexity.UserWithPage.Users(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -431,6 +608,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputNewArticle,
 		ec.unmarshalInputNewCategory,
 		ec.unmarshalInputNewUser,
+		ec.unmarshalInputQ,
 	)
 	first := true
 
@@ -530,9 +708,9 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 var sources = []*ast.Source{
 	{Name: "../schema/article-schema.graphqls", Input: `
 type Article {
-  id: ID!
-  authorId: Int!
-  parentId: Int!
+  id: Int!
+  userId: Int!
+  categoryId: Int!
   title: String!
   brief: String!
   content: String!
@@ -545,16 +723,22 @@ type Article {
   status: Int!
   createAt: Time!
   updateAt: Time!
+  publishAt: Time!
+}
+type ArticleWithPage {
+  articles: [Article!]!
+  page: Page!
 }
 
 input NewArticle {
-  id: ID
-  authorId: Int
-  parentId: Int
+  id: Int
+  userId: Int
+  categoryId: Int
   title: String
   brief: String
   content: String
   published: Int
+  publishAt: Time
   tag: String
   pv: Int
   review: Int
@@ -565,8 +749,10 @@ input NewArticle {
 
 extend type Query {
   """ 获取文章列表 """
-  articleList: [Article!]!
+  articleList(input: Q!): ArticleWithPage!
 
+  """ 根据获取文章列表 """
+  getArticleById(input: NewArticle!): Article!
 }
 
 extend type Mutation {
@@ -576,9 +762,12 @@ extend type Mutation {
 
   """ 更新文章 """
   updateArticle(input: NewArticle!): Article!
+
+  """ 删除文章 """
+  deleteArticle(input: NewArticle!): String!
 }`, BuiltIn: false},
 	{Name: "../schema/category-schema.graphqls", Input: `type Category {
-  id: ID!
+  id: Int!
   name: String!
   parentId: String!
   sort: Int!
@@ -587,8 +776,14 @@ extend type Mutation {
   updateAt: Time!
 }
 
+type CategoryWithPage {
+  categories: [Category!]!
+  page: Page!
+}
+
+
 input NewCategory {
-  id: ID
+  id: Int
   name: String
   parentId: Int
   sort: Int
@@ -596,8 +791,7 @@ input NewCategory {
 
 extend type Query {
   """ 获取分类目录列表 """
-  categoryList: [Category!]!
-
+  categoryList(input: Q!): CategoryWithPage!
 }
 
 extend type Mutation {
@@ -615,9 +809,26 @@ extend type Mutation {
 scalar Upload
 scalar Any
 scalar Time
-scalar Map`, BuiltIn: false},
+scalar Map
+
+input Q {
+	content:     String
+	pageSize:    Int
+	total:       Int 
+	currentPage: Int 
+	orderBy:     String
+}
+
+type Page {
+	content:     String
+	pageSize:    Int
+	total:       Int 
+	currentPage: Int 
+	orderBy:     String
+}
+`, BuiltIn: false},
 	{Name: "../schema/user-schema.graphqls", Input: `type User {
-  id: ID!
+  id: Int!
   username: String!
   password: String!
   email: String!
@@ -626,15 +837,23 @@ scalar Map`, BuiltIn: false},
   updateAt: Time!
 }
 
-input NewUser {
-  username: String!
-  password: String!
+type UserWithPage {
+  users: [User!]!
+  page: Page!
 }
+
+input NewUser {
+  id: Int
+  username: String
+  password: String
+  email: String
+}
+
 
 extend type Query {
 
   """ 获取用户列表 """
-  userList: [User!]!
+  userList(input: Q!): UserWithPage!
 }
 
 extend type Mutation {
@@ -644,6 +863,12 @@ extend type Mutation {
 
   """ 创建用户 """
   createUser(input: NewUser!): User!
+
+  """ 更新用户 """
+  updateUser(input: NewUser!): User!
+
+  """ 删除用户 """
+  deleteUser(input: NewUser!): String!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

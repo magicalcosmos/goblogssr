@@ -7,14 +7,18 @@ const Ajax = {
    * @param {*} graphQL  return struct
    */
   common(params, graphQL) {
-    return axios({
-      url: ENV.API_BASE,
-      method: 'post',
-      data: {
-        operationName: params.apiName,
-        variables: params.variables || {},
-        query: graphQL
-      },
+    return new Promise((resolve, reject) => {
+      axios({
+        url: ENV.API_BASE,
+        method: 'post',
+        data: {
+          operationName: params.apiName,
+          variables: params.variables || {},
+          query: graphQL
+        },
+      }).then((res) => {
+        resolve(res.data.data);
+      }).catch((err) => reject(err));
     });
   },
   /**

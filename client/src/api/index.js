@@ -1,8 +1,10 @@
 import Login from './admin/login';
-import Posts from './admin/posts';
+import Article from './admin/article';
 import Category from './admin/category';
+import User from './admin/user';
 export {
   Login,
-  Posts,
-  Category
+  Article,
+  Category,
+  User,
 };

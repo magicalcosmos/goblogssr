@@ -1,5 +1,6 @@
 <template lang="html">
   <header class="header clearfix">
+    <Toast></Toast>
     <div class="logo">
       <span class="web-name">天马星空</span>
       <a href="/" class="navbar-brand">ShareUs</a>
@@ -13,9 +14,11 @@
   </header>
 </template>
 <script>
+  import 'primeicons/primeicons.css';
+  import Toast from 'primevue/toast';
   export default {
     components: {
-      
+      Toast,
     },
     watch: {
      '$route'() {
