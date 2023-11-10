@@ -1,9 +1,9 @@
 <template lang="html">
-  <section class="layout">
+  <div class="layout">
     <Header></Header> 
     <AppMain></AppMain>
     <Footer></Footer>
-  </section>
+  </div>
 </template>
 <script>
   import Header from '../Header';
@@ -28,6 +28,7 @@
 <style>
   .layout {
     margin: 0 auto;
+    height: 100%;
   }
 
   @media (min-width: 750px) {

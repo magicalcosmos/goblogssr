@@ -72,7 +72,7 @@
       @blur="onEditorBlur"
       @change="onEditorChange"
       @stateChange="onEditorStateChange"
-      height="400px"
+      height="1000px"
       />
     </li>
     <li class="posts-item">

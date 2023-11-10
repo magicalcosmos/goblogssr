@@ -1,28 +1,30 @@
 <template lang="html">
-  <section class="home">
-    <div class="content">
-      <ul class="content-list">
-        <li v-for="item in articles" class="content-item">
-          <h2>
-            <a :href="`#/blog/${item.id}`">{{ item.title }}</a>
-          </h2> 
-          <div class="author">
-            <span>所属目录：Frontend</span>
-            <span>创建者：Brody</span>
-            <span>创建时间：{{formatDate(new Date(item.publishAt))}}</span>
-          </div>
-          <div class="brief" v-html="item.brief"></div>
-        </li>
-      </ul>
-    </div>
-    <div class="blog-category clearfix">
-      <ul class="blog-category-list">
-        <li
-          v-for="(item, index) in categories"
-          :key="index"
-          :class="['blog-category-item', item.className || '']"
-        >{{ item.name }}</li>
-      </ul>
+  <section class="home test">
+    <div class="test">
+      <div class="content">
+        <ul class="content-list">
+          <li v-for="item in articles" class="content-item">
+            <h2>
+              <a :href="`#/blog/${item.id}`">{{ item.title }}</a>
+            </h2> 
+            <div class="author">
+              <span>所属目录：Frontend</span>
+              <span>创建者：Brody</span>
+              <span>创建时间：{{formatDate(new Date(item.publishAt))}}</span>
+            </div>
+            <div class="brief" v-html="item.brief"></div>
+          </li>
+        </ul>
+      </div>
+      <div class="blog-category clearfix">
+        <ul class="blog-category-list">
+          <li
+            v-for="(item, index) in categories"
+            :key="index"
+            :class="['blog-category-item', item.className || '']"
+          >{{ item.name }}</li>
+        </ul>
+      </div>
     </div>
     <Paginator
       v-if="page.total"
@@ -103,7 +105,7 @@
   }
 </script>
 <style scoped>
-  .home {
+  .home, .test {
     font-size: 14px;
     margin-top: 20px;
     white-space: nowrap;
@@ -117,6 +119,7 @@
   }
 
   .content .brief {
+    color: rgba(156, 163, 175, 1);
     padding: 10px 0;
     word-break: break-all;
     white-space: pre-wrap;
@@ -125,7 +128,7 @@
   .content h2 a {
     background-color: transparent;
     font-size: 30px;
-    color: #337ab7;
+    color: #fff;
     text-decoration: none;
   }
 
@@ -148,7 +151,7 @@
   }
 
   .author span {
-    color: rgba(0, 0, 0, 0.5);
+    color: rgba(156, 163, 175, 1);
     margin-right: 10px;
   }
 
@@ -179,5 +182,9 @@
   .blog-category .blog-category-item:last-child {
     border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px;
+  }
+
+  .p-paginator {
+    background: none !important;
   }
 </style>
