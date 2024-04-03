@@ -36,6 +36,7 @@ const M = {
   },
   markdown: {
     title: '标题',
+    content_cover: '内容封面',
     content_brief: '内容简介',
     content_extended: '内容扩展'
   },
@@ -45,7 +46,7 @@ const M = {
   contact: {
     name: '联系我',
     username: '怎么称呼？',
-    phone: '如何愿意给个电话?',
+    phone: '如果愿意给个电话?',
     why: '需要提供什么帮助？',
     options: {
       only_message: '只想留个言而已',

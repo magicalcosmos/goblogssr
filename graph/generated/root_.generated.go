@@ -34,6 +34,8 @@ type ResolverRoot interface {
 	ArticleWithPage() ArticleWithPageResolver
 	Category() CategoryResolver
 	CategoryWithPage() CategoryWithPageResolver
+	Enquiry() EnquiryResolver
+	EnquiryWithPage() EnquiryWithPageResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 	User() UserResolver
@@ -48,6 +50,7 @@ type ComplexityRoot struct {
 		Brief      func(childComplexity int) int
 		CategoryId func(childComplexity int) int
 		Content    func(childComplexity int) int
+		Cover      func(childComplexity int) int
 		CreateAt   func(childComplexity int) int
 		ID         func(childComplexity int) int
 		Like       func(childComplexity int) int
@@ -83,6 +86,21 @@ type ComplexityRoot struct {
 		Page       func(childComplexity int) int
 	}
 
+	Enquiry struct {
+		CreateAt func(childComplexity int) int
+		Email    func(childComplexity int) int
+		ID       func(childComplexity int) int
+		Message  func(childComplexity int) int
+		Name     func(childComplexity int) int
+		Phone    func(childComplexity int) int
+		Type     func(childComplexity int) int
+	}
+
+	EnquiryWithPage struct {
+		Enquiries func(childComplexity int) int
+		Page      func(childComplexity int) int
+	}
+
 	Mutation struct {
 		CreateArticle  func(childComplexity int, input model.NewArticle) int
 		CreateCategory func(childComplexity int, input model.NewCategory) int
@@ -91,6 +109,7 @@ type ComplexityRoot struct {
 		DeleteCategory func(childComplexity int, input model.NewCategory) int
 		DeleteUser     func(childComplexity int, input model.NewUser) int
 		Login          func(childComplexity int, input model.NewUser) int
+		SaveEnquiry    func(childComplexity int, input model.NewEnquiry) int
 		UpdateArticle  func(childComplexity int, input model.NewArticle) int
 		UpdateCategory func(childComplexity int, input model.NewCategory) int
 		UpdateUser     func(childComplexity int, input model.NewUser) int
@@ -107,6 +126,7 @@ type ComplexityRoot struct {
 	Query struct {
 		ArticleList    func(childComplexity int, input model.Q) int
 		CategoryList   func(childComplexity int, input model.Q) int
+		EnquiryList    func(childComplexity int, input model.Q) int
 		GetArticleByID func(childComplexity int, input model.NewArticle) int
 		UserList       func(childComplexity int, input model.Q) int
 	}
@@ -162,6 +182,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Article.Content(childComplexity), true
+
+	case "Article.cover":
+		if e.complexity.Article.Cover == nil {
+			break
+		}
+
+		return e.complexity.Article.Cover(childComplexity), true
 
 	case "Article.createAt":
 		if e.complexity.Article.CreateAt == nil {
@@ -331,6 +358,69 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.CategoryWithPage.Page(childComplexity), true
 
+	case "Enquiry.createAt":
+		if e.complexity.Enquiry.CreateAt == nil {
+			break
+		}
+
+		return e.complexity.Enquiry.CreateAt(childComplexity), true
+
+	case "Enquiry.email":
+		if e.complexity.Enquiry.Email == nil {
+			break
+		}
+
+		return e.complexity.Enquiry.Email(childComplexity), true
+
+	case "Enquiry.id":
+		if e.complexity.Enquiry.ID == nil {
+			break
+		}
+
+		return e.complexity.Enquiry.ID(childComplexity), true
+
+	case "Enquiry.message":
+		if e.complexity.Enquiry.Message == nil {
+			break
+		}
+
+		return e.complexity.Enquiry.Message(childComplexity), true
+
+	case "Enquiry.name":
+		if e.complexity.Enquiry.Name == nil {
+			break
+		}
+
+		return e.complexity.Enquiry.Name(childComplexity), true
+
+	case "Enquiry.phone":
+		if e.complexity.Enquiry.Phone == nil {
+			break
+		}
+
+		return e.complexity.Enquiry.Phone(childComplexity), true
+
+	case "Enquiry.type":
+		if e.complexity.Enquiry.Type == nil {
+			break
+		}
+
+		return e.complexity.Enquiry.Type(childComplexity), true
+
+	case "EnquiryWithPage.enquiries":
+		if e.complexity.EnquiryWithPage.Enquiries == nil {
+			break
+		}
+
+		return e.complexity.EnquiryWithPage.Enquiries(childComplexity), true
+
+	case "EnquiryWithPage.page":
+		if e.complexity.EnquiryWithPage.Page == nil {
+			break
+		}
+
+		return e.complexity.EnquiryWithPage.Page(childComplexity), true
+
 	case "Mutation.createArticle":
 		if e.complexity.Mutation.CreateArticle == nil {
 			break
@@ -414,6 +504,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.Login(childComplexity, args["input"].(model.NewUser)), true
+
+	case "Mutation.saveEnquiry":
+		if e.complexity.Mutation.SaveEnquiry == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_saveEnquiry_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SaveEnquiry(childComplexity, args["input"].(model.NewEnquiry)), true
 
 	case "Mutation.updateArticle":
 		if e.complexity.Mutation.UpdateArticle == nil {
@@ -509,6 +611,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.CategoryList(childComplexity, args["input"].(model.Q)), true
+
+	case "Query.enquiryList":
+		if e.complexity.Query.EnquiryList == nil {
+			break
+		}
+
+		args, err := ec.field_Query_enquiryList_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.EnquiryList(childComplexity, args["input"].(model.Q)), true
 
 	case "Query.getArticleById":
 		if e.complexity.Query.GetArticleByID == nil {
@@ -607,6 +721,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputNewArticle,
 		ec.unmarshalInputNewCategory,
+		ec.unmarshalInputNewEnquiry,
 		ec.unmarshalInputNewUser,
 		ec.unmarshalInputQ,
 	)
@@ -712,6 +827,7 @@ type Article {
   userId: Int!
   categoryId: Int!
   title: String!
+  cover: String!
   brief: String!
   content: String!
   published: Int!
@@ -735,6 +851,7 @@ input NewArticle {
   userId: Int
   categoryId: Int
   title: String
+  cover: String
   brief: String
   content: String
   published: Int
@@ -804,6 +921,41 @@ extend type Mutation {
 
   """ 删除分类 """
   deleteCategory(input: NewCategory!): String!
+}`, BuiltIn: false},
+	{Name: "../schema/enquiry-schema.graphqls", Input: `type Enquiry {
+  id: Int!
+  name: String!
+  email: String!
+  phone: String!
+  type: Int!
+  message: Int!
+  createAt: Time!
+}
+
+type EnquiryWithPage {
+  enquiries: [Enquiry!]!
+  page: Page!
+}
+
+input NewEnquiry {
+  name: String!
+  email: String!
+  phone: String
+  type: Int
+  message: Int
+}
+
+
+extend type Query {
+
+  """ 获取用户列表 """
+  enquiryList(input: Q!): EnquiryWithPage!
+}
+
+extend type Mutation {
+
+  """ 保存咨询 """
+  saveEnquiry(input: NewEnquiry!): Enquiry!
 }`, BuiltIn: false},
 	{Name: "../schema/schema.graphqls", Input: `""" 文件上传 """
 scalar Upload

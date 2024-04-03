@@ -26,13 +26,14 @@
         </ul>
       </div>
     </div>
-    <Paginator
-      v-if="page.total"
-      :rows="page.pageSize"
-      :totalRecords="page.total"
-      :rowsPerPageOptions="[10,20,30]"
-      @page="onPage($event)"
-    ></Paginator>
+    <div v-if="page.total > 10">
+      <Paginator
+        :rows="page.pageSize"
+        :totalRecords="page.total"
+        :rowsPerPageOptions="[10, 20, 30]"
+        @page="onPage($event)"
+      ></Paginator>
+    </div>
   </section>
 </template>
 <script>
@@ -62,6 +63,7 @@
         page: {
           currentPage: 1,
           pageSize: 10,
+          total: 0,
         },
         articles: [],
         categories: [
@@ -93,8 +95,10 @@
         });
       },
       onPage(event) {
-        this.page.currentPage = ++event.page;
-        this.page.pageSize = event.rows;
+        Object.assign(this.page, {
+          currentPage: ++event.page,
+          pageSize: rows,
+        });
         this.getArticleList();
       }
     },
@@ -123,6 +127,11 @@
     padding: 10px 0;
     word-break: break-all;
     white-space: pre-wrap;
+  }
+
+  .content h2 {
+    overflow: hidden;
+    white-space: wrap;
   }
 
   .content h2 a {

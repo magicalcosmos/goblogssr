@@ -11,7 +11,9 @@ const articleListSchema = `
       articles {
         id
         title
+        cover
         brief
+        categoryId
         publishAt
       }
       page {
@@ -44,6 +46,7 @@ const updateArticleSchema = `
     $id: Int!,
     $categoryId: Int!,
     $userId: Int!,
+    $cover: String!,
     $brief: String!,
     $content: String!,
     $published: Int!
@@ -54,6 +57,7 @@ const updateArticleSchema = `
       id: $id,
       categoryId: $categoryId,
       userId: $userId,
+      cover: $cover,
       brief: $brief,
       content: $content,
       published: $published,
@@ -80,6 +84,7 @@ const getArticleByIdSchema = `
       categoryId
       userId
       title
+      cover
       brief
       content
       published

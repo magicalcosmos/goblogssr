@@ -35,8 +35,9 @@ func (r *mutationResolver) CreateArticle(ctx context.Context, input model.NewArt
 func (r *mutationResolver) UpdateArticle(ctx context.Context, input model.NewArticle) (*model.Article, error) {
 	var article = &model.Article{
 		ID:         *input.ID,
-		Brief:      *input.Brief,
 		Title:      *input.Title,
+		Brief:      *input.Brief,
+		Cover:      *input.Cover,
 		Content:    *input.Content,
 		Published:  *input.Published,
 		UserId:     *input.UserID,

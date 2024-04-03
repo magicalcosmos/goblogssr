@@ -46,6 +46,23 @@
         @click="today"
       />
     </li>
+
+    <!-- 内容封面 -->
+    <li class="posts-item">
+      <label>{{$t('markdown.content_cover')}}:</label>
+      <editor
+      ref="refCover"
+      :initialValue="cover"
+      :options="editorOptions"
+      @load="onEditorLoad"
+      @focus="onEditorFocus"
+      @blur="onEditorBlur"
+      @change="onEditorChange"
+      @stateChange="onEditorStateChange"
+      height="200px"
+      />
+    </li>
+    <!-- 内容简介 -->
     <li class="posts-item">
       <label>{{$t('markdown.content_brief')}}:</label>
       <editor
@@ -61,6 +78,7 @@
       />
     </li>
 
+    <!-- 内容扩展-->
     <li class="posts-item">
       <label>{{$t('markdown.content_extended')}}:</label>
       <editor
@@ -133,6 +151,7 @@ import tableMergedCell from '@toast-ui/editor-plugin-table-merged-cell';
 import uml from '@toast-ui/editor-plugin-uml';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
+import MultiSelect from 'primevue/multiselect';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import { User, Article, Category } from '@/api';
@@ -144,6 +163,7 @@ export default {
     Editor,
     InputText,
     Dropdown,
+    MultiSelect,
     Button,
     Dialog,
   },
@@ -168,6 +188,7 @@ export default {
       ],
       users: [],
       categories: [],
+      cover: '',
       brief: '',
       content: '',
       page: {
@@ -212,6 +233,7 @@ export default {
       this.publish_date = `${today.getUTCFullYear()}-${ month > 10 ? month : '0' + month }-${day > 10 ? day : '0' + day}`;
     },
     savePost() {
+      this.data.cover = this.$refs.refCover.invoke('getHTML');
       this.data.brief = this.$refs.refBrief.invoke('getHTML');
       this.data.content = this.$refs.refContent.invoke('getHTML');
       Article.update(Object.assign(this.data, {
@@ -266,6 +288,7 @@ export default {
         const data = res.getArticleById;
         data.publishAt = formatDate(new Date(data.publishAt));
         this.data = data;
+        this.$refs.refCover.invoke('setHTML', this.data.cover);
         this.$refs.refBrief.invoke('setHTML', this.data.brief);
         this.$refs.refContent.invoke('setHTML', this.data.content);
       });
@@ -288,7 +311,8 @@ export default {
 <style scoped>
   
   .post-detail {
-    
+    background: #fff;
+    padding: 10px 20px;
   }
 
   .post-detail .post-title {

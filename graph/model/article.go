@@ -8,6 +8,7 @@ type Article struct {
 	UserId     int       `json:"userId" db:"user_id"`
 	CategoryId int       `json:"categoryId" db:"category_id"`
 	Title      string    `json:"title" db:"title"`
+	Cover      string    `json:"cover" db:"cover"`
 	Brief      string    `json:"brief" db:"brief"`
 	Content    string    `json:"content" db:"content"`
 	Published  int       `json:"published" db:"published"`

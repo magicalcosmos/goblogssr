@@ -1,0 +1,35 @@
+type Enquiry {
+  id: Int!
+  name: String!
+  email: String!
+  phone: String!
+  type: Int!
+  message: Int!
+  createAt: Time!
+}
+
+type EnquiryWithPage {
+  enquiries: [Enquiry!]!
+  page: Page!
+}
+
+input NewEnquiry {
+  name: String!
+  email: String!
+  phone: String
+  type: Int
+  message: Int
+}
+
+
+extend type Query {
+
+  """ 获取用户列表 """
+  enquiryList(input: Q!): EnquiryWithPage!
+}
+
+extend type Mutation {
+
+  """ 保存咨询 """
+  saveEnquiry(input: NewEnquiry!): Enquiry!
+}

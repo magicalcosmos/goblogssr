@@ -5,7 +5,11 @@
         <label for="username">{{ $t('contact.username') }}</label>
       </div>
       <div>
-        <input type="text" name="name"/>
+        <input
+          v-model="model.name"
+          type="text"
+          name="name"
+        />
       </div>
     </li>
     <li>
@@ -14,7 +18,11 @@
         <label for="email">{{ $t('common.email') }}</label>
       </div>
       <div>
-        <input type="text" name="name" />
+        <input
+          v-model="model.email"
+          type="text"
+          name="email"
+        />
       </div>
     </li>
 
@@ -23,7 +31,12 @@
         <label for="phone">{{ $t('contact.phone') }}</label>
       </div>
       <div>
-        <input type="text" name="phone" :placeholder="$t('contact.placeholder.optional')"/>
+        <input
+          v-model="model.phone"
+          type="text"
+          name="phone"
+          :placeholder="$t('contact.placeholder.optional')"
+        />
       </div>
     </li>
 
@@ -32,7 +45,7 @@
         <label for="why">{{ $t('contact.why') }}</label>
       </div>
       <div>
-        <select>
+        <select v-model="model.type" >
           <option value="">({{  $t('common.select_one') }})</option>
           <option value="1">{{  $t('contact.options.only_message') }}</option>
           <option value="2">{{  $t('contact.options.question') }}</option>
@@ -46,21 +59,44 @@
         <label for="message">{{ $t('contact.message') }}</label>
       </div>
       <div>
-        <textarea :placeholder="$t('contact.placeholder.leave_message')"></textarea>
+        <textarea
+          v-model="model.remark"
+          :placeholder="$t('contact.placeholder.leave_message')"
+        ></textarea>
       </div>
     </li>
     <li>
-      <button class="btn">{{ $t('common.send')}}</button>
+      <button class="btn" @click="handleSend">{{ $t('common.send')}}</button>
     </li>
   </ul>
 </template>
 <script>
+  import { Enquiry } from '@/api';
+
   export default {
+    data() {
+      return {
+        model: {
+          name: '',
+          email: '',
+          phone: '',
+          type: '',
+          remark: '',
+        }
+      }
+    },
+    methods: {
+      handleSend() {
+        Enquiry.save(this.model).then(() => {
+        }).catch(() => {});
+      }
+    }
     
   };
 </script>
 <style scoped>
   ul {
+    color: #fff;
     margin-top: 40px;
   }
   @media (min-width: 768px) {

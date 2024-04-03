@@ -11,6 +11,7 @@ type NewArticle struct {
 	UserID     *int       `json:"userId,omitempty"`
 	CategoryID *int       `json:"categoryId,omitempty"`
 	Title      *string    `json:"title,omitempty"`
+	Cover      *string    `json:"cover,omitempty"`
 	Brief      *string    `json:"brief,omitempty"`
 	Content    *string    `json:"content,omitempty"`
 	Published  *int       `json:"published,omitempty"`
@@ -28,6 +29,14 @@ type NewCategory struct {
 	Name     *string `json:"name,omitempty"`
 	ParentID *int    `json:"parentId,omitempty"`
 	Sort     *int    `json:"sort,omitempty"`
+}
+
+type NewEnquiry struct {
+	Name    string  `json:"name"`
+	Email   string  `json:"email"`
+	Phone   *string `json:"phone,omitempty"`
+	Type    *int    `json:"type,omitempty"`
+	Message *int    `json:"message,omitempty"`
 }
 
 type NewUser struct {

@@ -49,6 +49,7 @@ CREATE TABLE `article` (
   `user_id` bigint NOT NULL  COMMENT '创建者ID',
   `category_id` bigint NOT NULL  COMMENT '目录ID',
   `title` varchar(255) NOT NULL DEFAULT '' COMMENT '标题',
+  `cover` longtext CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '文章封面',
   `brief` longtext CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '文章摘要',
   `content`  longtext CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '文章内容',
   `published` tinyint(1) NOT NULL DEFAULT '0' COMMENT '发布状态，0草稿；1发布;2存档',

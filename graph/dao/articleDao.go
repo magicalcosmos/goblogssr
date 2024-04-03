@@ -3,10 +3,10 @@ package dao
 import (
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/magicalcosmos/goblogssr/graph/db"
 	"github.com/magicalcosmos/goblogssr/graph/model"
+	"github.com/magicalcosmos/goblogssr/graph/utils"
 )
 
 // Get article list get user info
@@ -44,8 +44,7 @@ func GetArticleList(input model.Q) *model.ArticleWithPage {
 // Save article get user info
 // TODO: userId 需要根据登录用户来传
 func SaveArticle(data *model.Article) (article *model.Article) {
-	currentTime := time.Now()
-	date, _ := time.Parse("2006-01-02 15:04:05", currentTime.Format("2006-01-02 15:04:05"))
+	date := utils.GetCurrentTime()
 	var categoryData []model.Category
 	err := db.DB.Select(&categoryData, "SELECT * FROM category WHERE status=1 ORDER BY create_time DESC LIMIT 1")
 	if err != nil {
@@ -60,6 +59,7 @@ func SaveArticle(data *model.Article) (article *model.Article) {
 				publish_time,
 				user_id, 
 				category_id, 
+				cover,
 				brief,
 				content, 
 				published
@@ -70,6 +70,7 @@ func SaveArticle(data *model.Article) (article *model.Article) {
 				:publishTime,
 				:userId, 
 				:categoryId, 
+				:cover,
 				:brief,
 				:content, 
 				:published
@@ -79,6 +80,7 @@ func SaveArticle(data *model.Article) (article *model.Article) {
 			"createTime":  date,
 			"updateTime":  date,
 			"publishTime": date,
+			"cover":       "",
 			"brief":       "",
 			"content":     "",
 			"published":   0,
@@ -102,33 +104,30 @@ func SaveArticle(data *model.Article) (article *model.Article) {
 
 // Update article get user info
 func UpdateArticle(data *model.Article) (article *model.Article) {
-	currentTime := time.Now()
-	date, _ := time.Parse("2006-01-02 15:04:05", currentTime.Format("2006-01-02 15:04:05"))
-	publishAt, _ := time.Parse("2006-01-02 15:04:05", data.PublishAt.Format("2006-01-02 15:04:05"))
 	_, err := db.DB.NamedExec(`
 		UPDATE
 			article 
 		SET 
 		  title=:title, 
+			cover=:cover, 
 			brief=:brief, 
 			published=:published, 
 			user_id=:userId, 
 			category_id=:categoryId, 
 			content=:content, 
-			update_time=:updateAt,
-			publish_time=:publishAt
+			update_time=:updateAt
 		WHERE 
 			id=:id
 	`, map[string]interface{}{
 		"id":         data.ID,
 		"title":      data.Title,
+		"cover":      data.Cover,
 		"brief":      data.Brief,
 		"content":    data.Content,
 		"published":  data.Published,
 		"userId":     1,
-		"publishAt":  publishAt,
 		"categoryId": data.CategoryId,
-		"updateAt":   date,
+		"updateAt":   utils.GetCurrentTime(),
 	})
 	if err != nil {
 		fmt.Println("UpdateArticle occur error: ", err)
@@ -138,8 +137,6 @@ func UpdateArticle(data *model.Article) (article *model.Article) {
 
 // delete article by id
 func DeleteArticleById(data *model.Article) string {
-	currentTime := time.Now()
-	date, _ := time.Parse("2006-01-02 15:04:05", currentTime.Format("2006-01-02 15:04:05"))
 	_, err := db.DB.NamedExec(`
 		UPDATE 
 			article 
@@ -151,7 +148,7 @@ func DeleteArticleById(data *model.Article) string {
 	`, map[string]interface{}{
 		"id":         data.ID,
 		"status":     2,
-		"updateTime": date,
+		"updateTime": utils.GetCurrentTime(),
 	})
 	if err != nil {
 		fmt.Println("DeleteArticleById occur error: ", err)

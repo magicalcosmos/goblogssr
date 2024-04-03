@@ -4,6 +4,7 @@ type Article {
   userId: Int!
   categoryId: Int!
   title: String!
+  cover: String!
   brief: String!
   content: String!
   published: Int!
@@ -27,6 +28,7 @@ input NewArticle {
   userId: Int
   categoryId: Int
   title: String
+  cover: String
   brief: String
   content: String
   published: Int
