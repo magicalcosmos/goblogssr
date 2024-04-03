@@ -300,6 +300,9 @@ export default {
   },
   mounted() {
     if (this.isClient) {
+      import('@toast-ui/vue-editor').then(({ Editor }) => {
+        this.editor = new Editor(this.$refs.editor);
+      });
     }
     this.getCategoryList();
     this.getUserList();
