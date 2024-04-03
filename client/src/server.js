@@ -4,6 +4,7 @@ export default (context) => {
   return new Promise((resolve, reject) => {
     const { app, router,store } = createApp(context)
 
+    debugger;
     router.push(context.url)
     router.onReady(() => {
       try {

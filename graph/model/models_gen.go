@@ -32,11 +32,11 @@ type NewCategory struct {
 }
 
 type NewEnquiry struct {
-	Name    string  `json:"name"`
-	Email   string  `json:"email"`
+	Name    *string `json:"name,omitempty"`
+	Email   *string `json:"email,omitempty"`
 	Phone   *string `json:"phone,omitempty"`
-	Type    *int    `json:"type,omitempty"`
-	Message *int    `json:"message,omitempty"`
+	Type    *string `json:"type,omitempty"`
+	Message *string `json:"message,omitempty"`
 }
 
 type NewUser struct {

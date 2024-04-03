@@ -6,6 +6,8 @@ import { createStore } from './store'
 import axios from 'axios';
 import { i18n } from './i18n';
 
+import { Editor } from '@toast-ui/vue-editor';
+
 
 export function createApp (context) {
   const store = createStore(context);
@@ -25,6 +27,7 @@ export function createApp (context) {
       render: h => h(App)
     });
 
+  app.component('Editor', Editor);
   return { app, router, store }
 }
 

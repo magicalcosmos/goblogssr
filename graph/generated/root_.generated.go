@@ -926,9 +926,9 @@ extend type Mutation {
   id: Int!
   name: String!
   email: String!
-  phone: String!
-  type: Int!
-  message: Int!
+  phone: String
+  type: String
+  message: String
   createAt: Time!
 }
 
@@ -938,11 +938,11 @@ type EnquiryWithPage {
 }
 
 input NewEnquiry {
-  name: String!
-  email: String!
+  name: String
+  email: String
   phone: String
-  type: Int
-  message: Int
+  type: String
+  message: String
 }
 
 

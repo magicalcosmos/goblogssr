@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/magicalcosmos/goblogssr/graph/dao"
 	"github.com/magicalcosmos/goblogssr/graph/generated"
 	"github.com/magicalcosmos/goblogssr/graph/model"
 )
@@ -22,16 +23,6 @@ func (r *enquiryResolver) Email(ctx context.Context, obj *model.Enquiry) (string
 	panic(fmt.Errorf("not implemented: Email - email"))
 }
 
-// Type is the resolver for the type field.
-func (r *enquiryResolver) Type(ctx context.Context, obj *model.Enquiry) (int, error) {
-	panic(fmt.Errorf("not implemented: Type - type"))
-}
-
-// Message is the resolver for the message field.
-func (r *enquiryResolver) Message(ctx context.Context, obj *model.Enquiry) (int, error) {
-	panic(fmt.Errorf("not implemented: Message - message"))
-}
-
 // Enquiries is the resolver for the enquiries field.
 func (r *enquiryWithPageResolver) Enquiries(ctx context.Context, obj *model.EnquiryWithPage) ([]*model.Enquiry, error) {
 	panic(fmt.Errorf("not implemented: Enquiries - enquiries"))
@@ -44,7 +35,14 @@ func (r *enquiryWithPageResolver) Page(ctx context.Context, obj *model.EnquiryWi
 
 // SaveEnquiry is the resolver for the saveEnquiry field.
 func (r *mutationResolver) SaveEnquiry(ctx context.Context, input model.NewEnquiry) (*model.Enquiry, error) {
-	panic(fmt.Errorf("not implemented: SaveEnquiry - saveEnquiry"))
+	var enquiry = &model.Enquiry{
+		Name:    *input.Name,
+		Email:   *input.Email,
+		Phone:   *input.Phone,
+		Type:    *input.Type,
+		Message: *input.Message,
+	}
+	return dao.SaveEnquiry(enquiry), nil
 }
 
 // EnquiryList is the resolver for the EnquiryList field.
@@ -69,6 +67,12 @@ type enquiryWithPageResolver struct{ *Resolver }
 //   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
 //     it when you're done.
 //   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *enquiryResolver) Type(ctx context.Context, obj *model.Enquiry) (int, error) {
+	panic(fmt.Errorf("not implemented: Type - type"))
+}
+func (r *enquiryResolver) Message(ctx context.Context, obj *model.Enquiry) (int, error) {
+	panic(fmt.Errorf("not implemented: Message - message"))
+}
 func (r *enquiryWithPageResolver) Users(ctx context.Context, obj *model.EnquiryWithPage) ([]*model.Enquiry, error) {
 	panic(fmt.Errorf("not implemented: Users - users"))
 }

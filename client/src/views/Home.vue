@@ -69,7 +69,7 @@
         Object.assign(this.page, {
           currentPage: ++event.page,
           pageSize: rows,
-        })
+        });
         this._GetArticleList();
       }
     },

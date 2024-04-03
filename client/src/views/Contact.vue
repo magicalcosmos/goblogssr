@@ -60,7 +60,7 @@
       </div>
       <div>
         <textarea
-          v-model="model.remark"
+          v-model="model.message"
           :placeholder="$t('contact.placeholder.leave_message')"
         ></textarea>
       </div>
@@ -81,13 +81,14 @@
           email: '',
           phone: '',
           type: '',
-          remark: '',
+          message: '',
         }
       }
     },
     methods: {
       handleSend() {
         Enquiry.save(this.model).then(() => {
+          this.$toast.add({severity:'success', summary: '温馨提示', detail:'保存成功', life: 3000});
         }).catch(() => {});
       }
     }

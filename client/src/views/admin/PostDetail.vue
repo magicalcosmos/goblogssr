@@ -50,7 +50,8 @@
     <!-- 内容封面 -->
     <li class="posts-item">
       <label>{{$t('markdown.content_cover')}}:</label>
-      <editor
+      <Editor
+      v-if="isShow"
       ref="refCover"
       :initialValue="cover"
       :options="editorOptions"
@@ -65,7 +66,8 @@
     <!-- 内容简介 -->
     <li class="posts-item">
       <label>{{$t('markdown.content_brief')}}:</label>
-      <editor
+      <Editor
+        v-if="isShow"
       ref="refBrief"
       :initialValue="brief"
       :options="editorOptions"
@@ -81,7 +83,8 @@
     <!-- 内容扩展-->
     <li class="posts-item">
       <label>{{$t('markdown.content_extended')}}:</label>
-      <editor
+      <Editor
+        v-if="isShow"
       ref="refContent"
       :initialValue="content"
       :options="editorOptions"
@@ -92,6 +95,7 @@
       @stateChange="onEditorStateChange"
       height="1000px"
       />
+      <div v-if="isClient" ref="editor"></div>
     </li>
     <li class="posts-item">
       <label>{{$t('backend.category')}}:</label>
@@ -140,38 +144,30 @@ import '@toast-ui/editor-plugin-table-merged-cell/dist/toastui-editor-plugin-tab
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css'
 import 'primevue/resources/themes/lara-light-blue/theme.css';
-
-import Calendar from 'primevue/calendar';
-import { Editor } from '@toast-ui/vue-editor';
-import chart from '@toast-ui/editor-plugin-chart';
-import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight';
-import Prism from 'prismjs'
-import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
-import tableMergedCell from '@toast-ui/editor-plugin-table-merged-cell';
-import uml from '@toast-ui/editor-plugin-uml';
-import InputText from 'primevue/inputtext';
-import Dropdown from 'primevue/dropdown';
-import MultiSelect from 'primevue/multiselect';
-import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
+const chart = () => import('@toast-ui/editor-plugin-chart').chart;
+const codeSyntaxHighlight = () => import('@toast-ui/editor-plugin-code-syntax-highlight').codeSyntaxHighlight;
+const Prism = () => import('prismjs');
+const colorSyntax = () => import('@toast-ui/editor-plugin-color-syntax').colorSyntax;
+const tableMergedCell = () => import('@toast-ui/editor-plugin-table-merged-cell').tableMergedCell;
+const uml = () => import('@toast-ui/editor-plugin-uml').uml;
 import { User, Article, Category } from '@/api';
 import { formatDate, formatToGreenDate } from '@/utils/time';
-
 export default {
   components: {
-    Calendar,
-    Editor,
-    InputText,
-    Dropdown,
-    MultiSelect,
-    Button,
-    Dialog,
+    Calendar: () => import('primevue/calendar'),
+    InputText: () => import('primevue/inputtext'),
+    Dropdown: () => import('primevue/dropdown'),
+    MultiSelect: () => import('primevue/multiselect'),
+    Button: () => import('primevue/button'),
+    Dialog: () => import('primevue/dialog'),
   },
   data() {
     return {
       data: {},
       publish_date: null, 
       isDeletePost: false,
+      isShow: false,
+      isClient: true,
       states: [
         {
           name: 'Draft',
@@ -288,9 +284,9 @@ export default {
         const data = res.getArticleById;
         data.publishAt = formatDate(new Date(data.publishAt));
         this.data = data;
-        this.$refs.refCover.invoke('setHTML', this.data.cover);
-        this.$refs.refBrief.invoke('setHTML', this.data.brief);
-        this.$refs.refContent.invoke('setHTML', this.data.content);
+        // this.$refs.refCover.invoke('setHTML', this.data.cover);
+        // this.$refs.refBrief.invoke('setHTML', this.data.brief);
+        // this.$refs.refContent.invoke('setHTML', this.data.content);
       });
     },
 
@@ -303,8 +299,11 @@ export default {
     }
   },
   mounted() {
+    if (this.isClient) {
+    }
     this.getCategoryList();
     this.getUserList();
+
   }
 };
 </script>

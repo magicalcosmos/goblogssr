@@ -47,14 +47,12 @@
 
   import Paginator from 'primevue/paginator';
   // import { Parser, createRenderHTML } from '@toast-ui/toastmark';
-  import { Viewer } from '@toast-ui/vue-editor';
 
   import { Article, Category } from '@/api';
   import { formatDate } from '@/utils/time'
 
   export default {
     components: {
-      Viewer,
       Paginator
     },
     data() {

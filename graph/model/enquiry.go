@@ -5,8 +5,8 @@ import "time"
 // User User
 type Enquiry struct {
 	ID       int       `json:"id" db:"id"`
-	Name     int       `json:"name" db:"name"`
-	Email    int       `json:"email" db:"email"`
+	Name     string    `json:"name" db:"name"`
+	Email    string    `json:"email" db:"email"`
 	Phone    string    `json:"phone" db:"phone"`
 	Type     string    `json:"type" db:"type"`
 	Message  string    `json:"message" db:"message"`

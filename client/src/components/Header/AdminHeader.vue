@@ -5,7 +5,7 @@
       <div class="container clearfix">
         <ul class="left-list">
           <li class="left-item">
-            <a href="#/admin">
+            <a href="/admin">
               <i class="pi pi-home"></i>
             </a>
           </li>
@@ -15,12 +15,12 @@
         </ul>
         <ul class="right-list">
           <li class="left-item">
-            <a href="#/admin/posts">
+            <a href="/admin/posts">
               <i class="pi pi-globe"></i>
             </a>
           </li>
           <li class="left-item">
-            <a href="#/admin/posts">
+            <a href="/admin/posts">
               <i class="pi pi-sign-out"></i>
             </a>
           </li>
@@ -54,19 +54,19 @@
       return {
         navBar: [{
           name: 'Posts',
-          href: '#/admin/posts',
+          href: '/admin/posts',
           active: false
         }, {
           name: 'Galleries',
-          href: '#/admin/galleries',
+          href: '/admin/galleries',
           active: false
         }, {
           name: 'Enquiries',
-          href: '#/admin/enquiries',
+          href: '/admin/enquiries',
           active: false
         }, {
           name: 'Users',
-          href: '#/admin/users',
+          href: '/admin/users',
           active: false
         }],
         secondaryNavbar: []
@@ -81,39 +81,39 @@
           case '/admin/categories':
             secondaryNavbar = [{
               name: 'Posts',
-              href: `#/admin/posts`,
+              href: `/admin/posts`,
               active: path.indexOf('posts') !== -1
             }, {
               name: 'Post Categories',
-              href: '#/admin/categories',
+              href: '/admin/categories',
               active: path.indexOf('categories') !== -1
             }];
             break;
           case '/admin/galleries':
             secondaryNavbar = [{
               name: 'Galleries',
-              href: `#${path}`,
+              href: `${path}`,
               active: true
             }];
             break;
           case '/admin/enquiries':
             secondaryNavbar = [{
               name: 'Enquiries',
-              href: `#${path}`,
+              href: `${path}`,
               active: true
             }];
             break;
           case '/admin/users':
             secondaryNavbar = [{
               name: 'Users',
-              href: `#${path}`,
+              href: `${path}`,
               active: true
             }];
             break;
         }
 
         this.navBar.forEach((item) => {
-          item.active = item.href === `#${path}` || (path === '/admin/categories' && item.href === '#/admin/posts');
+          item.active = item.href === `${path}` || (path === '/admin/categories' && item.href === '/admin/posts');
         });
         this.secondaryNavbar = secondaryNavbar;
       }

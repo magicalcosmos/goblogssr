@@ -10,7 +10,7 @@
         <a :href="item.href">{{item.label}}</a>
       </li>
     </ul>
-    <a href="#/admin/login" class="sigin">{{ $t('button.login')}}</a>
+    <a href="/admin/login" class="sigin">{{ $t('button.login')}}</a>
   </header>
 </template>
 <script>
@@ -31,17 +31,17 @@
           name: 'blog',
           label: this.$t('blog.name'),
           isActive: true,
-          href: '#/blog'
+          href: '/blog'
         }, {
           name: 'gallery',
           label: this.$t('gallery.name'),
           isActive: false,
-          href: '#/gallery'
+          href: '/gallery'
         }, {
           name: 'contact',
           label: this.$t('contact.name'),
           isActive: false,
-          href: '#/contact'
+          href: '/contact'
         }],
       }
     },
@@ -50,7 +50,7 @@
         const path = this.$route.path;
         const pathArr = path.split('/');
         this.navList.forEach((item) => {
-          item.isActive = `#${path}` === item.href || (pathArr.length >= 3 ? `#/${pathArr[1]}` === item.href : false);
+          item.isActive = `${path}` === item.href || (pathArr.length >= 3 ? `/${pathArr[1]}` === item.href : false);
         });
       }
     },
