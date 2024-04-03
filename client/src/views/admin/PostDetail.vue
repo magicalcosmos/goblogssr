@@ -118,6 +118,7 @@
       <a href="#" class="delete-post" @click="isDeletePost = true">delete-post</a>
     </li>
   </ul>
+ <component v-bind:is='getComponent'></component>
     <Dialog
       :visible.sync="isDeletePost"
       :modal="true"
@@ -168,6 +169,7 @@ export default {
       isDeletePost: false,
       isShow: false,
       isClient: true,
+      getComponent: null,
       states: [
         {
           name: 'Draft',
@@ -301,7 +303,8 @@ export default {
   mounted() {
     if (this.isClient) {
       import('@toast-ui/vue-editor').then(({ Editor }) => {
-        this.editor = new Editor(this.$refs.editor);
+        this.getComponent = Editor;
+        /* this.editor = new Editor(this.$refs.editor); */
       });
     }
     this.getCategoryList();
