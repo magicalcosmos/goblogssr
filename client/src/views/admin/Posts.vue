@@ -60,7 +60,7 @@
           :sortable="true"
         >
           <template #body="slotProps">
-            <a class="post-title" :href="`/#/admin/posts/${slotProps.data.id}`">{{ slotProps.data.title }}</a>
+            <a class="post-title" :href="`/admin/posts/${slotProps.data.id}`">{{ slotProps.data.title }}</a>
           </template>
         </Column>
         <Column

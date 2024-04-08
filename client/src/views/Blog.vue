@@ -5,7 +5,7 @@
         <ul class="content-list">
           <li v-for="item in articles" class="content-item">
             <h2>
-              <a :href="`#/blog/${item.id}`">{{ item.title }}</a>
+              <a :href="`/blog/${item.id}`">{{ item.title }}</a>
             </h2> 
             <div class="author">
               <span>所属目录：Frontend</span>
@@ -48,11 +48,14 @@
   import Paginator from 'primevue/paginator';
   // import { Parser, createRenderHTML } from '@toast-ui/toastmark';
 
+  const Viewer = () => import('@toast-ui/vue-editor').Viewer;
+
   import { Article, Category } from '@/api';
   import { formatDate } from '@/utils/time'
 
   export default {
     components: {
+      Viewer,
       Paginator
     },
     data() {

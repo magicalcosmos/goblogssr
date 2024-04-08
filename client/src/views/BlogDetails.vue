@@ -1,7 +1,7 @@
 <template>
   <article>
     <p>
-      <a href="#/blog">← 返回</a>
+      <a href="/blog">← 返回</a>
     </p>
     <hr>
     <header>

@@ -50,52 +50,49 @@
     <!-- 内容封面 -->
     <li class="posts-item">
       <label>{{$t('markdown.content_cover')}}:</label>
-      <Editor
-      v-if="isShow"
-      ref="refCover"
-      :initialValue="cover"
-      :options="editorOptions"
-      @load="onEditorLoad"
-      @focus="onEditorFocus"
-      @blur="onEditorBlur"
-      @change="onEditorChange"
-      @stateChange="onEditorStateChange"
-      height="200px"
+      <SUEditor
+        ref="refCover"
+        :initialValue="cover"
+        @load="onEditorLoad"
+        @loaded="onLoadedCover"
+        @focus="onEditorFocus"
+        @blur="onEditorBlur"
+        @change="onEditorChange"
+        @stateChange="onEditorStateChange"
+        height="200px"
       />
     </li>
     <!-- 内容简介 -->
     <li class="posts-item">
       <label>{{$t('markdown.content_brief')}}:</label>
-      <Editor
-        v-if="isShow"
-      ref="refBrief"
-      :initialValue="brief"
-      :options="editorOptions"
-      @load="onEditorLoad"
-      @focus="onEditorFocus"
-      @blur="onEditorBlur"
-      @change="onEditorChange"
-      @stateChange="onEditorStateChange"
-      height="200px"
+      <SUEditor
+        ref="refBrief"
+        :initialValue="brief"
+        @load="onEditorLoad"
+        @loaded="onLoadedBrief"
+        @focus="onEditorFocus"
+        @blur="onEditorBlur"
+        @change="onEditorChange"
+        @stateChange="onEditorStateChange"
+        height="200px"
       />
     </li>
 
     <!-- 内容扩展-->
     <li class="posts-item">
       <label>{{$t('markdown.content_extended')}}:</label>
-      <Editor
-        v-if="isShow"
-      ref="refContent"
-      :initialValue="content"
-      :options="editorOptions"
-      @load="onEditorLoad"
-      @focus="onEditorFocus"
-      @blur="onEditorBlur"
-      @change="onEditorChange"
-      @stateChange="onEditorStateChange"
-      height="1000px"
+      <SUEditor
+        ref="refContent"
+        :initialValue="content"
+        @load="onEditorLoad"
+        @loaded="onLoadedContent"
+        @focus="onEditorFocus"
+        @blur="onEditorBlur"
+        @change="onEditorChange"
+        @stateChange="onEditorStateChange"
+        height="1000px"
       />
-      <div v-if="isClient" ref="editor"></div>
+
     </li>
     <li class="posts-item">
       <label>{{$t('backend.category')}}:</label>
@@ -118,41 +115,33 @@
       <a href="#" class="delete-post" @click="isDeletePost = true">delete-post</a>
     </li>
   </ul>
- <component v-bind:is='getComponent'></component>
-    <Dialog
-      :visible.sync="isDeletePost"
-      :modal="true"
-      class="dlg"
-    >
-      <template #header>
-        <div class="dialog-title">Are you sure want to delete <span class="special">{{ data.title }}</span></div>
-      </template>
-      <div class="content">This canot be undone</div>
-      <template #footer>
-        <div>
-          <Button label="Cancel" class="p-button-text" @click="isDeletePost = false" />
-          <Button label="Delete" @click="deletePost" />
-        </div>
-      </template>
+
+  <Dialog
+    :visible.sync="isDeletePost"
+    :modal="true"
+    class="dlg"
+  >
+    <template #header>
+      <div class="dialog-title">Are you sure want to delete <span class="special">{{ data.title }}</span></div>
+    </template>
+    <div class="content">This canot be undone</div>
+    <template #footer>
+      <div>
+        <Button label="Cancel" class="p-button-text" @click="isDeletePost = false" />
+        <Button label="Delete" @click="deletePost" />
+      </div>
+    </template>
     </Dialog>
 </section>
 </template>
 <script>
-import '@toast-ui/editor/dist/toastui-editor.css';
-import '@toast-ui/chart/dist/toastui-chart.css';
 import 'prismjs/themes/prism.css';
-import '@toast-ui/editor-plugin-table-merged-cell/dist/toastui-editor-plugin-table-merged-cell.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css'
 import 'primevue/resources/themes/lara-light-blue/theme.css';
-const chart = () => import('@toast-ui/editor-plugin-chart').chart;
-const codeSyntaxHighlight = () => import('@toast-ui/editor-plugin-code-syntax-highlight').codeSyntaxHighlight;
-const Prism = () => import('prismjs');
-const colorSyntax = () => import('@toast-ui/editor-plugin-color-syntax').colorSyntax;
-const tableMergedCell = () => import('@toast-ui/editor-plugin-table-merged-cell').tableMergedCell;
-const uml = () => import('@toast-ui/editor-plugin-uml').uml;
 import { User, Article, Category } from '@/api';
 import { formatDate, formatToGreenDate } from '@/utils/time';
+import SUEditor from '@/components/SUEditor/index.vue';
 export default {
   components: {
     Calendar: () => import('primevue/calendar'),
@@ -161,6 +150,7 @@ export default {
     MultiSelect: () => import('primevue/multiselect'),
     Button: () => import('primevue/button'),
     Dialog: () => import('primevue/dialog'),
+    SUEditor: SUEditor,
   },
   data() {
     return {
@@ -168,8 +158,6 @@ export default {
       publish_date: null, 
       isDeletePost: false,
       isShow: false,
-      isClient: true,
-      getComponent: null,
       states: [
         {
           name: 'Draft',
@@ -193,9 +181,6 @@ export default {
         currentPage: 1,
         pageSize: 100000,
       },
-      editorOptions: {
-        plugins: [chart, [codeSyntaxHighlight, { highlighter: Prism }], colorSyntax, tableMergedCell, uml]
-      }
     };
   },
   methods: {
@@ -209,7 +194,18 @@ export default {
     //   let html = this.$refs.toastuiEditor.invoke('getHtml');
     //   this.viewerText = html
     // },
+    onLoadedCover() {
+      this.$refs.refCover.invoke('setHTML', this.data.cover);
+    },
+
+    onLoadedBrief() {
+      this.$refs.refBrief.invoke('setHTML', this.data.brief);
+    },
+    onLoadedContent() {
+      this.$refs.refContent.invoke('setHTML', this.data.content);
+    },
     onEditorLoad() {
+      this.$refs.refCover.invoke('setHTML', 'sdf');
         // implement your code
     },
     onEditorFocus() {
@@ -286,9 +282,11 @@ export default {
         const data = res.getArticleById;
         data.publishAt = formatDate(new Date(data.publishAt));
         this.data = data;
-        // this.$refs.refCover.invoke('setHTML', this.data.cover);
-        // this.$refs.refBrief.invoke('setHTML', this.data.brief);
-        // this.$refs.refContent.invoke('setHTML', this.data.content);
+        this.$nextTick(() => {
+          // this.$refs.refCover.invoke('setHTML', this.data.cover);
+          // this.$refs.refBrief.invoke('setHTML', this.data.brief);
+          // this.$refs.refContent.invoke('setHTML', this.data.content);
+        });
       });
     },
 
@@ -301,12 +299,6 @@ export default {
     }
   },
   mounted() {
-    if (this.isClient) {
-      import('@toast-ui/vue-editor').then(({ Editor }) => {
-        this.getComponent = Editor;
-        /* this.editor = new Editor(this.$refs.editor); */
-      });
-    }
     this.getCategoryList();
     this.getUserList();
 
