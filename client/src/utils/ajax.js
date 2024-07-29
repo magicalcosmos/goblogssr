@@ -17,7 +17,11 @@ const Ajax = {
           query: graphQL
         },
       }).then((res) => {
-        resolve(res.data.data);
+        if (res.data.errors) {
+          reject(res.data.errors)
+        } else {
+          resolve(res.data.data);
+        }
       }).catch((err) => reject(err));
     });
   },

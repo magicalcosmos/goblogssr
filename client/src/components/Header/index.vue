@@ -63,11 +63,10 @@
 
 <style scoped>
   .header {
-    background: #f8f8f8;
-    border: 1px solid #e7e7e7;
-    border-radius: 5px;
+    background: #333;
+    border: none;
     box-sizing: border-box;
-    margin-top: 30px;
+    color: #fff;
     padding: 0 15px;
     width: 100%;
   }
@@ -77,7 +76,7 @@
   }
   
   .sigin {
-    color: #777;
+    color: #fff;
     float: right;
     margin-top: 10px;
     text-decoration: none;
@@ -88,12 +87,12 @@
   }
 
   .navbar-brand {
-    color: #777;
+    color: #fb923c;
     font-size: 18px;
     padding: 10px 15px;
     position: relative;
     text-decoration: none;
-    top: 7px;
+    top: 12px;
   }
 
   .web-name {
@@ -101,7 +100,10 @@
     float:left;
     font-size: 10px;
     font-weight: bold;
+    left: 12px;
+    position: relative;
     text-shadow: 0 0 4px white, 0 -6px 4px #ff3, 1px 2px 6px #fd6, -2px -2px 4px #f80, 2px -8px 7px #f20;
+    top: 10px;
   }
 
   .nav-list {
@@ -115,13 +117,16 @@
   }
 
   .nav-list .nav-item.active {
-    background-color: #e7e7e7;
-    color: #555;
+    color: #337ab7;
   }
 
   .nav-list .nav-item a {
-    color: #777;
+    color: #fff;
     text-decoration: none;
+  }
+
+  .nav-list .nav-item.active a {
+    color: #337ab7;
   }
 
 </style>

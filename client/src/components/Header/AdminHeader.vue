@@ -15,12 +15,12 @@
         </ul>
         <ul class="right-list">
           <li class="left-item">
-            <a href="/admin/posts">
+            <a href="/" target="_blank">
               <i class="pi pi-globe"></i>
             </a>
           </li>
           <li class="left-item">
-            <a href="/admin/posts">
+            <a  @click="logout">
               <i class="pi pi-sign-out"></i>
             </a>
           </li>
@@ -36,14 +36,21 @@
         </ul>
       </div>
     </nav>
+    <ConfirmDialog></ConfirmDialog>
   </header>
 </template>
 <script>
-  import 'primeicons/primeicons.css';
+  import 'prismjs/themes/prism.css';
+  import 'primevue/resources/primevue.min.css';
+  import 'primeicons/primeicons.css'
+  import 'primevue/resources/themes/lara-light-blue/theme.css';
   import Toast from 'primevue/toast';
+  import ConfirmDialog from 'primevue/confirmdialog';
+  import Cookies from 'js-cookie';
   export default {
     components: {
       Toast,
+      ConfirmDialog,
     },
     watch: {
       '$route'() {
@@ -116,7 +123,22 @@
           item.active = item.href === `${path}` || (path === '/admin/categories' && item.href === '/admin/posts');
         });
         this.secondaryNavbar = secondaryNavbar;
-      }
+      },
+      logout() {
+        this.$confirm.require({
+          message: 'Are you sure you want to log out?',
+          header: 'Confirm',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            Cookies.remove('shareus_token', { path: '/' });
+            Cookies.remove('username', { path: '/' });
+            this.$router.push('/admin/login');
+          }
+        })
+        // Cookies.remove('shareus_token', { path: '/' });
+        // Cookies.remove('username', { path: '/' });
+        // this.$router.push('/admin/login');
+      },
 
     },
     mounted() {
@@ -124,15 +146,14 @@
     }
   };
 </script>
-
 <style scoped>
   .header {
     font-size: 12px;
     width: 100%;
   }
 
-  .header .pi-home {
-    
+  :deep(.pi) {
+    font-size: 12px;
   }
 
   .primary-navbar {

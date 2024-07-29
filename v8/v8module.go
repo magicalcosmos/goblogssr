@@ -128,6 +128,7 @@ const nativeModuleJsContent = `
 
 func loadMainModule(w *v8worker.Worker, id string) error {
 	m := v8module{Id: id, isMain: true}
+	tlog.Infof("===== loadMainModule =====", m.Id)
 	m.load()
 	if m.Err != nil {
 		return m.Err
@@ -137,6 +138,7 @@ func loadMainModule(w *v8worker.Worker, id string) error {
 
 func requireModule(id string) string {
 	m := v8module{Id: id}
+	tlog.Infof("===== requireModule =====", m.Id)
 	m.load()
 	bytes, _ := json.Marshal(m)
 	return string(bytes)

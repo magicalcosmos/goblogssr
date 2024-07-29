@@ -17,7 +17,7 @@ const userListSchema = `
 `;
 
 
-/** 创建文章目录 */
+/** 创建用户*/
 const createUserSchema = `
   mutation createUser($username: String!, $password: String!, $email: String!) {
     createUser(input: { username: $username, password: $password, email: $email }) {
@@ -26,7 +26,7 @@ const createUserSchema = `
   }
 `;
 
-/** 更新文章目录 */
+/** 更新用户 */
 const updateUserSchema = `
   mutation udpateUser($username: String!, $password: String!, $email: String!) {
     updateUser(input: { username: $username, password: $password, email: $email }) {
@@ -35,11 +35,22 @@ const updateUserSchema = `
   }
 `;
 
-
 /** 删除文章目录 */
 const deleteUserSchema = `
   mutation deleteUser($id: Int!) {
     deleteUser(input: { id: $id })
+  }
+`;
+
+/** 登录 */
+const loginUserSchema = `
+  mutation loginUser($email: String!, $password: String!) {
+    loginUser(input: { email: $email, password: $password }) {
+      token
+      refreshToken      
+      username
+      email
+    }
   }
 `;
 
@@ -48,4 +59,5 @@ export {
   createUserSchema,
   updateUserSchema,
   deleteUserSchema,
+  loginUserSchema,
 };

@@ -4,8 +4,8 @@
       <div class="content">
         <ul class="content-list">
           <li v-for="item in articles" class="content-item">
-            <h2>
-              <a :href="`/blog/${item.id}`">{{ item.title }}</a>
+            <h2 class="item-title" @click="goBlog(item.id)">
+              <span>{{ item.title }}</span>
             </h2> 
             <div class="author">
               <span>所属目录：Frontend</span>
@@ -101,7 +101,12 @@
           pageSize: rows,
         });
         this.getArticleList();
-      }
+      },
+      goBlog(id) {
+        this.$router.push({
+          path: '/blog/' + id
+        })
+      },
     },
     mounted() {
       this.getArticleList();
@@ -110,10 +115,15 @@
   }
 </script>
 <style scoped>
-  .home, .test {
+  .home {
     font-size: 14px;
-    margin-top: 20px;
+    margin: 20px auto 0 auto;
     white-space: nowrap;
+    padding: 0 20px 0 25px;
+  }
+
+  .test {
+    margin-top: 10px;
   }
   
   .content {
@@ -142,17 +152,19 @@
     text-decoration: none;
   }
 
-  .content h2 a:hover {
+  /* .content h2 a:hover {
     text-decoration: underline;
-  }
+  } */
 
   .content .content-list {
     width: 90%;
   }
 
   .content .content-item {
-    border-top: 1px solid #e2e8f0;
-    padding: 0.3rem 0;
+    background: linear-gradient(to left,#ec695c, #61c454) no-repeat left top;
+    background-position-x: left;
+    background-size: 100% 2px;
+    padding: 0.8rem 0;
   }
 
   .author {
@@ -196,5 +208,18 @@
 
   .p-paginator {
     background: none !important;
+  }
+
+  .item-title span   {
+    background: linear-gradient(to left,#ec695c, #61c454) no-repeat left bottom;
+    background-size: 0 2px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-size 1300ms;
+  }
+
+  .item-title span:hover {
+    background-position-x: left;
+    background-size: 100% 2px;
   }
 </style>

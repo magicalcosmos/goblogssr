@@ -66,7 +66,6 @@ func newV8Worker(appEnv string) (*v8worker.Worker, error) {
 		w.Dispose()
 		return nil, err
 	}
-
 	err = w.Execute("init.js", gInitJs)
 	if err != nil {
 		w.Dispose()
@@ -92,6 +91,7 @@ func v8WorkerSendCallback(w *v8worker.Worker, mtype int, msg string, userdata in
 	case MSGTYPE_PRINT_WARN:
 		tlog.Warning(msg)
 	case MSGTYPE_PRINT_ERROR:
+		tlog.Error(1243)
 		tlog.Error(msg)
 	default:
 		TheV8Mgr.SendCallback(mtype, msg, userdata)

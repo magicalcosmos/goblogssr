@@ -8,11 +8,17 @@ v8build:
 build:
 	go build -o shareus
 
+linux:
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o shareus main.go
+
+windows:
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o shareus main.go
+	
 gql:
 	go generate ./...
 
 gqlgen:
-	go get github.com/99designs/gqlgen@v0.17.36
+	go get github.com/99designs/gqlgen@v0.17.49
 	go run github.com/99designs/gqlgen generate.
 
 gotest:

@@ -131,8 +131,9 @@ func UpdateArticle(data *model.Article) (article *model.Article) {
 	})
 	if err != nil {
 		fmt.Println("UpdateArticle occur error: ", err)
+		return nil
 	}
-	return article
+	return data
 }
 
 // delete article by id

@@ -1,11 +1,9 @@
 <template>
-  <article>
-    <p>
-      <a href="/blog">← 返回</a>
-    </p>
+  <article class="blog-detail">
+    <p @click="goBack" class="back">← 返回</p>
     <hr>
     <header>
-      <h1>{{ data.title }}</h1>
+      <h1 class="title">{{ data.title }}</h1>
       <div class="author">
         <span>所属目录：Frontend</span>
         <span>创建者：Brody</span>
@@ -16,12 +14,11 @@
   </article>
 </template>
 <script>
-
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 import '@toast-ui/chart/dist/toastui-chart.css';
 import 'prismjs/themes/prism.css';
 import '@toast-ui/editor-plugin-table-merged-cell/dist/toastui-editor-plugin-table-merged-cell.css';
-import { Viewer } from '@toast-ui/vue-editor';
+const Viewer = () => import('@toast-ui/vue-editor').Viewer;
 import { formatDate } from '@/utils/time';
 import { Article } from '@/api';
 
@@ -48,6 +45,9 @@ export default {
         this.data = data;
       });
     },
+    goBack() {
+      this.$router.go(-1);
+    },
   },
   mounted() {
     this.getArticleById();
@@ -56,6 +56,21 @@ export default {
 }
 </script>
 <style scoped>
+  article {
+    color: #fff;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .back {
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .title {
+    color: #fb923c;
+  }
+
   h1 {
     font-size: 36px;
   }
@@ -73,7 +88,7 @@ export default {
 
   hr {
     border: 0;
-    border-top: 1px solid #eee;
+    /* border-top: 1px solid #eee; */
     margin-top: 20px;
     margin-bottom: 20px;
   }
@@ -84,11 +99,12 @@ export default {
   }
 
   .author span {
-    color: rgba(0, 0, 0, .5);
+    color: #fff;
     margin-right: 10px;
   }
 
   .post {
+    padding: 10px 0;
     white-space: pre-wrap;
   }
 </style>

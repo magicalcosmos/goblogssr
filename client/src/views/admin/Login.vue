@@ -10,10 +10,10 @@
         <li class="title-2">{{ $t('login.login_here')}}</li>
         <li class="line-top"></li>
         <li class="user">
-          <input type="text" :placeholder="$t('common.email')"/>
+          <input v-model="email" type="text" :placeholder="$t('common.email')"/>
         </li>
         <li class="pwd">
-          <input type="password" :placeholder="$t('common.password')"/>
+          <input v-model="password" type="password" :placeholder="$t('common.password')"/>
         </li>
         <li class="opt">
           <span class="me">
@@ -21,26 +21,62 @@
             <span class="rember">{{ $t('login.rember_me')}}</span>
           </span>
           <span class="buttons">
-            <button class="reset">
+            <button class="reset" @click="handleReset">
               <span class="rember">{{ $t('button.reset')}}</span>
             </button>
-            <button>
-              <span class="rember">{{ $t('button.submit')}}</span>
+            <button @click="handleSubmit">
+              <span class="rember submit">{{ $t('button.submit')}}</span>
             </button>
           </span>
         </li>
         <li class="line-bottom"></li>
       </ul>
     </div>
+    <Toast></Toast>
   </div>
 </template>
 <script>
+  import 'primevue/resources/primevue.min.css';
+  import 'primeicons/primeicons.css'
+  import 'primevue/resources/themes/lara-light-blue/theme.css';
+  import Toast from 'primevue/toast';
+  import SHA256 from '@/utils/sha256';
+  import { User } from '@/api';
+  import Cookies from 'js-cookie';
   export default {
+    components: {
+      Toast,
+    },
     data() {
-      return {};
+      return {
+        email: '',
+        password: '',
+      };
     },
     methods: {
-      
+      handleReset() {
+       
+      },
+      handleSubmit() {
+        if (!this.email || !this.password) {
+          this.$toast.add({severity:'error', summary: '错误提示', detail: "请输入邮箱地址和密码", life: 3000}); 
+          return;
+        }
+        User.login({
+          email: this.email, 
+          password: SHA256(this.password),
+        }).then((res) => {
+          if (res) {
+            Cookies.set('shareus_token', res.loginUser.token, { expires: 300, path: '/' });
+            Cookies.set('username', res.loginUser.username, { expires: 300, path: '/' });
+            this.$router.push({ path: '/admin' }); 
+          }
+        }).catch((errors) => {
+          if (errors) {
+            this.$toast.add({severity:'error', summary: '错误提示', detail: errors[0].message, life: 3000});   
+          }
+        });
+      }
     }
   }
 </script>

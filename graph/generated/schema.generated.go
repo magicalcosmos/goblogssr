@@ -56,7 +56,7 @@ func (ec *executionContext) _Page_content(ctx context.Context, field graphql.Col
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Page_content(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Page_content(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Page",
 		Field:      field,
@@ -97,7 +97,7 @@ func (ec *executionContext) _Page_pageSize(ctx context.Context, field graphql.Co
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Page_pageSize(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Page_pageSize(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Page",
 		Field:      field,
@@ -138,7 +138,7 @@ func (ec *executionContext) _Page_total(ctx context.Context, field graphql.Colle
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Page_total(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Page_total(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Page",
 		Field:      field,
@@ -179,7 +179,7 @@ func (ec *executionContext) _Page_currentPage(ctx context.Context, field graphql
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Page_currentPage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Page_currentPage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Page",
 		Field:      field,
@@ -220,7 +220,7 @@ func (ec *executionContext) _Page_orderBy(ctx context.Context, field graphql.Col
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Page_orderBy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Page_orderBy(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Page",
 		Field:      field,
@@ -252,8 +252,6 @@ func (ec *executionContext) unmarshalInputQ(ctx context.Context, obj interface{}
 		}
 		switch k {
 		case "content":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("content"))
 			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
@@ -261,8 +259,6 @@ func (ec *executionContext) unmarshalInputQ(ctx context.Context, obj interface{}
 			}
 			it.Content = data
 		case "pageSize":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pageSize"))
 			data, err := ec.unmarshalOInt2int(ctx, v)
 			if err != nil {
@@ -270,8 +266,6 @@ func (ec *executionContext) unmarshalInputQ(ctx context.Context, obj interface{}
 			}
 			it.PageSize = data
 		case "total":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("total"))
 			data, err := ec.unmarshalOInt2int(ctx, v)
 			if err != nil {
@@ -279,8 +273,6 @@ func (ec *executionContext) unmarshalInputQ(ctx context.Context, obj interface{}
 			}
 			it.Total = data
 		case "currentPage":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("currentPage"))
 			data, err := ec.unmarshalOInt2int(ctx, v)
 			if err != nil {
@@ -288,8 +280,6 @@ func (ec *executionContext) unmarshalInputQ(ctx context.Context, obj interface{}
 			}
 			it.CurrentPage = data
 		case "orderBy":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
 			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {

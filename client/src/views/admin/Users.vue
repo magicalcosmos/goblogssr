@@ -60,14 +60,14 @@
           :sortable="true"
         >
           <template #body="slotProps">
-            <a class="post-title" :href="`/#/admin/categories/${slotProps.data.id}`">{{ slotProps.data.username }}</a>
+            <a class="post-title" :href="`/admin/categories/${slotProps.data.id}`">{{ slotProps.data.username }}</a>
           </template>
         </Column>
         <Column
           header="Email"
         >
           <template #body="slotProps">
-            <a class="post-title" :href="`/#/admin/categories/${slotProps.data.id}`">{{ slotProps.data.email }}</a>
+            <a class="post-title" :href="`/admin/categories/${slotProps.data.id}`">{{ slotProps.data.email }}</a>
           </template>
         </Column>
         <Column
@@ -255,10 +255,16 @@
     },
 
     mounted() {
+      debugger;
       this.getList();
     }
   }
 </script>
+<style>
+  :deep(.pi-home) {
+    font-size: 14px !important;
+  }
+</style>
 <style scoped>
   .table-header {
     display: flex;

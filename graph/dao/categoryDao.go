@@ -42,7 +42,7 @@ func SaveCategory(data *model.Category) (category *model.Category) {
 	if err != nil {
 		fmt.Println("SaveCategory occur error: ", err)
 	}
-	return category
+	return data
 }
 
 // 更新文章目录列表
@@ -57,7 +57,7 @@ func UpdateCategory(data *model.Category) (category *model.Category) {
 	if err != nil {
 		fmt.Println("UpdateCategory occur error: ", err)
 	}
-	return category
+	return data
 }
 
 // 根据ID删除文章目录

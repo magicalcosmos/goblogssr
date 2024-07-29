@@ -1,18 +1,20 @@
 package dao
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/magicalcosmos/goblogssr/graph/db"
 	"github.com/magicalcosmos/goblogssr/graph/model"
+	"github.com/magicalcosmos/goblogssr/graph/utils"
 )
 
 // 获取用户列表
 func GetUserList(input model.Q) *model.UserWithPage {
 	// 获取总数
 	var count []int
-	err := db.DB.Select(&count, "SELECT COUNT(*) FROM User WHERE status=1")
+	err := db.DB.Select(&count, "SELECT COUNT(*) FROM user WHERE status=1")
 	if err != nil {
 		fmt.Println("GetUserList occur error: ", err)
 	}
@@ -77,4 +79,22 @@ func DeleteUserById(data *model.User) string {
 		fmt.Println("DeleteUserById occur error: ", err)
 	}
 	return "Success"
+}
+
+func LoginUser(data *model.User) (user *model.LoginInfo, err error) {
+	var users model.User
+	err = db.DB.Get(&users, `Select * FROM user WHERE email=? AND password=?`, data.Email, data.Password)
+
+	if err != nil {
+		fmt.Println("LoginUser occur error: ", err)
+		return nil, errors.New("用户名或密码错误")
+	}
+
+	token, _ := utils.CreateToken(users.Username)
+	return &model.LoginInfo{
+		Token:        token,
+		RefreshToken: token,
+		UserName:     users.Username,
+		Email:        users.Email,
+	}, nil
 }

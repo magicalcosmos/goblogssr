@@ -17,18 +17,19 @@ package server
 import (
 	"encoding/json"
 	"html/template"
-	"math/rand"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"github.com/magicalcosmos/goblogssr/common/tlog"
-	"github.com/magicalcosmos/goblogssr/common/util"
+	"github.com/magicalcosmos/goblogssr/graph/utils"
 
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/gin-gonic/gin"
 )
+
+const LOGIN_URL = "/admin/login"
 
 func HandleSsrRequest(c *gin.Context) {
 	reqURL := c.Request.URL
@@ -40,21 +41,38 @@ func HandleSsrRequest(c *gin.Context) {
 
 	cookie := c.GetHeader("Cookie")
 	if ThisServer.ClientCookie != "" {
-		var clientId string
 		cookieName := ThisServer.ClientCookie
 		cookieVal, err := c.Request.Cookie(cookieName)
-		if err == nil && len(cookieVal.Value) > 0 {
-			clientId = cookieVal.Value
-		} else {
-			clientId = generateUUID() + strconv.FormatInt(int64(rand.Int31n(10)), 10)
-			c.SetCookie(cookieName, clientId, 24*3600*365*10,
-				"/", util.GetDomainFromHost(c.Request.Host), false, false)
-			if len(cookie) > 0 {
-				cookie = cookieName + "=" + clientId + "; " + cookie
+		if strings.Contains(url, "admin") {
+			if url != LOGIN_URL && (err != nil || len(cookieVal.Value) < 1) {
+				c.Redirect(http.StatusSeeOther, LOGIN_URL)
 			} else {
-				cookie = cookieName + "=" + clientId
+				if url == LOGIN_URL {
+					c.Next()
+				} else if err != nil {
+					c.Redirect(http.StatusSeeOther, LOGIN_URL)
+				} else if cookieVal != nil {
+					_, err := utils.VerifyToken(cookieVal.Value)
+					if err != nil {
+						if url != LOGIN_URL {
+							c.Redirect(http.StatusSeeOther, LOGIN_URL)
+						}
+					}
+				}
 			}
 		}
+		// if err == nil && len(cookieVal.Value) > 0 {
+		// 	clientId = cookieVal.Value
+		// } else {
+		// clientId = generateUUID() + strconv.FormatInt(int64(rand.Int31n(10)), 10)
+		// c.SetCookie(cookieName, clientId, 24*3600*365*10,
+		// 	"/", util.GetDomainFromHost(c.Request.Host), false, false)
+		// if len(cookie) > 0 {
+		// 	cookie = cookieName + "=" + clientId + "; " + cookie
+		// } else {
+		// 	cookie = cookieName + "=" + clientId
+		// }
+		// }
 	}
 	ssrCtx := map[string]string{"Cookie": cookie}
 	for _, k := range ThisServer.SsrCtx {
@@ -70,7 +88,7 @@ func HandleSsrRequest(c *gin.Context) {
 
 	if !bOK && !bNoV8 && ThisServer.RedirectOnerror != "" && reqURL.Path != ThisServer.RedirectOnerror {
 		tlog.Errorf("redirect: %s?%s", reqURL.Path, reqURL.RawQuery)
-		c.Redirect(302, ThisServer.RedirectOnerror)
+		c.Redirect(http.StatusMovedPermanently, ThisServer.RedirectOnerror)
 		return
 	}
 

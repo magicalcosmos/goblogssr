@@ -37,14 +37,14 @@ export default {
               {
                 title: 'Posts',
                 count: '20 items',
-                href: '/#/admin/posts',
-                addUrl: '/#/admin/posts?create'
+                href: '/admin/posts',
+                addUrl: '/admin/posts?create'
               },
               {
                 title: 'Post Galleries',
                 count: '20 items',
-                href: '/#/admin/categories',
-                addUrl: '/#/admin/categories?create'
+                href: '/admin/categories',
+                addUrl: '/admin/categories?create'
               }
             ]
           },
@@ -55,8 +55,8 @@ export default {
               {
                 title: 'Galleries',
                 count: '20 items',
-                href: '/#/admin/galleries',
-                addUrl: '/#/admin/galleries?create'
+                href: '/admin/galleries',
+                addUrl: '/admin/galleries?create'
               }
             ]
           },
@@ -67,9 +67,9 @@ export default {
               {
                 title: 'Enquiries',
                 count: '20 items',
-                href: '/#/admin/enquiries',
-                href: '/#/admin/enquiries',
-                addUrl: '/#/admin/enquiries?create'
+                href: '/admin/enquiries',
+                href: '/admin/enquiries',
+                addUrl: '/admin/enquiries?create'
               }
             ]
           },
@@ -80,8 +80,8 @@ export default {
               {
                 title: 'Users',
                 count: '20 items',
-                href: '/#/admin/users',
-                addUrl: '/#/admin/users?create'
+                href: '/admin/users',
+                addUrl: '/admin/users?create'
               }
             ]
           }

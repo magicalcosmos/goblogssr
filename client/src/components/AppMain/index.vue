@@ -18,11 +18,3 @@
     }
   };
 </script>
-
-<style lang="scss">
-  .app-main {
-    margin: 0 auto;
-    max-width: 1170px;
-    padding: 10px;
-  }
-</style>

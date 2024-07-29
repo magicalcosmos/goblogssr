@@ -60,7 +60,7 @@
           :sortable="true"
         >
           <template #body="slotProps">
-            <a class="post-title" :href="`/#/admin/categories/${slotProps.data.id}`">{{ slotProps.data.name }}</a>
+            <a class="post-title" :href="`/admin/categories/${slotProps.data.id}`">{{ slotProps.data.name }}</a>
           </template>
         </Column>
         <Column
@@ -188,6 +188,7 @@
           params.id = this.currentPost.id;
         }
         Category[this.currentPost ? 'update' : 'save'](params).then(() => {
+          debugger;
           this.currentPost = null
           this.isCreatePost = false;
           this.getList();

@@ -31,22 +31,4 @@
     height: 100%;
   }
 
-  @media (min-width: 750px) {
-    .layout {
-      width: 750px;
-    }
-  }
-
-  @media (min-width: 992px) {
-    .layout {
-      width: 970px;
-    }
-  }
-
-  @media (min-width: 1200px) {
-    .layout {
-      width: 1170px;
-    }
-  }
-
 </style>

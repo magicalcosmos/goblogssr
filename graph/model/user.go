@@ -17,3 +17,10 @@ type UserWithPage struct {
 	Users []User `json:"users"`
 	Page  Q      `json:"page"`
 }
+
+type LoginInfo struct {
+	Token        string `json:"token"`
+	RefreshToken string `json:"refreshToken"`
+	UserName     string `json:"username"`
+	Email        string `json:"email"`
+}

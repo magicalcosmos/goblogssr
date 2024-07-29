@@ -18,10 +18,11 @@
 
 <style scoped>
 .footer {
-  border-top: 1px solid #eee;
+  border-top: 1px solid #fb923c;
   margin-top: 30px;
-  padding-top: 30px;
-  color: #777;
+  padding: 30px 0;
+  color: #fff;
+  text-align: center;
 }
 .footer p {
   margin: 0 0 10px;

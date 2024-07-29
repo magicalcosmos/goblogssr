@@ -1,74 +1,75 @@
 <template>
-  <ul class="contact">
-    <li>
-      <div>
-        <label for="username">{{ $t('contact.username') }}</label>
-      </div>
-      <div>
-        <input
-          v-model="model.name"
-          type="text"
-          name="name"
-        />
-      </div>
-    </li>
-    <li>
-    <li>
-      <div>
-        <label for="email">{{ $t('common.email') }}</label>
-      </div>
-      <div>
-        <input
-          v-model="model.email"
-          type="text"
-          name="email"
-        />
-      </div>
-    </li>
+  <section class="contact">
+    <ul>
+      <li>
+        <div>
+          <label for="username">{{ $t('contact.username') }}</label>
+        </div>
+        <div>
+          <input
+            v-model="model.name"
+            type="text"
+            name="name"
+          />
+        </div>
+      </li>
+      <li>
+        <div>
+          <label for="email">{{ $t('common.email') }}</label>
+        </div>
+        <div>
+          <input
+            v-model="model.email"
+            type="text"
+            name="email"
+          />
+        </div>
+      </li>
 
-    <li>
-      <div>
-        <label for="phone">{{ $t('contact.phone') }}</label>
-      </div>
-      <div>
-        <input
-          v-model="model.phone"
-          type="text"
-          name="phone"
-          :placeholder="$t('contact.placeholder.optional')"
-        />
-      </div>
-    </li>
+      <li>
+        <div>
+          <label for="phone">{{ $t('contact.phone') }}</label>
+        </div>
+        <div>
+          <input
+            v-model="model.phone"
+            type="text"
+            name="phone"
+            :placeholder="$t('contact.placeholder.optional')"
+          />
+        </div>
+      </li>
 
-    <li>
-      <div>
-        <label for="why">{{ $t('contact.why') }}</label>
-      </div>
-      <div>
-        <select v-model="model.type" >
-          <option value="">({{  $t('common.select_one') }})</option>
-          <option value="1">{{  $t('contact.options.only_message') }}</option>
-          <option value="2">{{  $t('contact.options.question') }}</option>
-          <option value="3">{{  $t('contact.options.other') }}</option>
-        </select>
-      </div>
-    </li>
+      <li>
+        <div>
+          <label for="why">{{ $t('contact.why') }}</label>
+        </div>
+        <div>
+          <select v-model="model.type" >
+            <option value="">({{  $t('common.select_one') }})</option>
+            <option value="1">{{  $t('contact.options.only_message') }}</option>
+            <option value="2">{{  $t('contact.options.question') }}</option>
+            <option value="3">{{  $t('contact.options.other') }}</option>
+          </select>
+        </div>
+      </li>
 
-    <li>
-      <div>
-        <label for="message">{{ $t('contact.message') }}</label>
-      </div>
-      <div>
-        <textarea
-          v-model="model.message"
-          :placeholder="$t('contact.placeholder.leave_message')"
-        ></textarea>
-      </div>
-    </li>
-    <li>
-      <button class="btn" @click="handleSend">{{ $t('common.send')}}</button>
-    </li>
-  </ul>
+      <li>
+        <div>
+          <label for="message">{{ $t('contact.message') }}</label>
+        </div>
+        <div>
+          <textarea
+            v-model="model.message"
+            :placeholder="$t('contact.placeholder.leave_message')"
+          ></textarea>
+        </div>
+      </li>
+      <li>
+        <button class="btn" @click="handleSend">{{ $t('common.send')}}</button>
+      </li>
+    </ul>
+  </section>
 </template>
 <script>
   import { Enquiry } from '@/api';
@@ -96,6 +97,11 @@
   };
 </script>
 <style scoped>
+ .contact {
+  max-width: 1170px;
+  margin: 15px auto 0 auto;
+ }
+
   ul {
     color: #fff;
     margin-top: 40px;

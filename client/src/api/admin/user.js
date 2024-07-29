@@ -44,6 +44,17 @@ const User = {
       apiName: 'deleteUser',
       variables: params
     }, UserSchemas.deleteUserSchema)
+  },
+
+  /**
+   * delete the posts 
+   * @param {*} params 
+   */
+  login(params) {
+    return Ajax.mutation({
+      apiName: 'loginUser',
+      variables: params
+    }, UserSchemas.loginUserSchema)
   }
 };
 export default User;

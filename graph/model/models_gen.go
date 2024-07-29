@@ -6,6 +6,9 @@ import (
 	"time"
 )
 
+type Mutation struct {
+}
+
 type NewArticle struct {
 	ID         *int       `json:"id,omitempty"`
 	UserID     *int       `json:"userId,omitempty"`
@@ -52,4 +55,7 @@ type Page struct {
 	Total       *int    `json:"total,omitempty"`
 	CurrentPage *int    `json:"currentPage,omitempty"`
 	OrderBy     *string `json:"orderBy,omitempty"`
+}
+
+type Query struct {
 }

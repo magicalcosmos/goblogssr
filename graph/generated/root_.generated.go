@@ -18,6 +18,7 @@ import (
 // NewExecutableSchema creates an ExecutableSchema from the ResolverRoot interface.
 func NewExecutableSchema(cfg Config) graphql.ExecutableSchema {
 	return &executableSchema{
+		schema:     cfg.Schema,
 		resolvers:  cfg.Resolvers,
 		directives: cfg.Directives,
 		complexity: cfg.Complexity,
@@ -25,6 +26,7 @@ func NewExecutableSchema(cfg Config) graphql.ExecutableSchema {
 }
 
 type Config struct {
+	Schema     *ast.Schema
 	Resolvers  ResolverRoot
 	Directives DirectiveRoot
 	Complexity ComplexityRoot
@@ -34,7 +36,6 @@ type ResolverRoot interface {
 	ArticleWithPage() ArticleWithPageResolver
 	Category() CategoryResolver
 	CategoryWithPage() CategoryWithPageResolver
-	Enquiry() EnquiryResolver
 	EnquiryWithPage() EnquiryWithPageResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
@@ -101,6 +102,13 @@ type ComplexityRoot struct {
 		Page      func(childComplexity int) int
 	}
 
+	LoginInfo struct {
+		Email        func(childComplexity int) int
+		RefreshToken func(childComplexity int) int
+		Token        func(childComplexity int) int
+		UserName     func(childComplexity int) int
+	}
+
 	Mutation struct {
 		CreateArticle  func(childComplexity int, input model.NewArticle) int
 		CreateCategory func(childComplexity int, input model.NewCategory) int
@@ -109,6 +117,8 @@ type ComplexityRoot struct {
 		DeleteCategory func(childComplexity int, input model.NewCategory) int
 		DeleteUser     func(childComplexity int, input model.NewUser) int
 		Login          func(childComplexity int, input model.NewUser) int
+		LoginUser      func(childComplexity int, input model.NewUser) int
+		LogoutUser     func(childComplexity int, input model.NewUser) int
 		SaveEnquiry    func(childComplexity int, input model.NewEnquiry) int
 		UpdateArticle  func(childComplexity int, input model.NewArticle) int
 		UpdateCategory func(childComplexity int, input model.NewCategory) int
@@ -148,12 +158,16 @@ type ComplexityRoot struct {
 }
 
 type executableSchema struct {
+	schema     *ast.Schema
 	resolvers  ResolverRoot
 	directives DirectiveRoot
 	complexity ComplexityRoot
 }
 
 func (e *executableSchema) Schema() *ast.Schema {
+	if e.schema != nil {
+		return e.schema
+	}
 	return parsedSchema
 }
 
@@ -421,6 +435,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.EnquiryWithPage.Page(childComplexity), true
 
+	case "LoginInfo.email":
+		if e.complexity.LoginInfo.Email == nil {
+			break
+		}
+
+		return e.complexity.LoginInfo.Email(childComplexity), true
+
+	case "LoginInfo.refreshToken":
+		if e.complexity.LoginInfo.RefreshToken == nil {
+			break
+		}
+
+		return e.complexity.LoginInfo.RefreshToken(childComplexity), true
+
+	case "LoginInfo.token":
+		if e.complexity.LoginInfo.Token == nil {
+			break
+		}
+
+		return e.complexity.LoginInfo.Token(childComplexity), true
+
+	case "LoginInfo.username":
+		if e.complexity.LoginInfo.UserName == nil {
+			break
+		}
+
+		return e.complexity.LoginInfo.UserName(childComplexity), true
+
 	case "Mutation.createArticle":
 		if e.complexity.Mutation.CreateArticle == nil {
 			break
@@ -504,6 +546,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.Login(childComplexity, args["input"].(model.NewUser)), true
+
+	case "Mutation.loginUser":
+		if e.complexity.Mutation.LoginUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_loginUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.LoginUser(childComplexity, args["input"].(model.NewUser)), true
+
+	case "Mutation.logoutUser":
+		if e.complexity.Mutation.LogoutUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_logoutUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.LogoutUser(childComplexity, args["input"].(model.NewUser)), true
 
 	case "Mutation.saveEnquiry":
 		if e.complexity.Mutation.SaveEnquiry == nil {
@@ -810,14 +876,14 @@ func (ec *executionContext) introspectSchema() (*introspection.Schema, error) {
 	if ec.DisableIntrospection {
 		return nil, errors.New("introspection disabled")
 	}
-	return introspection.WrapSchema(parsedSchema), nil
+	return introspection.WrapSchema(ec.Schema()), nil
 }
 
 func (ec *executionContext) introspectType(name string) (*introspection.Type, error) {
 	if ec.DisableIntrospection {
 		return nil, errors.New("introspection disabled")
 	}
-	return introspection.WrapTypeFromDef(parsedSchema, parsedSchema.Types[name]), nil
+	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
 var sources = []*ast.Source{
@@ -994,6 +1060,13 @@ type UserWithPage {
   page: Page!
 }
 
+type LoginInfo {
+	token:        String
+	refreshToken: String
+	username:     String
+	email:       String 
+}
+
 input NewUser {
   id: Int
   username: String
@@ -1021,6 +1094,12 @@ extend type Mutation {
 
   """ 删除用户 """
   deleteUser(input: NewUser!): String!
+
+  """ 登录用户 """
+  loginUser(input: NewUser!): LoginInfo!
+
+  """ 登出用户 """
+  logoutUser(input: NewUser!): String!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

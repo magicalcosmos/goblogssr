@@ -13,6 +13,13 @@ type UserWithPage {
   page: Page!
 }
 
+type LoginInfo {
+	token:        String
+	refreshToken: String
+	username:     String
+	email:       String 
+}
+
 input NewUser {
   id: Int
   username: String
@@ -40,4 +47,10 @@ extend type Mutation {
 
   """ 删除用户 """
   deleteUser(input: NewUser!): String!
+
+  """ 登录用户 """
+  loginUser(input: NewUser!): LoginInfo!
+
+  """ 登出用户 """
+  logoutUser(input: NewUser!): String!
 }

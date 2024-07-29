@@ -14,7 +14,8 @@ const M = {
     save: '保存',
     submit: '提交',
     reset: '重置',
-    today: '今天'
+    today: '今天',
+    read_more: '阅读全文',
   },
   login: {
     already_member: '已经加入会员',
