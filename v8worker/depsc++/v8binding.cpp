@@ -70,7 +70,7 @@ std::string getExceptionString(V8Worker* w, TryCatch* try_catch) {
     // Print wasm-function[(function index)]:(offset): (message).
     int function_index = message->GetWasmFunctionIndex();
     int offset = message->GetStartColumn(context).FromJust();
-    sprintf(tmpbuf, "wasm-function[%d]:0x%x: ", function_index, offset);
+    snprintf(tmpbuf, sizeof(tmpbuf), "wasm-function[%d]:0x%x: ", function_index, offset);
     out.append(tmpbuf);
     out.append(exception_string);
     out.append("\n");
@@ -80,7 +80,7 @@ std::string getExceptionString(V8Worker* w, TryCatch* try_catch) {
                                    message->GetScriptOrigin().ResourceName());
     const char* filename_string = toCString(filename);
     int linenum = message->GetLineNumber(context).FromMaybe(-1);
-    sprintf(tmpbuf, ":%i: ", linenum);
+    snprintf(tmpbuf, sizeof(tmpbuf), ":%i: ", linenum);
     out.append(filename_string);
     out.append(tmpbuf);
     out.append(exception_string);

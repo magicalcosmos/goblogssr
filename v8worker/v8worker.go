@@ -17,7 +17,7 @@ package v8worker
 /*
 #cgo CXXFLAGS: -std=c++11
 #cgo linux LDFLAGS: -Ldepsc++ -ldepsc++ -L/usr/local/lib64/v8 -lstdc++ -lv8 -lv8_libplatform
-#cgo darwin LDFLAGS: -Ldepsc++ -ldepsc++ -L/usr/local/Cellar/v8/8.1.307.32/libexec -lstdc++ -lv8 -lv8_libplatform
+#cgo darwin LDFLAGS: -Ldepsc++ -ldepsc++ -L/opt/homebrew/Cellar/v8/12.7.224.16/libexec -lstdc++ -lv8 -lv8_libplatform
 #include <stdlib.h>
 #include "depsc++/v8binding.h"
 */
@@ -32,7 +32,7 @@ import (
 )
 
 const (
-	V8_LIBPATH_MAC   = "/usr/local/Cellar/v8/8.1.307.32/libexec"
+	V8_LIBPATH_MAC   = "/opt/homebrew/Cellar/v8/12.7.224.16/libexec"
 	V8_LIBPATH_LINUX = "/usr/local/lib64/v8"
 )
 
